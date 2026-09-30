@@ -23,6 +23,19 @@ async function checkDatabase() {
       const [courseRows] = await connection.query("SELECT COUNT(*) AS total FROM courses");
       console.log(`Course rows: ${courseRows[0].total}`);
     }
+
+    if (tables.some((table) => table.tableName === "users")) {
+      const [userColumns] = await connection.query(
+        "SELECT COLUMN_NAME AS columnName, COLUMN_TYPE AS columnType FROM information_schema.columns WHERE table_schema = DATABASE() AND table_name = 'users' ORDER BY ordinal_position"
+      );
+      console.log(`User columns: ${userColumns.map((column) => `${column.columnName} (${column.columnType})`).join(", ")}`);
+      const [userRows] = await connection.query("SELECT COUNT(*) AS total FROM users");
+      console.log(`User rows: ${userRows[0].total}`);
+      const [uniqueIndexes] = await connection.query(
+        "SELECT INDEX_NAME AS indexName, GROUP_CONCAT(COLUMN_NAME ORDER BY SEQ_IN_INDEX) AS columns FROM information_schema.statistics WHERE table_schema = DATABASE() AND table_name = 'users' AND non_unique = 0 GROUP BY INDEX_NAME ORDER BY INDEX_NAME"
+      );
+      console.log(`Unique user indexes: ${uniqueIndexes.map((index) => `${index.indexName} (${index.columns})`).join(", ") || "none"}`);
+    }
   } finally {
     await connection.end();
   }

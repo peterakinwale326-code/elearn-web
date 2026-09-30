@@ -1,21 +1,40 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
-import { courseCatalog } from "../..//data/courseSeed";
+import { LoaderCircle, RefreshCw } from "lucide-react";
+import { use, useEffect, useState } from "react";
+import type { CourseDetails } from "@/lib/course-types";
 
-export default function CourseDetailsPage({ params }: { params: { courseId: string } }) {
-  const course = useMemo(
-    () => courseCatalog.find((item) => item.id === params.courseId) ?? courseCatalog[0],
-    [params.courseId]
-  );
-
+export default function CourseDetailsPage({ params }: { params: Promise<{ courseId: string }> }) {
+  const { courseId } = use(params);
+  const [course, setCourse] = useState<CourseDetails | null>(null);
+  const [loadError, setLoadError] = useState(false);
+  const [retryKey, setRetryKey] = useState(0);
   const [activeLessonIndex, setActiveLessonIndex] = useState(0);
   const [scores, setScores] = useState<Record<string, number>>({});
   const [submitted, setSubmitted] = useState<Record<string, boolean>>({});
   const [selectedAnswers, setSelectedAnswers] = useState<Record<string, string>>({});
+  const [examScore, setExamScore] = useState<number | null>(null);
 
-  const activeLesson = course.lessons[activeLessonIndex];
+  useEffect(() => {
+    let active = true;
+
+    fetch(`/api/courses/${courseId}`, { cache: "no-store" })
+      .then(async (response) => {
+        if (!response.ok) throw new Error("Course could not be loaded");
+        return (await response.json()) as CourseDetails;
+      })
+      .then((data) => {
+        if (active) setCourse(data);
+      })
+      .catch(() => {
+        if (active) setLoadError(true);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [courseId, retryKey]);
 
   function handleAnswerChange(questionId: string, value: string) {
     setSelectedAnswers((prev) => ({
@@ -24,19 +43,56 @@ export default function CourseDetailsPage({ params }: { params: { courseId: stri
     }));
   }
 
-  function handleSubmitLesson(lessonId: string) {
-    const lesson = course.lessons.find((item) => item.id === lessonId);
-    if (!lesson) return;
+  function handleSubmitLesson(lessonId: number) {
+    const lesson = course?.lessons.find((item) => item.id === lessonId);
+    if (!lesson?.quiz) return;
 
     const correctAnswers = lesson.quiz.questions.filter((question) => {
       const selected = selectedAnswers[question.id];
-      return selected === question.answer;
+      return question.options.some((option) => String(option.id) === selected && option.isCorrect);
     }).length;
 
     const score = Math.round((correctAnswers / lesson.quiz.questions.length) * 100);
 
     setScores((prev) => ({ ...prev, [lessonId]: score }));
     setSubmitted((prev) => ({ ...prev, [lessonId]: true }));
+  }
+
+  function handleSubmitExam() {
+    if (!course?.exam) return;
+
+    const correctAnswers = course.exam.questions.filter((question) => {
+      const selected = selectedAnswers[question.id];
+      return question.options.some((option) => String(option.id) === selected && option.isCorrect);
+    }).length;
+
+    setExamScore(Math.round((correctAnswers / course.exam.questions.length) * 100));
+  }
+
+  if (loadError) {
+    return (
+      <main role="alert" style={{ maxWidth: 760, margin: "12vh auto", padding: 32, textAlign: "center" }}>
+        <h1 style={{ fontFamily: "Georgia, serif", fontWeight: 500 }}>Course unavailable</h1>
+        <p style={{ color: "#607168", lineHeight: 1.6 }}>The course database could not be reached. Check the connection and try again.</p>
+        <button type="button" onClick={() => { setLoadError(false); setRetryKey((key) => key + 1); }} style={{ display: "inline-flex", alignItems: "center", gap: 8, minHeight: 40, padding: "0 14px", border: 0, background: "#216448", color: "white", cursor: "pointer" }}>
+          <RefreshCw size={16} strokeWidth={1.8} /> Try again
+        </button>
+        <div style={{ marginTop: 14 }}><Link href="/courses">Back to all courses</Link></div>
+      </main>
+    );
+  }
+  if (!course) {
+    return (
+      <main role="status" aria-live="polite" style={{ display: "grid", minHeight: "50vh", placeContent: "center", justifyItems: "center", gap: 10, color: "#52695b" }}>
+        <LoaderCircle size={22} strokeWidth={1.8} />
+        <span>Loading course…</span>
+      </main>
+    );
+  }
+
+  const activeLesson = course.lessons[activeLessonIndex];
+  if (!activeLesson) {
+    return <main style={{ maxWidth: 1200, margin: "0 auto", padding: 32 }}>This course has no lessons yet.</main>;
   }
 
   const totalCourseProgress = Math.round(
@@ -78,8 +134,8 @@ export default function CourseDetailsPage({ params }: { params: { courseId: stri
           >
             <span>Level: {course.level}</span>
             <span>Lessons: {course.lessons.length}</span>
-            <span>Duration: {course.duration}</span>
-            <span>Exam: {course.exam.passingScore}% pass</span>
+            <span>Duration: {course.durationMinutes} mins</span>
+            {course.exam ? <span>Exam: {course.exam.passingScore}% pass</span> : null}
           </div>
         </div>
 
@@ -123,12 +179,10 @@ export default function CourseDetailsPage({ params }: { params: { courseId: stri
                 background: activeLessonIndex === index ? "#eaf1eb" : "#fff",
                 color: "#2b4637",
                 borderRadius: 10,
-                textAlign: "left",
-                padding: "10px 12px",
                 marginBottom: 8,
+                padding: "10px 12px",
+                textAlign: "left",
                 cursor: "pointer",
-                fontSize: 12,
-                fontWeight: 600,
               }}
             >
               {index + 1}. {lesson.title}
@@ -137,7 +191,7 @@ export default function CourseDetailsPage({ params }: { params: { courseId: stri
 
           <div style={{ marginTop: 14, borderTop: "1px solid #edf1ed", paddingTop: 14 }}>
             <p style={{ margin: 0, fontSize: 11, letterSpacing: 1.4, color: "#607168", textTransform: "uppercase" }}>Final exam</p>
-            <div style={{ marginTop: 10, fontWeight: 700, color: "#2a4637", fontSize: 13 }}>{course.exam.title}</div>
+            <div style={{ marginTop: 10, fontWeight: 700, color: "#2a4637", fontSize: 13 }}>{course.exam?.title ?? "Not configured"}</div>
           </div>
         </nav>
 
@@ -154,7 +208,7 @@ export default function CourseDetailsPage({ params }: { params: { courseId: stri
               <p style={{ margin: 0, fontSize: 11, color: "#5d7367", letterSpacing: 1.5, textTransform: "uppercase" }}>Lesson {activeLessonIndex + 1}</p>
               <h2 style={{ margin: "8px 0", fontFamily: "Georgia, serif", fontSize: 30 }}>{activeLesson.title}</h2>
             </div>
-            <span style={{ fontSize: 12, color: "#50625a", background: "#f2f5f2", padding: "7px 10px", borderRadius: 999 }}>{activeLesson.duration}</span>
+            <span style={{ fontSize: 12, color: "#50625a", background: "#f2f5f2", padding: "7px 10px", borderRadius: 999 }}>{activeLesson.durationMinutes} mins</span>
           </div>
 
           <p style={{ color: "#586a60", lineHeight: 1.8, marginTop: 18 }}>{activeLesson.content}</p>
@@ -164,12 +218,13 @@ export default function CourseDetailsPage({ params }: { params: { courseId: stri
             <p style={{ margin: "10px 0 0", color: "#586b5e", lineHeight: 1.7 }}>{activeLesson.objective}</p>
           </div>
 
+          {activeLesson.quiz ? (
           <div style={{ marginTop: 28, border: "1px solid #e6ebe4", borderRadius: 12, padding: 18, background: "#fbfcfa" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
-              <h3 style={{ margin: 0, fontSize: 24, fontFamily: "Georgia, serif" }}>{activeLesson.quiz.title}</h3>
+                  <h3 style={{ margin: 0, fontSize: 24, fontFamily: "Georgia, serif" }}>{activeLesson.quiz.title}</h3>
               {submitted[activeLesson.id] ? (
-                <span style={{ fontSize: 12, color: "#2d6a3d", background: "#edf7ee", padding: "6px 10px", borderRadius: 999, fontWeight: 700 }}>
-                  Score: {scores[activeLesson.id]}%
+                <span style={{ fontSize: 12, color: scores[activeLesson.id] >= activeLesson.quiz.passingScore ? "#2d6a3d" : "#9a573b", background: scores[activeLesson.id] >= activeLesson.quiz.passingScore ? "#edf7ee" : "#fbf0e9", padding: "6px 10px", borderRadius: 999, fontWeight: 700 }}>
+                  {scores[activeLesson.id] >= activeLesson.quiz.passingScore ? "Passed" : "Try again"} · {scores[activeLesson.id]}%
                 </span>
               ) : null}
             </div>
@@ -183,19 +238,24 @@ export default function CourseDetailsPage({ params }: { params: { courseId: stri
 
                   <div style={{ display: "grid", gap: 8 }}>
                     {question.options.map((option) => (
-                      <label key={option} style={{ display: "flex", alignItems: "center", gap: 10, color: "#4d5d54", fontSize: 13 }}>
+                      <label key={option.id} style={{ display: "flex", alignItems: "center", gap: 10, color: "#4d5d54", fontSize: 13 }}>
                         <input
                           type="radio"
-                          name={question.id}
-                          value={option}
-                          checked={selectedAnswers[question.id] === option}
-                          onChange={() => handleAnswerChange(question.id, option)}
+                          name={`question-${question.id}`}
+                          value={option.id}
+                          checked={selectedAnswers[question.id] === String(option.id)}
+                          onChange={() => handleAnswerChange(String(question.id), String(option.id))}
                           style={{ accentColor: "#294c3a" }}
                         />
-                        <span>{option}</span>
+                        <span>{option.text}</span>
                       </label>
                     ))}
                   </div>
+                  {submitted[activeLesson.id] ? (
+                    <p style={{ margin: "12px 0 0", color: "#617267", fontSize: 12, lineHeight: 1.6 }}>
+                      {question.explanation} Correct answer: <strong>{question.options.find((option) => option.isCorrect)?.text}</strong>
+                    </p>
+                  ) : null}
                 </div>
               ))}
             </div>
@@ -216,12 +276,66 @@ export default function CourseDetailsPage({ params }: { params: { courseId: stri
             >
               Submit quiz
             </button>
+            <span style={{ marginLeft: 12, color: "#607168", fontSize: 12 }}>Pass mark: {activeLesson.quiz.passingScore}%</span>
           </div>
+          ) : <p style={{ marginTop: 24, color: "#607168" }}>No quiz is configured for this lesson yet.</p>}
 
+          {course.exam ? (
           <div style={{ marginTop: 28, borderTop: "1px solid #edf1ed", paddingTop: 22 }}>
-            <h3 style={{ margin: 0, fontSize: 24, fontFamily: "Georgia, serif" }}>Final exam</h3>
-            <p style={{ color: "#5d7367", marginTop: 10 }}>{course.exam.title} • {course.exam.duration} • {course.exam.questions.length} questions</p>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
+              <h3 style={{ margin: 0, fontSize: 24, fontFamily: "Georgia, serif" }}>{course.exam.title}</h3>
+              {examScore !== null ? (
+                <strong style={{ color: examScore >= course.exam.passingScore ? "#2d6a3d" : "#9a573b", fontSize: 13 }}>
+                  {examScore >= course.exam.passingScore ? "Passed" : "Not passed yet"} · {examScore}%
+                </strong>
+              ) : null}
+            </div>
+            <p style={{ color: "#5d7367", marginTop: 10 }}>{course.exam.durationMinutes ?? "Untimed"} mins · {course.exam.questions.length} questions · {course.exam.passingScore}% to pass</p>
+            <div style={{ display: "grid", gap: 14, marginTop: 18 }}>
+              {course.exam.questions.map((question, questionIndex) => (
+                <div key={question.id} style={{ border: "1px solid #edf1ed", borderRadius: 10, padding: 14 }}>
+                  <p style={{ margin: "0 0 10px", fontWeight: 700, color: "#324c3d" }}>{questionIndex + 1}. {question.prompt}</p>
+                  <div style={{ display: "grid", gap: 8 }}>
+                    {question.options.map((option) => (
+                      <label key={option.id} style={{ display: "flex", alignItems: "center", gap: 10, color: "#4d5d54", fontSize: 13 }}>
+                        <input
+                          type="radio"
+                          name={`question-${question.id}`}
+                          value={option.id}
+                          checked={selectedAnswers[question.id] === String(option.id)}
+                          onChange={() => handleAnswerChange(String(question.id), String(option.id))}
+                          style={{ accentColor: "#294c3a" }}
+                        />
+                        <span>{option.text}</span>
+                      </label>
+                    ))}
+                  </div>
+                  {examScore !== null ? (
+                    <p style={{ margin: "12px 0 0", color: "#617267", fontSize: 12, lineHeight: 1.6 }}>
+                      {question.explanation} Correct answer: <strong>{question.options.find((option) => option.isCorrect)?.text}</strong>
+                    </p>
+                  ) : null}
+                </div>
+              ))}
+            </div>
+            <button
+              type="button"
+              onClick={handleSubmitExam}
+              style={{
+                marginTop: 18,
+                background: "#294c3a",
+                color: "#fff",
+                border: "none",
+                borderRadius: 10,
+                padding: "12px 16px",
+                fontWeight: 700,
+                cursor: "pointer",
+              }}
+            >
+              Submit final exam
+            </button>
           </div>
+          ) : null}
         </div>
       </section>
     </main>
