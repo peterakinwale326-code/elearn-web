@@ -32,6 +32,24 @@ async function main() {
       throw new Error("users.email needs a unique index before signup can safely prevent duplicate accounts.");
     }
     console.log("Verified unique users.email index.");
+
+    await connection.query(`
+      CREATE TABLE IF NOT EXISTS email_2fa_challenges (
+        id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+        user_id BIGINT UNSIGNED NOT NULL,
+        token_hash CHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+        code_hash CHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+        expires_at DATETIME NOT NULL,
+        attempts TINYINT UNSIGNED NOT NULL DEFAULT 0,
+        sent_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        used_at TIMESTAMP NULL DEFAULT NULL,
+        PRIMARY KEY (id),
+        UNIQUE KEY uq_email_2fa_token_hash (token_hash),
+        KEY idx_email_2fa_user_sent (user_id, sent_at),
+        CONSTRAINT fk_email_2fa_user FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
+    `);
+    console.log("Verified email_2fa_challenges table.");
   } finally {
     connection.release();
     await pool.end();

@@ -54,18 +54,40 @@
 .intro { max-width: 390px; margin: 10px 0 25px; color: var(--muted); font-size: 13px; line-height: 1.6; }
 .form { display: grid; gap: 15px; }
 .field { display: grid; gap: 7px; color: #45554b; font-size: 12px; font-weight: 650; }
+.field > label { color: inherit; }
 .inputWrap { display: flex; min-width: 0; min-height: 45px; align-items: center; gap: 10px; padding: 0 12px; border: 1px solid #cfdad2; background: #fff; color: #6c7b71; transition: border-color 180ms ease; }
 .inputWrap:focus-within { border-color: #458266; }
+.inputWrap:has(input[aria-invalid="true"]) { border-color: #bd644a; }
 .inputWrap input { width: 100%; min-width: 0; border: 0; outline: 0; background: transparent; color: var(--ink); font-size: 14px; }
 .inputWrap input::placeholder { color: #98a29b; }
+.fieldMeta { display: flex; justify-content: space-between; gap: 10px; color: #738078; font-size: 11px; font-weight: 450; line-height: 1.45; }
+.fieldMeta > span:first-child { min-width: 0; }
+.fieldMeta > span:last-child { flex: 0 0 auto; color: #859188; font-variant-numeric: tabular-nums; }
+.inlineError { color: #9a4c36 !important; }
+.rulesTitle { margin: 2px 0 -2px; color: #52645a; font-size: 11px; font-weight: 650; }
+.passwordChecklist { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px 12px; margin: 2px 0 0; padding: 0; list-style: none; }
+.passwordChecklist li { display: flex; min-width: 0; align-items: center; gap: 6px; font-size: 10px; font-weight: 500; line-height: 1.4; }
+.passwordChecklist svg { flex: 0 0 auto; }
+.requirementMet { color: #286843; }
+.requirementMissing { color: #748078; }
+.formReady,
+.formHint { margin: 0; color: #748078; font-size: 11px; line-height: 1.45; }
+.formReady { color: #286843; }
+.pendingState { display: flex; align-items: center; gap: 8px; margin: -4px 0 0; color: #52675a; font-size: 11px; }
 .submitButton { display: inline-flex; min-height: 44px; align-items: center; justify-content: center; gap: 9px; margin-top: 2px; border: 1px solid var(--green); background: var(--green); color: #fff; font-size: 13px; font-weight: 650; cursor: pointer; transition: border-color 180ms ease, background-color 180ms ease; }
 .submitButton:hover:not(:disabled) { border-color: #174b34; background: #174b34; }
 .submitButton:disabled { cursor: wait; opacity: .72; }
 .errorMessage,
 .successMessage { margin: 0; padding: 10px 11px; border: 1px solid #ebc9bd; background: #fff5f1; color: #934d35; font-size: 11px; line-height: 1.5; }
 .successMessage { border-color: #c9decf; background: #f1f8f2; color: #316643; }
+.signupSuccess { display: grid; gap: 14px; }
+.signupSuccess .submitButton { text-decoration: none; }
 .switchMode { margin: 17px 0 0; color: var(--muted); font-size: 12px; }
 .switchMode a { color: #245f40; font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+.verifyActions { display: flex; flex-wrap: wrap; gap: 10px 18px; margin-top: 15px; }
+.verifyActions button { display: inline-flex; min-height: 36px; align-items: center; gap: 7px; padding: 0; border: 0; background: transparent; color: #285f43; font-size: 12px; font-weight: 650; cursor: pointer; }
+.verifyActions button:hover { color: #a15335; }
+.verifyActions button:disabled { cursor: wait; opacity: .6; }
 .privacyNote { max-width: 370px; margin: 25px 0 0; color: #89938c; font-size: 11px; line-height: 1.6; }
 
 .sidePanel { display: flex; flex-direction: column; justify-content: center; padding: clamp(24px, 4vw, 42px); background: #e9efe7; }
@@ -84,6 +106,7 @@
   .formPanel { padding: 25px 21px 27px; }
   .formPanel h1 { font-size: 29px; }
   .intro { margin-bottom: 19px; font-size: 14px; }
+  .passwordChecklist { grid-template-columns: minmax(0, 1fr); }
   .sidePanel { padding: 21px; }
   .panelIcon { width: 35px; height: 35px; }
   .sideEyebrow { margin-top: 16px; }

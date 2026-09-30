@@ -1,0 +1,61 @@
+.page {
+  --line: #dce4de;
+  min-height: 100vh;
+  padding: 40px clamp(16px, 5vw, 64px) 60px;
+  background: #f5f7f5;
+}
+
+.page i { display: block; background: #e2e9e3; }
+.heading { display: grid; gap: 12px; max-width: 600px; margin: 0 auto 27px; }
+.eyebrow { width: 120px; height: 10px; }
+.title { width: min(420px, 80%); height: 37px; }
+.subtitle { width: min(520px, 95%); height: 13px; }
+.summary { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); max-width: 600px; margin: 0 auto 20px; border: 1px solid var(--line); background: white; }
+.summary i { height: 45px; border-right: 1px solid var(--line); }
+.summary i:last-child { border: 0; }
+.courseGrid { display: grid; max-width: 1300px; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 0 auto; }
+.courseCard { display: grid; min-height: 225px; align-content: start; gap: 13px; padding: 17px; border: 1px solid var(--line); background: white; }
+.courseCard i:first-child { width: 38px; height: 38px; }
+.courseCard i:nth-child(2) { width: 34%; height: 9px; }
+.courseCard i:nth-child(3) { width: 75%; height: 19px; }
+.courseCard i:nth-child(4) { width: 100%; height: 12px; }
+.courseCard i:nth-child(5) { width: 58%; height: 12px; }
+.backLink { width: 115px; height: 15px; margin: 0 0 24px; }
+.detailHeading { display: grid; max-width: 750px; gap: 12px; margin-bottom: 28px; }
+.detailHeading i:first-child { width: 80px; height: 10px; }
+.detailHeading i:nth-child(2) { width: min(520px, 85%); height: 36px; }
+.detailHeading i:nth-child(3) { width: min(690px, 95%); height: 14px; }
+.detailHeading i:nth-child(4) { width: 55%; height: 14px; }
+.detailGrid { display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 20px; }
+.detailGrid > aside, .detailGrid > section { display: grid; align-content: start; gap: 10px; padding: 16px; border: 1px solid var(--line); background: #fff; }
+.detailGrid > aside i { height: 35px; }
+.detailGrid > section > i { height: 13px; }
+.detailGrid > section > i:nth-child(2) { width: 80%; height: 26px; }
+.detailGrid > section > article { display: grid; gap: 10px; margin-top: 10px; padding: 16px; border: 1px solid var(--line); }
+.detailGrid > section > article i { height: 14px; }
+.authPage { padding-top: 28px; }
+.authGrid { display: grid; max-width: 980px; min-height: 540px; grid-template-columns: 1fr .78fr; margin: 16px auto; border: 1px solid var(--line); background: white; }
+.authForm, .authGrid aside { display: grid; align-content: center; gap: 16px; padding: 36px; }
+.authForm i { height: 44px; border: 1px solid var(--line); background: #f7f9f7; }
+.authForm i:first-child { width: 100px; height: 10px; border: 0; }
+.authForm i:nth-child(2) { width: 80%; height: 32px; border: 0; }
+.authForm i:last-child { background: #e3eee5; }
+.authGrid aside { background: #e9efe7; }
+.authGrid aside i { height: 18px; }
+.authGrid aside i:first-child { width: 42px; height: 42px; }
+.authGrid aside i:nth-child(2) { width: 82%; height: 32px; }
+
+@media (max-width: 760px) {
+  .page { padding: 28px 16px 42px; }
+  .courseGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .courseCard { min-height: 200px; padding: 12px; }
+  .detailGrid { grid-template-columns: minmax(0, 1fr); }
+  .detailGrid > aside { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .authGrid { grid-template-columns: minmax(0, 1fr); }
+  .authForm, .authGrid aside { padding: 22px; }
+}
+
+@media (max-width: 440px) {
+  .courseGrid { grid-template-columns: minmax(0, 1fr); }
+  .courseCard { min-height: 175px; }
+}

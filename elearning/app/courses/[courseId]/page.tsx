@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { LoaderCircle, RefreshCw } from "lucide-react";
 import { use, useEffect, useState } from "react";
-import type { CourseDetails } from "@/lib/course-types";
+import type { CourseDetails } from "@/lib/course-types"; 
+
 
 export default function CourseDetailsPage({ params }: { params: Promise<{ courseId: string }> }) {
   const { courseId } = use(params);

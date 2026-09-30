@@ -1,6 +1,6 @@
 import { nodeApiUrl } from "@/lib/node-api";
 
-const supportedActions = new Set(["login", "signup"]);
+const supportedActions = new Set(["login", "signup", "verify-2fa", "resend-2fa"]);
 
 export async function GET(
   request: Request,
