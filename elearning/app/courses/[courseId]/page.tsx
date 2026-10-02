@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { use, useEffect, useMemo, useState } from "react";
 import {
   ArrowLeft,
   ArrowRight,
@@ -14,15 +15,86 @@ import {
   Trophy,
   XCircle,
 } from "lucide-react";
-import { use, useEffect, useMemo, useState } from "react";
-import type {
-  CourseAssessment,
-  CourseDetails,
-  CourseLesson,
-  CourseModule,
-  CourseQuestion,
-} from "@/lib/course-types";
-import styles from "./course-details.module.css";
+
+import "./course-details.module.css";
+
+/* =========================================================
+   TYPES
+========================================================= */
+
+type Option = {
+  id?: string | number;
+  key?: string;
+  text?: string;
+  label?: string;
+  option?: string;
+  isCorrect?: boolean;
+};
+
+type Question = {
+  id: string | number;
+  question?: string;
+  text?: string;
+  prompt?: string;
+  options?: Option[];
+  answer?: string | number;
+};
+
+type Assessment = {
+  id?: string | number;
+  title?: string;
+  type?: string;
+  passingScore?: number | null;
+  timeLimit?: number | null;
+  duration?: number | null;
+  questions?: Question[];
+};
+
+type Lesson = {
+  id: string | number;
+  title?: string;
+  name?: string;
+  lessonNumber?: string | number;
+  code?: string;
+  duration?: number;
+  durationMinutes?: number;
+  content?: string;
+  description?: string;
+};
+
+type Module = {
+  id: string | number;
+  title?: string;
+  name?: string;
+  moduleNumber?: string | number;
+  code?: string;
+  description?: string;
+  lessons?: Lesson[];
+  assessment?: Assessment | null;
+  test?: Assessment | null;
+};
+
+type Course = {
+  id?: string | number;
+  title?: string;
+  name?: string;
+  description?: string;
+  subject?: string;
+  level?: string;
+  grade?: string;
+  duration?: number;
+  durationMinutes?: number;
+  lessonCount?: number;
+  modules?: Module[];
+  assessments?: Assessment[];
+  finalExam?: Assessment | null;
+};
+
+type Progress = {
+  completedLessons: string[];
+  passedModules: string[];
+  examScore: number | null;
+};
 
 type ViewMode =
   | "lesson"
@@ -33,20 +105,365 @@ type ViewMode =
   | "exam"
   | "exam-result";
 
-type SavedProgress = {
-  completedLessons: number[];
-  passedModules: number[];
-  examScore: number | null;
-};
+/* =========================================================
+   HELPERS
+========================================================= */
 
-const emptyProgress: SavedProgress = {
+const emptyProgress: Progress = {
   completedLessons: [],
   passedModules: [],
   examScore: null,
 };
 
+function idString(value: string | number | undefined | null) {
+  return value == null ? "" : String(value);
+}
+
+function lessonTitle(lesson: Lesson) {
+  return lesson.title || lesson.name || "Untitled lesson";
+}
+
+function moduleTitle(module: Module) {
+  return module.title || module.name || "Untitled module";
+}
+
+function getLessonCode(lesson: Lesson) {
+  if (lesson.code) return lesson.code;
+
+  if (lesson.lessonNumber != null) {
+    return String(lesson.lessonNumber);
+  }
+
+  const title = lessonTitle(lesson);
+  const match = title.match(/^(\d+(?:\.\d+)?)/);
+
+  return match?.[1] || "";
+}
+
+function getModuleCode(module: Module, index: number) {
+  if (module.code) return module.code;
+
+  if (module.moduleNumber != null) {
+    return String(module.moduleNumber);
+  }
+
+  return `${index + 1}.0`;
+}
+
+function assessmentQuestions(assessment: Assessment | null | undefined) {
+  return Array.isArray(assessment?.questions)
+    ? assessment.questions
+    : [];
+}
+
+function assessmentPassingScore(assessment: Assessment) {
+  return assessment.passingScore ?? 50;
+}
+
+function assessmentDuration(assessment: Assessment) {
+  return (
+    assessment.timeLimit ??
+    assessment.duration ??
+    30
+  );
+}
+
+function assessmentIsFinal(assessment: Assessment | null | undefined) {
+  if (!assessment) return false;
+
+  return (
+    assessment.type === "final_exam" ||
+    assessment.type === "final-exam" ||
+    assessment.type === "exam" ||
+    assessment.title?.toLowerCase().includes("final exam") === true
+  );
+}
+
+function getQuestionText(question: Question) {
+  return question.question || question.text || question.prompt || "";
+}
+
+function getOptionText(option: Option) {
+  return (
+    option.text ||
+    option.label ||
+    option.option ||
+    option.key ||
+    String(option.id ?? "")
+  );
+}
+
+function getOptionKey(option: Option, index: number) {
+  return String(
+    option.id ??
+      option.key ??
+      String.fromCharCode(65 + index),
+  );
+}
+
+/* =========================================================
+   CONTENT NORMALIZER
+========================================================= */
+
+/**
+ * The curriculum data can sometimes arrive with missing
+ * line breaks, for example:
+ *
+ * 1.1Incomplete records1.2Adjustments1.3Depreciation
+ *
+ * This function repairs the common lesson-number pattern.
+ */
+function normalizeLessonText(text: string) {
+  if (!text) return "";
+
+  let result = text.replace(/\r\n/g, "\n");
+
+  /*
+   * Put a line break before lesson numbers:
+   * 1.1
+   * 1.2
+   * 2.1
+   * etc.
+   */
+  result = result.replace(
+    /(?<!^|\n)(?=\d+\.\d+)/g,
+    "\n",
+  );
+
+  /*
+   * Put a line break before MODULE.
+   */
+  result = result.replace(
+    /(?<!^|\n)(MODULE\s+\d+(?:\.\d+)?)/gi,
+    "\n$1",
+  );
+
+  /*
+   * Put a line break before FINAL EXAM.
+   */
+  result = result.replace(
+    /(?<!^|\n)(FINAL\s+EXAM)/gi,
+    "\n$1",
+  );
+
+  /*
+   * Clean excessive blank lines.
+   */
+  result = result
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .join("\n");
+
+  return result.trim();
+}
+
+/**
+ * Converts Markdown-like lesson content into React elements.
+ */
+function renderLessonContent(content: string) {
+  const normalized = normalizeLessonText(content);
+
+  if (!normalized) {
+    return (
+      <div className="lessonEmpty">
+        <BookOpen size={28} />
+        <p>No lesson content is available yet.</p>
+      </div>
+    );
+  }
+
+  const lines = normalized.split("\n");
+
+  const elements: React.ReactNode[] = [];
+  let listItems: string[] = [];
+  let orderedItems: string[] = [];
+
+  const flushLists = () => {
+    if (listItems.length) {
+      elements.push(
+        <ul key={`ul-${elements.length}`}>
+          {listItems.map((item, index) => (
+            <li key={index}>{formatInlineText(item)}</li>
+          ))}
+        </ul>,
+      );
+
+      listItems = [];
+    }
+
+    if (orderedItems.length) {
+      elements.push(
+        <ol key={`ol-${elements.length}`}>
+          {orderedItems.map((item, index) => (
+            <li key={index}>{formatInlineText(item)}</li>
+          ))}
+        </ol>,
+      );
+
+      orderedItems = [];
+    }
+  };
+
+  lines.forEach((rawLine, index) => {
+    const line = rawLine.trim();
+
+    if (!line) return;
+
+    /* Headings */
+    if (line.startsWith("### ")) {
+      flushLists();
+
+      elements.push(
+        <h4 key={`h4-${index}`}>
+          {formatInlineText(line.slice(4))}
+        </h4>,
+      );
+
+      return;
+    }
+
+    if (line.startsWith("## ")) {
+      flushLists();
+
+      elements.push(
+        <h3 key={`h3-${index}`}>
+          {formatInlineText(line.slice(3))}
+        </h3>,
+      );
+
+      return;
+    }
+
+    if (line.startsWith("# ")) {
+      flushLists();
+
+      elements.push(
+        <h2 key={`h2-${index}`}>
+          {formatInlineText(line.slice(2))}
+        </h2>,
+      );
+
+      return;
+    }
+
+    /* Learning objective heading */
+    if (
+      /^learning objectives?$/i.test(line) ||
+      /^learning objective$/i.test(line)
+    ) {
+      flushLists();
+
+      elements.push(
+        <h3 key={`objective-${index}`}>
+          {line}
+        </h3>,
+      );
+
+      return;
+    }
+
+    /* Bullets */
+    if (/^[-*]\s+/.test(line)) {
+      orderedItems.length && flushLists();
+
+      listItems.push(line.replace(/^[-*]\s+/, ""));
+      return;
+    }
+
+    /* Numbered list */
+    if (/^\d+[.)]\s+/.test(line)) {
+      listItems.length && flushLists();
+
+      orderedItems.push(
+        line.replace(/^\d+[.)]\s+/, ""),
+      );
+
+      return;
+    }
+
+    flushLists();
+
+    /*
+     * Standalone MODULE headings
+     */
+    if (/^MODULE\s+\d+(?:\.\d+)?/i.test(line)) {
+      elements.push(
+        <div
+          className="lessonModuleHeading"
+          key={`module-${index}`}
+        >
+          {formatInlineText(line)}
+        </div>,
+      );
+
+      return;
+    }
+
+    /*
+     * Standalone FINAL EXAM heading
+     */
+    if (/^FINAL EXAM/i.test(line)) {
+      elements.push(
+        <div
+          className="lessonModuleHeading"
+          key={`exam-${index}`}
+        >
+          {formatInlineText(line)}
+        </div>,
+      );
+
+      return;
+    }
+
+    /*
+     * Markdown table rows.
+     */
+    if (line.includes("|")) {
+      const cells = line
+        .split("|")
+        .map((cell) => cell.trim())
+        .filter(Boolean);
+
+      if (cells.length > 1) {
+        elements.push(
+          <div
+            className="lessonTableRow"
+            key={`table-${index}`}
+          >
+            {cells.map((cell, cellIndex) => (
+              <div
+                className="lessonTableCell"
+                key={cellIndex}
+              >
+                {formatInlineText(cell)}
+              </div>
+            ))}
+          </div>,
+        );
+
+        return;
+      }
+    }
+
+    elements.push(
+      <p key={`p-${index}`}>
+        {formatInlineText(line)}
+      </p>,
+    );
+  });
+
+  flushLists();
+
+  return (
+    <div className="lessonContent">
+      {elements}
+    </div>
+  );
+}
+
 function formatInlineText(text: string) {
-  const parts = text.split(/(\*\*[^*]+\*\*)/g);
+  const parts = text.split(/(\*\*.*?\*\*)/g);
 
   return parts.map((part, index) => {
     if (
@@ -60,399 +477,177 @@ function formatInlineText(text: string) {
       );
     }
 
-    return <span key={index}>{part}</span>;
+    return part;
   });
 }
 
-function renderLessonContent(content: string | null) {
-  if (!content) {
-    return (
-      <p className={styles.emptyContent}>
-        No lesson content has been added yet.
-      </p>
-    );
-  }
-
-  const lines = content.replace(/\r/g, "").split("\n");
-  const blocks: React.ReactNode[] = [];
-
-  let paragraph: string[] = [];
-  let listItems: string[] = [];
-
-  const flushParagraph = () => {
-    if (!paragraph.length) return;
-
-    const value = paragraph.join(" ").trim();
-
-    if (value) {
-      blocks.push(
-        <p key={`p-${blocks.length}`}>
-          {formatInlineText(value)}
-        </p>,
-      );
-    }
-
-    paragraph = [];
-  };
-
-  const flushList = () => {
-    if (!listItems.length) return;
-
-    blocks.push(
-      <ul key={`ul-${blocks.length}`}>
-        {listItems.map((item, index) => (
-          <li key={`${item}-${index}`}>
-            {formatInlineText(item)}
-          </li>
-        ))}
-      </ul>,
-    );
-
-    listItems = [];
-  };
-
-  for (let i = 0; i < lines.length; i += 1) {
-    const line = lines[i].trim();
-
-    if (!line) {
-      flushParagraph();
-      flushList();
-      continue;
-    }
-
-    if (line.startsWith("# ")) {
-      flushParagraph();
-      flushList();
-
-      blocks.push(
-        <h2 key={`h2-${blocks.length}`}>
-          {formatInlineText(line.slice(2))}
-        </h2>,
-      );
-
-      continue;
-    }
-
-    if (line.startsWith("## ")) {
-      flushParagraph();
-      flushList();
-
-      blocks.push(
-        <h3 key={`h3-${blocks.length}`}>
-          {formatInlineText(line.slice(3))}
-        </h3>,
-      );
-
-      continue;
-    }
-
-    if (line.startsWith("### ")) {
-      flushParagraph();
-      flushList();
-
-      blocks.push(
-        <h4 key={`h4-${blocks.length}`}>
-          {formatInlineText(line.slice(4))}
-        </h4>,
-      );
-
-      continue;
-    }
-
-    if (/^[-*]\s+/.test(line)) {
-      flushParagraph();
-
-      listItems.push(
-        line.replace(/^[-*]\s+/, ""),
-      );
-
-      continue;
-    }
-
-    if (/^\d+\.\s+/.test(line)) {
-      flushParagraph();
-
-      listItems.push(
-        line.replace(/^\d+\.\s+/, ""),
-      );
-
-      continue;
-    }
-
-    if (line.startsWith("|")) {
-      flushParagraph();
-      flushList();
-
-      const cells = line
-        .split("|")
-        .map((cell) => cell.trim())
-        .filter(Boolean);
-
-      const nextLine = lines[i + 1]?.trim() ?? "";
-
-      if (/^\|?\s*:?-+:?\s*(\|\s*:?-+:?\s*)+\|?$/.test(nextLine)) {
-        i += 1;
-
-        blocks.push(
-          <div
-            key={`table-${blocks.length}`}
-            className={styles.tableWrap}
-          >
-            <table>
-              <thead>
-                <tr>
-                  {cells.map((cell, index) => (
-                    <th key={`${cell}-${index}`}>
-                      {formatInlineText(cell)}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {(() => {
-                  const rows: React.ReactNode[] = [];
-
-                  let cursor = i + 1;
-
-                  while (
-                    cursor < lines.length &&
-                    lines[cursor].trim().startsWith("|")
-                  ) {
-                    const rowCells = lines[cursor]
-                      .trim()
-                      .split("|")
-                      .map((cell) => cell.trim())
-                      .filter(Boolean);
-
-                    rows.push(
-                      <tr key={`row-${cursor}`}>
-                        {rowCells.map((cell, index) => (
-                          <td key={`${cell}-${index}`}>
-                            {formatInlineText(cell)}
-                          </td>
-                        ))}
-                      </tr>,
-                    );
-
-                    cursor += 1;
-                  }
-
-                  i = cursor - 1;
-
-                  return rows;
-                })()}
-              </tbody>
-            </table>
-          </div>,
-        );
-      }
-
-      continue;
-    }
-
-    paragraph.push(line);
-  }
-
-  flushParagraph();
-  flushList();
-
-  return <div className={styles.lessonContent}>{blocks}</div>;
-}
+/* =========================================================
+   QUESTION CARD
+========================================================= */
 
 function QuestionCard({
   question,
   questionNumber,
   selected,
+  submitted,
   onSelect,
-  showAnswer,
 }: {
-  question: CourseQuestion;
+  question: Question;
   questionNumber: number;
-  selected: string | null;
-  onSelect: (optionId: string) => void;
-  showAnswer?: boolean;
+  selected?: string;
+  submitted: boolean;
+  onSelect: (value: string) => void;
 }) {
+  const options = question.options || [];
+
   return (
-    <article className={styles.questionCard}>
-      <div className={styles.questionNumber}>
+    <div className="questionCard">
+      <div className="questionNumber">
         Question {questionNumber}
       </div>
 
-      <h3>
-        {question.prompt}
+      <h3 className="questionText">
+        {getQuestionText(question)}
       </h3>
 
-      <div className={styles.options}>
-        {question.options.map((option) => {
-          const optionId = String(option.id);
-          const isSelected = selected === optionId;
-          const isCorrect = option.isCorrect;
+      <div className="questionOptions">
+        {options.map((option, index) => {
+          const key = getOptionKey(option, index);
+          const isSelected = selected === key;
+          const isCorrect = option.isCorrect === true;
 
-          let className = styles.option;
+          let className = "questionOption";
 
           if (isSelected) {
-            className += ` ${styles.optionSelected}`;
+            className += " selected";
+          }
+
+          if (submitted && isCorrect) {
+            className += " correct";
           }
 
           if (
-            showAnswer &&
-            isCorrect
-          ) {
-            className += ` ${styles.optionCorrect}`;
-          }
-
-          if (
-            showAnswer &&
+            submitted &&
             isSelected &&
             !isCorrect
           ) {
-            className += ` ${styles.optionWrong}`;
+            className += " incorrect";
           }
 
           return (
-            <label
-              key={option.id}
+            <button
+              key={key}
+              type="button"
               className={className}
+              onClick={() => !submitted && onSelect(key)}
+              disabled={submitted}
             >
-              <input
-                type="radio"
-                name={`question-${question.id}`}
-                value={optionId}
-                checked={isSelected}
-                onChange={() =>
-                  onSelect(optionId)
-                }
-              />
-
-              <span className={styles.optionLetter}>
-                {option.key ??
-                  String.fromCharCode(
-                    65 + option.position - 1,
-                  )}
+              <span className="optionLetter">
+                {String.fromCharCode(65 + index)}
               </span>
 
-              <span className={styles.optionText}>
-                {option.text}
+              <span className="optionText">
+                {getOptionText(option)}
               </span>
 
-              {showAnswer &&
-              isCorrect ? (
-                <Check size={17} />
-              ) : null}
+              {submitted && isCorrect && (
+                <CheckCircle2
+                  size={20}
+                  className="optionIcon"
+                />
+              )}
 
-              {showAnswer &&
-              isSelected &&
-              !isCorrect ? (
-                <XCircle size={17} />
-              ) : null}
-            </label>
+              {submitted &&
+                isSelected &&
+                !isCorrect && (
+                  <XCircle
+                    size={20}
+                    className="optionIcon"
+                  />
+                )}
+            </button>
           );
         })}
       </div>
-
-      {showAnswer &&
-      (question.explanation ||
-        question.options.some(
-          (option) => option.isCorrect,
-        )) ? (
-        <div className={styles.answerExplanation}>
-          <strong>Explanation</strong>
-          <p>
-            {question.explanation ||
-              "Review the lesson material for this question."}
-          </p>
-        </div>
-      ) : null}
-    </article>
+    </div>
   );
 }
 
+/* =========================================================
+   ASSESSMENT INTRO
+========================================================= */
+
 function AssessmentIntro({
   assessment,
-  title,
-  description,
+  isFinal,
   onStart,
 }: {
-  assessment: CourseAssessment;
-  title: string;
-  description: string;
+  assessment: Assessment;
+  isFinal: boolean;
   onStart: () => void;
 }) {
-  return (
-    <section className={styles.assessmentIntro}>
-      <img
-        src="/assessment-illustration.svg"
-        alt=""
-        className={styles.assessmentImage}
-      />
+  const questions = assessmentQuestions(assessment);
+  const duration = assessmentDuration(assessment);
+  const passingScore = assessmentPassingScore(assessment);
 
-      <div className={styles.assessmentIntroBody}>
-        <span className={styles.assessmentEyebrow}>
-          Assessment
+  return (
+    <section className="assessmentIntro">
+      <div className="assessmentIllustration">
+        <GraduationCap size={64} />
+      </div>
+
+      <div className="assessmentIntroContent">
+        <span className="assessmentBadge">
+          {isFinal ? "FINAL EXAM" : "MODULE TEST"}
         </span>
 
-        <h2>{title}</h2>
+        <h1>
+          {assessment.title ||
+            (isFinal ? "Final Exam" : "Module Test")}
+        </h1>
 
-        <p className={styles.assessmentDescription}>
-          {description}
+        <p>
+          {isFinal
+            ? "Complete the final assessment after passing all module tests."
+            : "Test your understanding of the lessons in this module."}
         </p>
 
-        <div className={styles.assessmentStats}>
-          <div>
-            <BookOpen size={18} />
-            <strong>
-              {assessment.questions.length}
-            </strong>
+        <div className="assessmentStats">
+          <div className="assessmentStat">
+            <BookOpen size={20} />
+            <strong>{questions.length}</strong>
             <span>Questions</span>
           </div>
 
-          <div>
-            <Clock3 size={18} />
-            <strong>
-              {assessment.durationMinutes ?? "—"}
-            </strong>
+          <div className="assessmentStat">
+            <Clock3 size={20} />
+            <strong>{duration}</strong>
             <span>Minutes</span>
           </div>
 
-          <div>
-            <Trophy size={18} />
-            <strong>
-              {assessment.passingScore}%
-            </strong>
+          <div className="assessmentStat">
+            <Trophy size={20} />
+            <strong>{passingScore}%</strong>
             <span>Pass mark</span>
-          </div>
-        </div>
-
-        <div className={styles.readyMessage}>
-          <div className={styles.readyIcon}>
-            <GraduationCap size={22} />
-          </div>
-
-          <div>
-            <strong>
-              Do you want to start your test now?
-            </strong>
-
-            <p>
-              Make sure you have completed the
-              lessons in this section before
-              beginning the assessment.
-            </p>
           </div>
         </div>
 
         <button
           type="button"
-          className={styles.primaryButton}
+          className="primaryButton"
           onClick={onStart}
         >
-          Start {assessment.type === "final_exam" ? "Final Exam" : "Test"}
+          Start {isFinal ? "Final Exam" : "Module Test"}
           <ArrowRight size={18} />
         </button>
       </div>
     </section>
   );
 }
+
+/* =========================================================
+   MAIN PAGE
+========================================================= */
 
 export default function CourseDetailsPage({
   params,
@@ -461,132 +656,458 @@ export default function CourseDetailsPage({
 }) {
   const { courseId } = use(params);
 
-  const [course, setCourse] =
-    useState<CourseDetails | null>(null);
-
-  const [loadError, setLoadError] =
-    useState(false);
+  const [course, setCourse] = useState<Course | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   const [activeModuleIndex, setActiveModuleIndex] =
     useState(0);
 
   const [activeLessonId, setActiveLessonId] =
-    useState<number | null>(null);
+    useState<string>("");
 
   const [viewMode, setViewMode] =
     useState<ViewMode>("lesson");
 
+  const [progress, setProgress] =
+    useState<Progress>(emptyProgress);
+
   const [selectedAnswers, setSelectedAnswers] =
-    useState<Record<number, string>>({});
+    useState<Record<string, string>>({});
 
   const [assessmentScore, setAssessmentScore] =
     useState<number | null>(null);
 
-  const [savedProgress, setSavedProgress] =
-    useState<SavedProgress>(emptyProgress);
-
-  const [timeLeft, setTimeLeft] =
-    useState(0);
-
   const [activeAssessment, setActiveAssessment] =
-    useState<CourseAssessment | null>(null);
+    useState<Assessment | null>(null);
+
+  const [timeLeft, setTimeLeft] = useState(0);
+
+  const [submitted, setSubmitted] =
+    useState(false);
+
+  /* =====================================================
+     LOAD COURSE
+  ===================================================== */
 
   useEffect(() => {
-    const controller =
-      new AbortController();
+    const controller = new AbortController();
 
-    fetch(
-      `/api/courses/${courseId}`,
-      {
-        cache: "no-store",
-        signal: controller.signal,
-      },
-    )
-      .then(async (response) => {
+    async function loadCourse() {
+      try {
+        setLoading(true);
+        setError("");
+
+        const response = await fetch(
+          `/api/courses/${encodeURIComponent(courseId)}`,
+          {
+            cache: "no-store",
+            signal: controller.signal,
+          },
+        );
+
         if (!response.ok) {
           throw new Error(
-            "Course could not be loaded",
+            `Course request failed with status ${response.status}`,
           );
         }
 
-        return (await response.json()) as CourseDetails;
-      })
-      .then((data) => {
-        setCourse(data);
+        const data = await response.json();
 
-        if (data.modules.length > 0) {
-          setActiveModuleIndex(0);
+        const loadedCourse: Course =
+          data?.course ||
+          data?.data ||
+          data;
 
-          if (
-            data.modules[0].lessons.length > 0
-          ) {
-            setActiveLessonId(
-              data.modules[0].lessons[0].id,
-            );
-          }
+        if (!loadedCourse) {
+          throw new Error("Course data was empty.");
         }
-      })
-      .catch((error: unknown) => {
+
+        setCourse(loadedCourse);
+
+        const firstModule =
+          loadedCourse.modules?.[0];
+
+        const firstLesson =
+          firstModule?.lessons?.[0];
+
+        if (firstLesson) {
+          setActiveLessonId(
+            idString(firstLesson.id),
+          );
+        }
+      } catch (err) {
         if (
-          error instanceof Error &&
-          error.name === "AbortError"
+          err instanceof DOMException &&
+          err.name === "AbortError"
         ) {
           return;
         }
 
-        setLoadError(true);
-      });
+        console.error("Course loading error:", err);
 
-    return () =>
-      controller.abort();
+        setError(
+          "We couldn't load this course. Make sure the backend server is running.",
+        );
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadCourse();
+
+    return () => controller.abort();
   }, [courseId]);
+
+  /* =====================================================
+     LOAD SAVED PROGRESS
+  ===================================================== */
 
   useEffect(() => {
     try {
-      const raw =
-        localStorage.getItem(
-          `fieldnote-progress-${courseId}`,
-        );
+      const key = `fieldnote-progress-${courseId}`;
+      const saved = localStorage.getItem(key);
 
-      if (!raw) return;
+      if (!saved) return;
 
-      const parsed =
-        JSON.parse(raw) as SavedProgress;
+      const parsed = JSON.parse(saved);
 
-      setSavedProgress({
-        completedLessons:
-          Array.isArray(
-            parsed.completedLessons,
-          )
-            ? parsed.completedLessons
-            : [],
-        passedModules:
-          Array.isArray(
-            parsed.passedModules,
-          )
-            ? parsed.passedModules
-            : [],
+      setProgress({
+        completedLessons: Array.isArray(
+          parsed.completedLessons,
+        )
+          ? parsed.completedLessons.map(String)
+          : [],
+
+        passedModules: Array.isArray(
+          parsed.passedModules,
+        )
+          ? parsed.passedModules.map(String)
+          : [],
+
         examScore:
-          typeof parsed.examScore ===
-          "number"
+          typeof parsed.examScore === "number"
             ? parsed.examScore
             : null,
       });
-    } catch {
-      // Ignore invalid local progress.
+    } catch (err) {
+      console.warn(
+        "Could not restore course progress:",
+        err,
+      );
     }
   }, [courseId]);
 
+  /* =====================================================
+     SAVE PROGRESS
+  ===================================================== */
+
   useEffect(() => {
+    if (!course) return;
+
     try {
       localStorage.setItem(
         `fieldnote-progress-${courseId}`,
-        JSON.stringify(savedProgress),
+        JSON.stringify(progress),
       );
-    } catch {
-      // Ignore localStorage failures.
+    } catch (err) {
+      console.warn(
+        "Could not save course progress:",
+        err,
+      );
     }
-  }, [courseId, savedProgress]);
+  }, [courseId, course, progress]);
+
+  /* =====================================================
+     DERIVED DATA
+  ===================================================== */
+
+  const modules = useMemo(
+    () => course?.modules || [],
+    [course],
+  );
+
+  const activeModule =
+    modules[activeModuleIndex] || null;
+
+  const lessons =
+    activeModule?.lessons || [];
+
+  const activeLesson =
+    lessons.find(
+      (lesson) =>
+        idString(lesson.id) === activeLessonId,
+    ) ||
+    lessons[0] ||
+    null;
+
+  const totalLessons = modules.reduce(
+    (total, module) =>
+      total + (module.lessons?.length || 0),
+    0,
+  );
+
+  const completedLessons =
+    progress.completedLessons.length;
+
+  const overallProgress =
+    totalLessons > 0
+      ? Math.round(
+          (completedLessons / totalLessons) * 100,
+        )
+      : 0;
+
+  const activeModuleCompleted =
+    lessons.length > 0 &&
+    lessons.every((lesson) =>
+      progress.completedLessons.includes(
+        idString(lesson.id),
+      ),
+    );
+
+  const allModulesPassed =
+    modules.length > 0 &&
+    modules.every((module) =>
+      progress.passedModules.includes(
+        idString(module.id),
+      ),
+    );
+
+  const nextLesson = activeLesson
+    ? lessons[
+        lessons.findIndex(
+          (lesson) =>
+            idString(lesson.id) ===
+            idString(activeLesson.id),
+        ) + 1
+      ]
+    : null;
+
+  const currentLessonPosition =
+    activeLesson
+      ? lessons.findIndex(
+          (lesson) =>
+            idString(lesson.id) ===
+            idString(activeLesson.id),
+        ) + 1
+      : 0;
+
+  /* =====================================================
+     LESSON COMPLETION
+  ===================================================== */
+
+  function markLessonComplete(
+    lessonId: string,
+  ) {
+    setProgress((current) => {
+      if (
+        current.completedLessons.includes(
+          lessonId,
+        )
+      ) {
+        return current;
+      }
+
+      return {
+        ...current,
+        completedLessons: [
+          ...current.completedLessons,
+          lessonId,
+        ],
+      };
+    });
+  }
+
+  /* =====================================================
+     OPEN LESSON
+  ===================================================== */
+
+  function openLesson(
+    moduleIndex: number,
+    lesson: Lesson,
+  ) {
+    setActiveModuleIndex(moduleIndex);
+    setActiveLessonId(idString(lesson.id));
+    setViewMode("lesson");
+    setActiveAssessment(null);
+    setSubmitted(false);
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  }
+
+  /* =====================================================
+     OPEN MODULE TEST
+  ===================================================== */
+
+  function openModuleTest(moduleIndex: number) {
+    const module = modules[moduleIndex];
+
+    if (!module) return;
+
+    const assessment =
+      module.assessment ||
+      module.test ||
+      null;
+
+    if (!assessment) return;
+
+    setActiveModuleIndex(moduleIndex);
+    setActiveAssessment(assessment);
+    setSelectedAnswers({});
+    setAssessmentScore(null);
+    setSubmitted(false);
+    setViewMode("test-intro");
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  }
+
+  /* =====================================================
+     START ASSESSMENT
+  ===================================================== */
+
+  function startAssessment() {
+    if (!activeAssessment) return;
+
+    setSelectedAnswers({});
+    setAssessmentScore(null);
+    setSubmitted(false);
+
+    setTimeLeft(
+      assessmentDuration(activeAssessment) * 60,
+    );
+
+    setViewMode(
+      assessmentIsFinal(activeAssessment)
+        ? "exam"
+        : "test",
+    );
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  }
+
+  /* =====================================================
+     SUBMIT ASSESSMENT
+  ===================================================== */
+
+  function submitAssessment(
+    automatic = false,
+  ) {
+    if (!activeAssessment) return;
+
+    const questions =
+      assessmentQuestions(activeAssessment);
+
+    if (!questions.length) {
+      setAssessmentScore(0);
+      setSubmitted(true);
+
+      setViewMode(
+        assessmentIsFinal(activeAssessment)
+          ? "exam-result"
+          : "test-result",
+      );
+
+      return;
+    }
+
+    let correct = 0;
+
+    questions.forEach((question) => {
+      const questionId = idString(question.id);
+
+      const selected =
+        selectedAnswers[questionId];
+
+      if (!selected) return;
+
+      const correctOption =
+        question.options?.find(
+          (option) =>
+            option.isCorrect === true,
+        );
+
+      if (
+        correctOption &&
+        getOptionKey(
+          correctOption,
+          question.options?.indexOf(
+            correctOption,
+          ) || 0,
+        ) === selected
+      ) {
+        correct += 1;
+      }
+    });
+
+    const score = Math.round(
+      (correct / questions.length) * 100,
+    );
+
+    setAssessmentScore(score);
+    setSubmitted(true);
+
+    const isFinal =
+      assessmentIsFinal(activeAssessment);
+
+    if (isFinal) {
+      setProgress((current) => ({
+        ...current,
+        examScore: score,
+      }));
+
+      setViewMode("exam-result");
+      return;
+    }
+
+    const passed =
+      score >=
+      assessmentPassingScore(activeAssessment);
+
+    if (passed && activeModule) {
+      setProgress((current) => {
+        const moduleId = idString(
+          activeModule.id,
+        );
+
+        if (
+          current.passedModules.includes(
+            moduleId,
+          )
+        ) {
+          return current;
+        }
+
+        return {
+          ...current,
+          passedModules: [
+            ...current.passedModules,
+            moduleId,
+          ],
+        };
+      });
+    }
+
+    setViewMode("test-result");
+
+    if (automatic) {
+      console.log(
+        "Assessment submitted automatically because time expired.",
+      );
+    }
+  }
+
+  /* =====================================================
+     TIMER
+  ===================================================== */
 
   useEffect(() => {
     if (
@@ -596,245 +1117,147 @@ export default function CourseDetailsPage({
       return;
     }
 
+    if (submitted) return;
+
     if (timeLeft <= 0) {
-      if (activeAssessment) {
-        handleSubmitAssessment(true);
-      }
-
       return;
     }
 
-    const timer =
-      window.setInterval(() => {
-        setTimeLeft(
-          (current) =>
-            Math.max(current - 1, 0),
-        );
-      }, 1000);
+    const timer = window.setInterval(() => {
+      setTimeLeft((current) =>
+        current > 0 ? current - 1 : 0,
+      );
+    }, 1000);
 
-    return () =>
+    return () => {
       window.clearInterval(timer);
-  }, [
-    viewMode,
-    timeLeft,
-    activeAssessment,
-  ]);
+    };
+  }, [viewMode, submitted, timeLeft]);
 
-  const activeModule =
-    course?.modules[
-      activeModuleIndex
-    ] ?? null;
+  useEffect(() => {
+    if (
+      timeLeft === 0 &&
+      !submitted &&
+      (viewMode === "test" ||
+        viewMode === "exam") &&
+      activeAssessment
+    ) {
+      submitAssessment(true);
+    }
+    // Deliberately only reacts when timer reaches zero.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [timeLeft]);
 
-  const activeLesson =
-    activeModule?.lessons.find(
-      (lesson) =>
-        lesson.id === activeLessonId,
-    ) ??
-    activeModule?.lessons[0] ??
-    null;
+  /* =====================================================
+     NEXT LESSON
+  ===================================================== */
 
-  const moduleCompletedCount =
-    course?.modules.map(
-      (module) =>
-        module.lessons.filter(
-          (lesson) =>
-            savedProgress.completedLessons.includes(
-              lesson.id,
-            ),
-        ).length,
-    ) ?? [];
-
-  const totalCompletedLessons =
-    savedProgress.completedLessons.length;
-
-  const totalLessons =
-    course?.lessonCount ?? 0;
-
-  const overallProgress =
-    totalLessons > 0
-      ? Math.round(
-          (totalCompletedLessons /
-            totalLessons) *
-            100,
-        )
-      : 0;
-
-  const allModulesPassed =
-    Boolean(
-      course &&
-        course.modules.length > 0 &&
-        course.modules.every(
-          (module) =>
-            savedProgress.passedModules.includes(
-              module.id,
-            ),
-        ),
-    );
-
-  const activeModuleComplete =
-    Boolean(
-      activeModule &&
-        activeModule.lessons.length > 0 &&
-        activeModule.lessons.every(
-          (lesson) =>
-            savedProgress.completedLessons.includes(
-              lesson.id,
-            ),
-        ),
-    );
-
-  const currentLessonPosition =
-    activeModule && activeLesson
-      ? activeModule.lessons.findIndex(
-          (lesson) =>
-            lesson.id ===
-            activeLesson.id,
-        )
-      : -1;
-
-  const nextLesson =
-    activeModule &&
-    currentLessonPosition >= 0 &&
-    currentLessonPosition <
-      activeModule.lessons.length - 1
-      ? activeModule.lessons[
-          currentLessonPosition + 1
-        ]
-      : null;
-
-  const nextModule =
-    course &&
-    activeModuleIndex <
-      course.modules.length - 1
-      ? course.modules[
-          activeModuleIndex + 1
-        ]
-      : null;
-
-  const formattedTime =
-    `${String(
-      Math.floor(timeLeft / 60),
-    ).padStart(2, "0")}:${String(
-      timeLeft % 60,
-    ).padStart(2, "0")}`;
-
-  const assessmentProgressText =
-    activeAssessment
-      ? `${Object.keys(selectedAnswers).length} / ${activeAssessment.questions.length} answered`
-      : "";
-
-  function saveLessonCompletion(
-    lessonId: number,
-  ) {
-    setSavedProgress(
-      (previous) => ({
-        ...previous,
-        completedLessons:
-          previous.completedLessons.includes(
-            lessonId,
-          )
-            ? previous.completedLessons
-            : [
-                ...previous.completedLessons,
-                lessonId,
-              ],
-      }),
-    );
-  }
-
-  function startAssessment(
-    assessment: CourseAssessment,
-    nextMode: "test" | "exam",
-  ) {
-    setActiveAssessment(
-      assessment,
-    );
-
-    setSelectedAnswers({});
-    setAssessmentScore(null);
-
-    setTimeLeft(
-      (assessment.durationMinutes ?? 30) *
-        60,
-    );
-
-    setViewMode(nextMode);
-  }
-
-  function handleSubmitAssessment(
-    automatic = false,
-  ) {
-    if (!activeAssessment) return;
-
-    const total =
-      activeAssessment.questions.length;
-
-    if (!total) {
-      setAssessmentScore(0);
+  function goNextLesson() {
+    if (!activeLesson || !activeModule) {
       return;
     }
 
-    const correct =
-      activeAssessment.questions.filter(
-        (question) => {
-          const selected =
-            selectedAnswers[
-              question.id
-            ];
+    const currentLessonId =
+      idString(activeLesson.id);
 
-          return question.options.some(
-            (option) =>
-              String(option.id) ===
-                selected &&
-              option.isCorrect,
-          );
-        },
-      ).length;
+    markLessonComplete(currentLessonId);
 
-    const score = Math.round(
-      (correct / total) * 100,
+    const currentIndex = lessons.findIndex(
+      (lesson) =>
+        idString(lesson.id) ===
+        currentLessonId,
     );
 
-    setAssessmentScore(score);
+    const followingLesson =
+      lessons[currentIndex + 1];
 
-    if (
-      activeAssessment.type ===
-        "module_test" &&
-      activeModule
-    ) {
-      if (
-        score >=
-        activeAssessment.passingScore
-      ) {
-        setSavedProgress(
-          (previous) => ({
-            ...previous,
-            passedModules:
-              previous.passedModules.includes(
-                activeModule.id,
-              )
-                ? previous.passedModules
-                : [
-                    ...previous.passedModules,
-                    activeModule.id,
-                  ],
-          }),
-        );
-      }
-
-      setViewMode("test-result");
-    } else {
-      setSavedProgress(
-        (previous) => ({
-          ...previous,
-          examScore: score,
-        }),
+    if (followingLesson) {
+      setActiveLessonId(
+        idString(followingLesson.id),
       );
 
-      setViewMode("exam-result");
+      setViewMode("lesson");
+
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+
+      return;
     }
 
-    if (automatic) {
+    /*
+     * Current module is finished.
+     * If it has a test, show the test.
+     */
+    const moduleAssessment =
+      activeModule.assessment ||
+      activeModule.test ||
+      null;
+
+    if (moduleAssessment) {
+      setActiveAssessment(moduleAssessment);
+      setSelectedAnswers({});
+      setAssessmentScore(null);
+      setSubmitted(false);
+      setViewMode("test-intro");
+
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+
+      return;
+    }
+
+    /*
+     * Move to next module.
+     */
+    const nextModule =
+      modules[activeModuleIndex + 1];
+
+    if (nextModule) {
+      const firstLesson =
+        nextModule.lessons?.[0];
+
+      if (firstLesson) {
+        setActiveModuleIndex(
+          activeModuleIndex + 1,
+        );
+
+        setActiveLessonId(
+          idString(firstLesson.id),
+        );
+
+        setViewMode("lesson");
+
+        window.scrollTo({
+          top: 0,
+          behavior: "smooth",
+        });
+      }
+
+      return;
+    }
+
+    /*
+     * Everything is completed.
+     * Look for final exam.
+     */
+    const finalExam =
+      course?.finalExam ||
+      course?.assessments?.find(
+        assessment =>
+          assessmentIsFinal(assessment),
+      );
+
+    if (
+      finalExam &&
+      allModulesPassed
+    ) {
+      setActiveAssessment(finalExam);
+      setViewMode("exam-intro");
+
       window.scrollTo({
         top: 0,
         behavior: "smooth",
@@ -842,155 +1265,27 @@ export default function CourseDetailsPage({
     }
   }
 
-  function openLesson(
-    moduleIndex: number,
-    lessonId: number,
-  ) {
-    const selectedModule =
-      course?.modules[moduleIndex];
+  /* =====================================================
+     OPEN FINAL EXAM
+  ===================================================== */
 
-    if (!selectedModule) return;
+  function openFinalExam() {
+    if (!allModulesPassed) return;
 
-    setActiveModuleIndex(
-      moduleIndex,
-    );
-
-    setActiveLessonId(
-      lessonId,
-    );
-
-    setViewMode("lesson");
-
-    setActiveAssessment(
-      null,
-    );
-
-    setAssessmentScore(null);
-
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
-  }
-
-  function goNextLesson() {
-    if (!activeLesson) return;
-
-    saveLessonCompletion(
-      activeLesson.id,
-    );
-
-    if (nextLesson) {
-      setActiveLessonId(
-        nextLesson.id,
+    const finalExam =
+      course?.finalExam ||
+      course?.assessments?.find(
+        assessment =>
+          assessmentIsFinal(assessment),
       );
 
-      return;
-    }
+    if (!finalExam) return;
 
-    if (activeModule) {
-      const moduleLessonsComplete =
-        activeModule.lessons.every(
-          (lesson) =>
-            savedProgress.completedLessons.includes(
-              lesson.id,
-            ) ||
-            lesson.id ===
-              activeLesson.id,
-        );
-
-      if (
-        moduleLessonsComplete &&
-        activeModule.test
-      ) {
-        setActiveAssessment(
-          activeModule.test,
-        );
-
-        setViewMode("test-intro");
-
-        return;
-      }
-    }
-
-    if (nextModule) {
-      setActiveModuleIndex(
-        activeModuleIndex + 1,
-      );
-
-      setActiveLessonId(
-        nextModule.lessons[0]?.id ??
-          null,
-      );
-
-      return;
-    }
-
-    if (
-      allModulesPassed &&
-      course?.exam
-    ) {
-      setActiveAssessment(
-        course.exam,
-      );
-
-      setViewMode("exam-intro");
-    }
-  }
-
-  function resetCurrentAssessment() {
-    if (!activeAssessment) return;
-
+    setActiveAssessment(finalExam);
     setSelectedAnswers({});
     setAssessmentScore(null);
-
-    setTimeLeft(
-      (activeAssessment.durationMinutes ??
-        30) * 60,
-    );
-
-    setViewMode(
-      activeAssessment.type ===
-        "final_exam"
-        ? "exam"
-        : "test",
-    );
-  }
-
-  function goToNextModule() {
-    if (!course) return;
-
-    const nextIndex =
-      activeModuleIndex + 1;
-
-    if (
-      nextIndex >=
-      course.modules.length
-    ) {
-      if (course.exam) {
-        setActiveAssessment(
-          course.exam,
-        );
-
-        setViewMode("exam-intro");
-      }
-
-      return;
-    }
-
-    const module =
-      course.modules[nextIndex];
-
-    setActiveModuleIndex(
-      nextIndex,
-    );
-
-    setActiveLessonId(
-      module.lessons[0]?.id ??
-        null,
-    );
-
-    setViewMode("lesson");
+    setSubmitted(false);
+    setViewMode("exam-intro");
 
     window.scrollTo({
       top: 0,
@@ -998,896 +1293,883 @@ export default function CourseDetailsPage({
     });
   }
 
-  if (loadError) {
-    return (
-      <main className={styles.page}>
-        <section className={styles.errorState}>
-          <XCircle size={36} />
-          <h1>Course unavailable</h1>
-          <p>
-            The course database could not
-            be reached.
-          </p>
+  /* =====================================================
+     RESET ASSESSMENT
+  ===================================================== */
 
-          <Link
-            href="/courses"
-            className={styles.primaryButton}
-          >
-            Back to library
-          </Link>
-        </section>
-      </main>
+  function resetAssessment() {
+    setSelectedAnswers({});
+    setAssessmentScore(null);
+    setSubmitted(false);
+
+    if (activeAssessment) {
+      setTimeLeft(
+        assessmentDuration(activeAssessment) *
+          60,
+      );
+    }
+
+    setViewMode(
+      activeAssessment &&
+        assessmentIsFinal(activeAssessment)
+        ? "exam-intro"
+        : "test-intro",
     );
   }
 
-  if (!course) {
+  /* =====================================================
+     FORMAT TIME
+  ===================================================== */
+
+  const formattedTime = `${String(
+    Math.floor(timeLeft / 60),
+  ).padStart(2, "0")}:${String(
+    timeLeft % 60,
+  ).padStart(2, "0")}`;
+
+  /* =====================================================
+     LOADING
+  ===================================================== */
+
+  if (loading) {
     return (
-      <main className={styles.page}>
-        <div className={styles.loadingState}>
-          <span className={styles.loadingSpinner} />
-          <p>Loading course...</p>
+      <main className="coursePage">
+        <div className="courseLoading">
+          <div className="loadingSpinner" />
+
+          <h2>Loading course...</h2>
+
+          <p>
+            Preparing your lessons and course
+            materials.
+          </p>
         </div>
       </main>
     );
   }
 
-  return (
-    <main className={styles.page}>
-      <header className={styles.courseHeader}>
-        <div className={styles.headerInner}>
-          <Link
-            href="/courses"
-            className={styles.backLink}
-          >
-            <ArrowLeft size={16} />
-            Back to library
-          </Link>
+  /* =====================================================
+     ERROR
+  ===================================================== */
 
-          <div className={styles.headerGrid}>
-            <div>
-              <span className={styles.kicker}>
-                {course.subject}
-              </span>
+  if (error || !course) {
+    return (
+      <main className="coursePage">
+        <div className="courseError">
+          <XCircle size={52} />
 
-              <h1>{course.title}</h1>
+          <h1>Course unavailable</h1>
 
-              <p className={styles.courseDescription}>
-                {course.description}
-              </p>
+          <p>
+            {error ||
+              "The course could not be found."}
+          </p>
 
-              <div className={styles.metaRow}>
-                <span>
-                  {course.level}
-                </span>
+          <div className="errorActions">
+            <Link
+              href="/courses"
+              className="secondaryButton"
+            >
+              <ArrowLeft size={18} />
+              Back to courses
+            </Link>
 
-                <span>
-                  {course.lessonCount} lessons
-                </span>
-
-                <span>
-                  {course.modules.length} modules
-                </span>
-
-                <span>
-                  {course.modules.length} tests
-                </span>
-
-                {course.exam ? (
-                  <span>
-                    Final exam
-                  </span>
-                ) : null}
-              </div>
-            </div>
-
-            <aside
-              className={
-                styles.progressCard
+            <button
+              type="button"
+              className="primaryButton"
+              onClick={() =>
+                window.location.reload()
               }
             >
-              <span>
-                COURSE PROGRESS
-              </span>
+              <RotateCcw size={18} />
+              Try again
+            </button>
+          </div>
+        </div>
+      </main>
+    );
+  }
 
+  /* =====================================================
+     RENDER
+  ===================================================== */
+
+  return (
+    <main className="coursePage">
+      {/* =================================================
+          HEADER
+      ================================================= */}
+
+      <header className="courseHeader">
+        <div className="courseHeaderTop">
+          <Link
+            href="/courses"
+            className="backLink"
+          >
+            <ArrowLeft size={18} />
+            Back to courses
+          </Link>
+
+          <span className="courseSubject">
+            {course.subject ||
+              course.level ||
+              course.grade ||
+              "Course"}
+          </span>
+        </div>
+
+        <div className="courseHeaderMain">
+          <div>
+            <h1>
+              {course.title ||
+                course.name ||
+                "Untitled course"}
+            </h1>
+
+            {course.description && (
+              <p>{course.description}</p>
+            )}
+          </div>
+
+          <div className="courseMeta">
+            <span>
+              <BookOpen size={17} />
+              {totalLessons} lessons
+            </span>
+
+            <span>
+              <GraduationCap size={17} />
+              {modules.length} modules
+            </span>
+          </div>
+        </div>
+
+        <div className="courseProgressCard">
+          <div className="courseProgressInfo">
+            <div>
               <strong>
-                {overallProgress}%
+                Course progress
               </strong>
 
-              <div
-                className={
-                  styles.progressTrack
-                }
-              >
-                <div
-                  className={
-                    styles.progressFill
-                  }
-                  style={{
-                    width: `${overallProgress}%`,
-                  }}
-                />
-              </div>
+              <span>
+                {completedLessons} of{" "}
+                {totalLessons} lessons completed
+              </span>
+            </div>
 
-              <small>
-                {totalCompletedLessons} of{" "}
-                {totalLessons} lessons
-                completed
-              </small>
-            </aside>
+            <strong>
+              {overallProgress}%
+            </strong>
+          </div>
+
+          <div className="progressBar">
+            <div
+              className="progressBarFill"
+              style={{
+                width: `${overallProgress}%`,
+              }}
+            />
           </div>
         </div>
       </header>
 
-      <div className={styles.pageGrid}>
-        <aside className={styles.sidebar}>
-          <div className={styles.sidebarTitle}>
-            <BookOpen size={17} />
-            Course outline
+      {/* =================================================
+          MAIN LAYOUT
+      ================================================= */}
+
+      <div className="courseLayout">
+        {/* =================================================
+            SIDEBAR
+        ================================================= */}
+
+        <aside className="courseSidebar">
+          <div className="sidebarHeader">
+            <div>
+              <span>COURSE OUTLINE</span>
+              <h2>
+                {modules.length} Modules
+              </h2>
+            </div>
           </div>
 
-          <div className={styles.moduleList}>
-            {course.modules.map(
+          <div className="moduleList">
+            {modules.map(
               (module, moduleIndex) => {
-                const completed =
-                  moduleCompletedCount[
-                    moduleIndex
-                  ] ?? 0;
+                const moduleLessons =
+                  module.lessons || [];
 
-                const complete =
-                  completed ===
-                    module.lessons
-                      .length &&
-                  module.lessons.length >
-                    0;
-
-                const passed =
-                  savedProgress.passedModules.includes(
-                    module.id,
+                const modulePassed =
+                  progress.passedModules.includes(
+                    idString(module.id),
                   );
 
+                const moduleCompleted =
+                  moduleLessons.length > 0 &&
+                  moduleLessons.every(
+                    (lesson) =>
+                      progress.completedLessons.includes(
+                        idString(lesson.id),
+                      ),
+                  );
+
+                const moduleAssessment =
+                  module.assessment ||
+                  module.test ||
+                  null;
+
                 return (
-                  <section
-                    key={module.id}
-                    className={`${styles.moduleNav} ${
+                  <div
+                    className={`moduleItem ${
                       activeModuleIndex ===
                       moduleIndex
-                        ? styles.moduleNavActive
+                        ? "active"
                         : ""
                     }`}
+                    key={idString(module.id)}
                   >
-                    <button
-                      type="button"
-                      className={
-                        styles.moduleHeading
-                      }
-                      onClick={() => {
-                        setActiveModuleIndex(
+                    <div className="moduleHeading">
+                      <div className="moduleNumber">
+                        {getModuleCode(
+                          module,
                           moduleIndex,
-                        );
-
-                        setActiveLessonId(
-                          module.lessons[0]
-                            ?.id ?? null,
-                        );
-
-                        setViewMode(
-                          "lesson",
-                        );
-                      }}
-                    >
-                      <div>
-                        <span>
-                          MODULE{" "}
-                          {
-                            module.moduleCode
-                          }
-                        </span>
-
-                        <strong>
-                          {module.title}
-                        </strong>
+                        )}
                       </div>
 
-                      {passed ? (
+                      <div className="moduleHeadingText">
+                        <span>
+                          MODULE{" "}
+                          {getModuleCode(
+                            module,
+                            moduleIndex,
+                          )}
+                        </span>
+
+                        <h3>
+                          {moduleTitle(module).replace(
+                            /^MODULE\s+\d+(?:\.\d+)?\s*/i,
+                            "",
+                          )}
+                        </h3>
+                      </div>
+
+                      {modulePassed ||
+                      moduleCompleted ? (
                         <CheckCircle2
-                          size={18}
-                        />
-                      ) : complete ? (
-                        <Check
-                          size={18}
+                          size={20}
+                          className="moduleCheck"
                         />
                       ) : null}
-                    </button>
+                    </div>
 
-                    <div
-                      className={
-                        styles.lessonNav
-                      }
-                    >
-                      {module.lessons.map(
-                        (
-                          lesson,
-                        ) => {
-                          const done =
-                            savedProgress.completedLessons.includes(
+                    <div className="lessonList">
+                      {moduleLessons.map(
+                        (lesson) => {
+                          const lessonId =
+                            idString(
                               lesson.id,
                             );
 
+                          const completed =
+                            progress.completedLessons.includes(
+                              lessonId,
+                            );
+
+                          const selected =
+                            activeLessonId ===
+                              lessonId &&
+                            activeModuleIndex ===
+                              moduleIndex &&
+                            viewMode ===
+                              "lesson";
+
                           return (
                             <button
-                              key={
-                                lesson.id
-                              }
                               type="button"
-                              className={`${styles.lessonNavButton} ${
-                                activeLessonId ===
-                                  lesson.id &&
-                                viewMode ===
-                                  "lesson"
-                                  ? styles.lessonNavActive
+                              key={lessonId}
+                              className={`lessonNavItem ${
+                                selected
+                                  ? "active"
+                                  : ""
+                              } ${
+                                completed
+                                  ? "completed"
                                   : ""
                               }`}
                               onClick={() =>
                                 openLesson(
                                   moduleIndex,
-                                  lesson.id,
+                                  lesson,
                                 )
                               }
                             >
-                              <span
-                                className={
-                                  styles.lessonNumber
-                                }
-                              >
-                                {lesson.lessonCode}
+                              <span className="lessonNavIcon">
+                                {completed ? (
+                                  <Check
+                                    size={15}
+                                  />
+                                ) : (
+                                  <BookOpen
+                                    size={15}
+                                  />
+                                )}
                               </span>
 
-                              <span>
-                                {
-                                  lesson.title
-                                }
+                              <span className="lessonNavText">
+                                <small>
+                                  {getLessonCode(
+                                    lesson,
+                                  )}
+                                </small>
+
+                                <strong>
+                                  {lessonTitle(
+                                    lesson,
+                                  ).replace(
+                                    /^\d+(?:\.\d+)?\s*/,
+                                    "",
+                                  )}
+                                </strong>
                               </span>
 
-                              {done ? (
-                                <Check
-                                  size={
-                                    14
-                                  }
-                                  className={
-                                    styles.completedIcon
-                                  }
-                                />
+                              {lesson.duration ||
+                              lesson.durationMinutes ? (
+                                <span className="lessonDuration">
+                                  {lesson.duration ||
+                                    lesson.durationMinutes}
+                                  m
+                                </span>
                               ) : null}
                             </button>
                           );
                         },
                       )}
-                    </div>
 
-                    <button
-                      type="button"
-                      className={
-                        styles.sidebarTestButton
-                      }
-                      disabled={
-                        !complete
-                      }
-                      onClick={() => {
-                        if (
-                          module.test
-                        ) {
-                          setActiveModuleIndex(
-                            moduleIndex,
-                          );
+                      {moduleAssessment && (
+                        <button
+                          type="button"
+                          className={`assessmentNavItem ${
+                            modulePassed
+                              ? "completed"
+                              : ""
+                          }`}
+                          onClick={() =>
+                            openModuleTest(
+                              moduleIndex,
+                            )
+                          }
+                        >
+                          {modulePassed ? (
+                            <CheckCircle2
+                              size={18}
+                            />
+                          ) : (
+                            <Trophy size={18} />
+                          )}
 
-                          setActiveAssessment(
-                            module.test,
-                          );
+                          <span>
+                            <strong>
+                              Module test
+                            </strong>
 
-                          setViewMode(
-                            "test-intro",
-                          );
-                        }
-                      }}
-                    >
-                      {complete ? (
-                        passed ? (
-                          <CheckCircle2
-                            size={15}
-                          />
-                        ) : (
-                          <GraduationCap
-                            size={15}
-                          />
-                        )
-                      ) : (
-                        <Lock
-                          size={15}
-                        />
+                            <small>
+                              {modulePassed
+                                ? "Passed"
+                                : "Complete test"}
+                            </small>
+                          </span>
+                        </button>
                       )}
-
-                      <span>
-                        {passed
-                          ? "Module test passed"
-                          : "Module test"}
-                      </span>
-                    </button>
-                  </section>
+                    </div>
+                  </div>
                 );
               },
             )}
           </div>
 
-          {course.exam ? (
-            <div
-              className={
-                styles.examNavCard
-              }
-            >
-              <div>
-                <span>
-                  FINAL EXAM
-                </span>
-
-                <strong>
-                  {allModulesPassed
-                    ? "Ready to start"
-                    : "Complete all module tests"}
-                </strong>
-              </div>
-
-              <button
-                type="button"
-                disabled={
-                  !allModulesPassed
-                }
-                onClick={() => {
-                  setActiveAssessment(
-                    course.exam,
-                  );
-
-                  setViewMode(
-                    "exam-intro",
-                  );
-                }}
-              >
-                {allModulesPassed ? (
-                  <ArrowRight
-                    size={17}
-                  />
-                ) : (
-                  <Lock
-                    size={17}
-                  />
-                )}
-              </button>
+          {/* FINAL EXAM */}
+          <div className="finalExamNav">
+            <div className="finalExamIcon">
+              {allModulesPassed ? (
+                <Trophy size={22} />
+              ) : (
+                <Lock size={22} />
+              )}
             </div>
-          ) : null}
+
+            <div>
+              <strong>FINAL EXAM</strong>
+
+              <span>
+                {allModulesPassed
+                  ? "Ready to begin"
+                  : "Complete all module tests"}
+              </span>
+            </div>
+
+            <button
+              type="button"
+              disabled={!allModulesPassed}
+              onClick={openFinalExam}
+              aria-label="Open final exam"
+            >
+              <ArrowRight size={18} />
+            </button>
+          </div>
         </aside>
 
-        <section className={styles.workspace}>
+        {/* =================================================
+            WORKSPACE
+        ================================================= */}
+
+        <section className="courseWorkspace">
+          {/* =================================================
+              LESSON
+          ================================================= */}
+
           {viewMode === "lesson" &&
-          activeLesson ? (
-            <>
-              <article
-                className={
-                  styles.lessonCard
-                }
-              >
-                <div
-                  className={
-                    styles.lessonTop
-                  }
-                >
+            activeLesson && (
+              <article className="lessonView">
+                <div className="lessonTop">
                   <div>
-                    <span
-                      className={
-                        styles.lessonKicker
-                      }
-                    >
+                    <span className="lessonBreadcrumb">
                       MODULE{" "}
-                      {
-                        activeModule?.moduleCode
-                      }{" "}
+                      {getModuleCode(
+                        activeModule!,
+                        activeModuleIndex,
+                      )}{" "}
                       ·{" "}
-                      {
-                        activeLesson.lessonCode
-                      }
+                      {getLessonCode(
+                        activeLesson,
+                      )}
                     </span>
 
-                    <h2>
-                      {
-                        activeLesson.title
-                      }
-                    </h2>
+                    <h1>
+                      {lessonTitle(
+                        activeLesson,
+                      ).replace(
+                        /^\d+(?:\.\d+)?\s*/,
+                        "",
+                      )}
+                    </h1>
                   </div>
 
-                  <span
-                    className={
-                      styles.duration
-                    }
-                  >
-                    <Clock3 size={15} />
-                    {
-                      activeLesson.durationMinutes
-                    }{" "}
+                  <div className="lessonDurationBadge">
+                    <Clock3 size={16} />
+
+                    {activeLesson.duration ||
+                      activeLesson.durationMinutes ||
+                      35}{" "}
                     mins
-                  </span>
+                  </div>
                 </div>
 
-                {activeLesson.objective ? (
-                  <div
-                    className={
-                      styles.objectiveBox
-                    }
-                  >
-                    <span>
-                      LEARNING OBJECTIVE
-                    </span>
-
-                    <p>
-                      {
-                        activeLesson.objective
-                      }
-                    </p>
-                  </div>
-                ) : null}
-
-                <div
-                  className={
-                    styles.contentReader
-                  }
-                >
-                  {renderLessonContent(
-                    activeLesson.content,
-                  )}
-                </div>
-
-                {activeLesson.summary ? (
-                  <div
-                    className={
-                      styles.summaryBox
-                    }
-                  >
-                    <span>
-                      LESSON SUMMARY
-                    </span>
-
-                    <p>
-                      {
-                        activeLesson.summary
-                      }
-                    </p>
-                  </div>
-                ) : null}
-
-                <footer
-                  className={
-                    styles.lessonFooter
-                  }
-                >
+                <div className="learningObjective">
                   <span>
-                    Lesson{" "}
-                    {currentLessonPosition +
-                      1}{" "}
-                    of{" "}
-                    {
-                      activeModule
-                        ?.lessons.length
-                    }
+                    LEARNING OBJECTIVE
                   </span>
+
+                  <p>
+                    Understand{" "}
+                    {lessonTitle(
+                      activeLesson,
+                    ).replace(
+                      /^\d+(?:\.\d+)?\s*/,
+                      "",
+                    )}
+                    , apply the concept in
+                    your subject, and explain
+                    the answer accurately.
+                  </p>
+                </div>
+
+                {renderLessonContent(
+                  activeLesson.content ||
+                    activeLesson.description ||
+                    "",
+                )}
+
+                <div className="lessonFooter">
+                  <div>
+                    {progress.completedLessons.includes(
+                      idString(
+                        activeLesson.id,
+                      ),
+                    ) ? (
+                      <span className="completedStatus">
+                        <CheckCircle2
+                          size={18}
+                        />
+                        Lesson completed
+                      </span>
+                    ) : (
+                      <span className="lessonStatus">
+                        Complete this lesson to
+                        continue.
+                      </span>
+                    )}
+                  </div>
 
                   <button
                     type="button"
-                    className={
-                      styles.primaryButton
-                    }
-                    onClick={
-                      goNextLesson
-                    }
+                    className="primaryButton"
+                    onClick={goNextLesson}
                   >
                     {nextLesson
-                      ? "Complete lesson & continue"
-                      : activeModuleComplete
-                        ? "Continue to module test"
-                        : "Complete lesson"}
-                    <ArrowRight
-                      size={17}
-                    />
+                      ? "Next lesson"
+                      : activeModule?.assessment
+                        ? "Take module test"
+                        : "Continue"}
+                    <ArrowRight size={18} />
                   </button>
-                </footer>
+                </div>
               </article>
-            </>
-          ) : null}
+            )}
+
+          {/* =================================================
+              TEST INTRO
+          ================================================= */}
 
           {viewMode === "test-intro" &&
-          activeAssessment ? (
-            <AssessmentIntro
-              assessment={
-                activeAssessment
-              }
-              title={
-                activeAssessment.title
-              }
-              description={
-                activeAssessment.description ||
-                "This test checks your understanding of the lessons you have completed in this module."
-              }
-              onStart={() =>
-                startAssessment(
-                  activeAssessment,
-                  "test",
-                )
-              }
-            />
-          ) : null}
+            activeAssessment && (
+              <AssessmentIntro
+                assessment={
+                  activeAssessment
+                }
+                isFinal={false}
+                onStart={
+                  startAssessment
+                }
+              />
+            )}
+
+          {/* =================================================
+              EXAM INTRO
+          ================================================= */}
 
           {viewMode === "exam-intro" &&
-          activeAssessment ? (
-            <AssessmentIntro
-              assessment={
-                activeAssessment
-              }
-              title={
-                activeAssessment.title
-              }
-              description={
-                activeAssessment.description ||
-                "This final examination covers the complete course."
-              }
-              onStart={() =>
-                startAssessment(
-                  activeAssessment,
-                  "exam",
-                )
-              }
-            />
-          ) : null}
+            activeAssessment && (
+              <AssessmentIntro
+                assessment={
+                  activeAssessment
+                }
+                isFinal={true}
+                onStart={
+                  startAssessment
+                }
+              />
+            )}
+
+          {/* =================================================
+              TEST / EXAM
+          ================================================= */}
 
           {(viewMode === "test" ||
             viewMode === "exam") &&
-          activeAssessment ? (
-            <section
-              className={
-                styles.assessmentRunner
-              }
-            >
-              <div
-                className={
-                  styles.runnerHeader
-                }
-              >
-                <div>
+            activeAssessment && (
+              <section className="assessmentRunner">
+                <div className="assessmentHeader">
+                  <div>
+                    <span>
+                      {viewMode === "exam"
+                        ? "FINAL EXAM"
+                        : "MODULE TEST"}
+                    </span>
+
+                    <h1>
+                      {activeAssessment.title ||
+                        (viewMode === "exam"
+                          ? "Final Exam"
+                          : "Module Test")}
+                    </h1>
+                  </div>
+
+                  <div
+                    className={`assessmentTimer ${
+                      timeLeft <= 60
+                        ? "warning"
+                        : ""
+                    }`}
+                  >
+                    <Clock3 size={20} />
+
+                    <strong>
+                      {formattedTime}
+                    </strong>
+                  </div>
+                </div>
+
+                <div className="assessmentProgress">
                   <span>
-                    {activeAssessment.type ===
-                    "final_exam"
-                      ? "FINAL EXAMINATION"
-                      : "MODULE TEST"}
+                    Answer all questions before
+                    submitting.
                   </span>
 
-                  <h2>
+                  <span>
                     {
-                      activeAssessment.title
-                    }
-                  </h2>
+                      assessmentQuestions(
+                        activeAssessment,
+                      ).length
+                    }{" "}
+                    questions
+                  </span>
                 </div>
 
-                <div
-                  className={
-                    styles.timer
-                  }
-                >
-                  <Clock3 size={18} />
-                  {formattedTime}
-                </div>
-              </div>
-
-              <div
-                className={
-                  styles.runnerMeta
-                }
-              >
-                <span>
-                  {assessmentProgressText}
-                </span>
-
-                <span>
-                  Pass mark:{" "}
-                  {
-                    activeAssessment.passingScore
-                  }
-                  %
-                </span>
-              </div>
-
-              <div
-                className={
-                  styles.questionNavigation
-                }
-              >
-                {activeAssessment.questions.map(
-                  (
-                    question,
-                    index,
-                  ) => (
-                    <button
-                      type="button"
-                      key={
-                        question.id
-                      }
-                      className={
-                        selectedAnswers[
-                          question.id
-                        ]
-                          ? styles.questionDotAnswered
-                          : styles.questionDot
-                      }
-                      onClick={() => {
-                        document
-                          .getElementById(
-                            `question-${question.id}`,
-                          )
-                          ?.scrollIntoView({
-                            behavior:
-                              "smooth",
-                            block:
-                              "center",
-                          });
-                      }}
-                    >
-                      {index + 1}
-                    </button>
-                  ),
-                )}
-              </div>
-
-              <div
-                className={
-                  styles.questionList
-                }
-              >
-                {activeAssessment.questions.map(
-                  (
-                    question,
-                    index,
-                  ) => (
-                    <div
-                      id={`question-${question.id}`}
-                      key={
-                        question.id
-                      }
-                    >
+                <div className="questions">
+                  {assessmentQuestions(
+                    activeAssessment,
+                  ).map(
+                    (question, index) => (
                       <QuestionCard
-                        question={
-                          question
-                        }
+                        key={idString(
+                          question.id,
+                        )}
+                        question={question}
                         questionNumber={
                           index + 1
                         }
                         selected={
                           selectedAnswers[
-                            question.id
-                          ] ??
-                          null
+                            idString(
+                              question.id,
+                            )
+                          ]
                         }
-                        onSelect={(
-                          optionId,
-                        ) =>
+                        submitted={submitted}
+                        onSelect={(value) =>
                           setSelectedAnswers(
-                            (previous) => ({
-                              ...previous,
-                              [question.id]:
-                                optionId,
+                            (current) => ({
+                              ...current,
+                              [idString(
+                                question.id,
+                              )]: value,
                             }),
                           )
                         }
                       />
-                    </div>
-                  ),
-                )}
-              </div>
-
-              <div
-                className={
-                  styles.submitBar
-                }
-              >
-                <div>
-                  <strong>
-                    Ready to submit?
-                  </strong>
-
-                  <span>
-                    You can review
-                    your answers
-                    before submitting.
-                  </span>
+                    ),
+                  )}
                 </div>
 
-                <button
-                  type="button"
-                  className={
-                    styles.primaryButton
-                  }
-                  onClick={() =>
-                    handleSubmitAssessment(
-                      false,
+                <div className="assessmentSubmitBar">
+                  <span>
+                    {
+                      Object.keys(
+                        selectedAnswers,
+                      ).length
+                    }{" "}
+                    of{" "}
+                    {
+                      assessmentQuestions(
+                        activeAssessment,
+                      ).length
+                    }{" "}
+                    answered
+                  </span>
+
+                  <button
+                    type="button"
+                    className="primaryButton"
+                    onClick={() =>
+                      submitAssessment()
+                    }
+                    disabled={submitted}
+                  >
+                    Submit assessment
+                    <Check size={18} />
+                  </button>
+                </div>
+              </section>
+            )}
+
+          {/* =================================================
+              TEST RESULT
+          ================================================= */}
+
+          {viewMode === "test-result" &&
+            activeAssessment && (
+              <section className="assessmentResult">
+                <div className="resultIcon">
+                  {assessmentScore !== null &&
+                  assessmentScore >=
+                    assessmentPassingScore(
+                      activeAssessment,
+                    ) ? (
+                    <Trophy size={54} />
+                  ) : (
+                    <XCircle size={54} />
+                  )}
+                </div>
+
+                <span className="resultLabel">
+                  MODULE TEST RESULT
+                </span>
+
+                <h1>
+                  {assessmentScore !== null &&
+                  assessmentScore >=
+                    assessmentPassingScore(
+                      activeAssessment,
                     )
-                  }
-                >
-                  Submit{" "}
-                  {activeAssessment.type ===
-                  "final_exam"
-                    ? "exam"
-                    : "test"}
-                  <Check
-                    size={17}
-                  />
-                </button>
-              </div>
-            </section>
-          ) : null}
+                    ? "Module test passed!"
+                    : "Module test not passed"}
+                </h1>
 
-          {(viewMode ===
-            "test-result" ||
-            viewMode ===
-              "exam-result") &&
-          activeAssessment ? (
-            <section
-              className={
-                styles.resultCard
-              }
-            >
-              <div
-                className={
-                  styles.resultIcon
-                }
-              >
-                {assessmentScore !==
-                null &&
+                <div className="resultScore">
+                  {assessmentScore ?? 0}%
+                </div>
+
+                <p>
+                  Pass mark:{" "}
+                  {assessmentPassingScore(
+                    activeAssessment,
+                  )}
+                  %
+                </p>
+
+                {assessmentScore !== null &&
                 assessmentScore >=
-                  activeAssessment.passingScore ? (
-                  <Trophy
-                    size={34}
-                  />
+                  assessmentPassingScore(
+                    activeAssessment,
+                  ) ? (
+                  <p>
+                    You can continue to the
+                    next module.
+                  </p>
                 ) : (
-                  <XCircle
-                    size={34}
-                  />
+                  <p>
+                    Review the lessons and try
+                    the module test again.
+                  </p>
                 )}
+
+                <div className="resultActions">
+                  <button
+                    type="button"
+                    className="secondaryButton"
+                    onClick={
+                      resetAssessment
+                    }
+                  >
+                    <RotateCcw size={18} />
+                    Try again
+                  </button>
+
+                  {assessmentScore !== null &&
+                    assessmentScore >=
+                      assessmentPassingScore(
+                        activeAssessment,
+                      ) && (
+                      <button
+                        type="button"
+                        className="primaryButton"
+                        onClick={() => {
+                          const nextModule =
+                            modules[
+                              activeModuleIndex +
+                                1
+                            ];
+
+                          if (nextModule) {
+                            const firstLesson =
+                              nextModule
+                                .lessons?.[0];
+
+                            if (firstLesson) {
+                              setActiveModuleIndex(
+                                activeModuleIndex +
+                                  1,
+                              );
+
+                              setActiveLessonId(
+                                idString(
+                                  firstLesson.id,
+                                ),
+                              );
+
+                              setViewMode(
+                                "lesson",
+                              );
+                            }
+                          } else {
+                            openFinalExam();
+                          }
+
+                          window.scrollTo({
+                            top: 0,
+                            behavior:
+                              "smooth",
+                          });
+                        }}
+                      >
+                        Continue
+                        <ArrowRight
+                          size={18}
+                        />
+                      </button>
+                    )}
+                </div>
+              </section>
+            )}
+
+          {/* =================================================
+              EXAM RESULT
+          ================================================= */}
+
+          {viewMode === "exam-result" && (
+            <section className="assessmentResult finalResult">
+              <div className="resultIcon">
+                <Trophy size={54} />
               </div>
 
-              <span
-                className={
-                  styles.resultEyebrow
-                }
-              >
-                {activeAssessment.type ===
-                "final_exam"
-                  ? "FINAL EXAM RESULT"
-                  : "MODULE TEST RESULT"}
+              <span className="resultLabel">
+                FINAL EXAM RESULT
               </span>
 
-              <h2>
-                {assessmentScore !==
-                  null &&
-                assessmentScore >=
-                  activeAssessment.passingScore
-                  ? "Assessment passed"
-                  : "Keep going"}
-              </h2>
+              <h1>
+                Final exam completed
+              </h1>
 
-              <div
-                className={
-                  styles.scoreCircle
-                }
-              >
-                <strong>
-                  {assessmentScore ?? 0}%
-                </strong>
-
-                <span>
-                  score
-                </span>
+              <div className="resultScore">
+                {progress.examScore ??
+                  assessmentScore ??
+                  0}
+                %
               </div>
 
               <p>
-                Pass mark:{" "}
-                {
-                  activeAssessment.passingScore
-                }%
+                Your final exam score has been
+                saved to your course progress.
               </p>
 
-              {assessmentScore !==
-                null &&
-              assessmentScore >=
-                activeAssessment.passingScore ? (
-                <p
-                  className={
-                    styles.resultMessage
-                  }
-                >
-                  Great work. You have
-                  successfully completed
-                  this assessment.
-                </p>
-              ) : (
-                <p
-                  className={
-                    styles.resultMessage
-                  }
-                >
-                  You need at least{" "}
-                  {
-                    activeAssessment.passingScore
-                  }% to pass. Review the
-                  lessons and try again.
-                </p>
-              )}
-
-              <div
-                className={
-                  styles.resultActions
-                }
+              <Link
+                href="/courses"
+                className="primaryButton"
               >
-                <button
-                  type="button"
-                  className={
-                    styles.secondaryButton
-                  }
-                  onClick={
-                    resetCurrentAssessment
-                  }
-                >
-                  <RotateCcw
-                    size={17}
-                  />
-                  Try again
-                </button>
-
-                {activeAssessment.type ===
-                  "module_test" &&
-                assessmentScore !==
-                  null &&
-                assessmentScore >=
-                  activeAssessment.passingScore ? (
-                  <button
-                    type="button"
-                    className={
-                      styles.primaryButton
-                    }
-                    onClick={
-                      goToNextModule
-                    }
-                  >
-                    Continue to next module
-                    <ArrowRight
-                      size={17}
-                    />
-                  </button>
-                ) : null}
-
-                {activeAssessment.type ===
-                  "final_exam" &&
-                assessmentScore !==
-                  null &&
-                assessmentScore >=
-                  activeAssessment.passingScore ? (
-                  <Link
-                    href="/courses"
-                    className={
-                      styles.primaryButton
-                    }
-                  >
-                    Back to library
-                    <ArrowRight
-                      size={17}
-                    />
-                  </Link>
-                ) : null}
-              </div>
+                <ArrowLeft size={18} />
+                Back to courses
+              </Link>
             </section>
-          ) : null}
+          )}
+
+          {/* =================================================
+              NO ACTIVE LESSON
+          ================================================= */}
+
+          {viewMode === "lesson" &&
+            !activeLesson && (
+              <div className="lessonEmpty">
+                <BookOpen size={44} />
+
+                <h2>
+                  No lesson selected
+                </h2>
+
+                <p>
+                  Select a lesson from the
+                  course outline.
+                </p>
+              </div>
+            )}
         </section>
       </div>
     </main>

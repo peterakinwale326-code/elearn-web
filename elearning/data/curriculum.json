@@ -69708,7 +69708,7 @@
       "subject": "C++",
       "title": "C++ Programming",
       "slug": "c-programming",
-      "code": "PROG-C",
+      "code": "PROG-C++",
       "level": "beginner",
       "description": "C++ combines low-level control with powerful high-level abstractions. Learners start with program structure, variables, input and control flow, then study functions, arrays, vectors, classes and standard library algorithms. The practical exercises emphasise understanding memory-related ideas gradually rather than treating C++ as a collection of shortcuts. This elective course contains 27 guided lessons, three module tests and a final examination. Each programming lesson includes runnable or inspectable code, a line-by-line walkthrough, common mistakes, a practical activity and a short self-check.",
       "modules": [
@@ -71640,7 +71640,7 @@
       "subject": "C#",
       "title": "C# Programming",
       "slug": "c-programming",
-      "code": "PROG-C",
+      "code": "PROG-C#",
       "level": "beginner",
       "description": "C# is taught as a modern, strongly typed language used throughout the .NET ecosystem. The course moves from console programs and basic types into classes, properties, interfaces, exceptions, collections and LINQ. The teaching pattern is to explain the type first, then the operation, then the runtime result. This elective course contains 27 guided lessons, three module tests and a final examination. Each programming lesson includes runnable or inspectable code, a line-by-line walkthrough, common mistakes, a practical activity and a short self-check.",
       "modules": [

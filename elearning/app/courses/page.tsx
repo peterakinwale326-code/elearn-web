@@ -1,5 +1,5 @@
-import CourseCatalog from "../course-catalog";
+import { CourseGridSkeleton } from "../loading-ui";
 
-export default function CoursesPage() {
-  return <CourseCatalog />;
+export default function CoursesLoading() {
+  return <CourseGridSkeleton />;
 }
