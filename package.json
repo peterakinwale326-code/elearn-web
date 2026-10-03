@@ -6,11 +6,22 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "api:dev": "node --watch --env-file=.env.local server/index.mjs",
+    "api:start": "node --env-file=.env.local server/index.mjs",
+    "db:check": "node --env-file=.env.local scripts/check-db.cjs",
+    "db:seed": "node --env-file=.env.local scripts/seed-courses.mjs",
+    "db:migrate-auth": "node --env-file=.env.local scripts/migrate-auth.mjs",
     "lint": "eslint"
   },
   "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.7.0",
+    "helmet": "^8.3.0",
     "lucide-react": "^1.48.0",
+    "mysql2": "^3.24.5",
     "next": "16.3.6",
+    "nodemailer": "^10.0.13",
     "react": "19.2.8",
     "react-dom": "19.2.8"
   },

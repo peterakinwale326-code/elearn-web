@@ -1,0 +1,75 @@
+<svg width="1200" height="500" viewBox="0 0 1200 500"
+     fill="none" xmlns="http://www.w3.org/2000/svg">
+
+  <rect width="1200" height="500" rx="32" fill="#EAF2EB"/>
+
+  <circle cx="1040" cy="90" r="150" fill="#D8E8DA"/>
+  <circle cx="160" cy="420" r="170" fill="#DDEBDF"/>
+
+  <rect x="220" y="90" width="760" height="320"
+        rx="28" fill="white"/>
+
+  <rect x="265" y="135"
+        width="300" height="20"
+        rx="10" fill="#DCE9DE"/>
+
+  <rect x="265" y="174"
+        width="480" height="13"
+        rx="6.5" fill="#EDF3EE"/>
+
+  <rect x="265" y="225"
+        width="670" height="58"
+        rx="14"
+        fill="#F6F9F6"
+        stroke="#DDE8DF"/>
+
+  <circle cx="296" cy="254" r="14"
+          fill="#477155"/>
+
+  <path d="M290 254L295 259L304 248"
+        stroke="white"
+        stroke-width="4"
+        stroke-linecap="round"
+        stroke-linejoin="round"/>
+
+  <rect x="325" y="244"
+        width="390" height="12"
+        rx="6" fill="#DDE8DF"/>
+
+  <rect x="265" y="300"
+        width="670" height="58"
+        rx="14"
+        fill="#F6F9F6"
+        stroke="#DDE8DF"/>
+
+  <circle cx="296" cy="329" r="14"
+          fill="#477155"/>
+
+  <path d="M290 329L295 334L304 323"
+        stroke="white"
+        stroke-width="4"
+        stroke-linecap="round"
+        stroke-linejoin="round"/>
+
+  <rect x="325" y="319"
+        width="310" height="12"
+        rx="6" fill="#DDE8DF"/>
+
+  <circle cx="880" cy="365" r="48"
+          fill="#294C3A"/>
+
+  <path d="M864 366L875 377L897 350"
+        stroke="white"
+        stroke-width="7"
+        stroke-linecap="round"
+        stroke-linejoin="round"/>
+
+  <text x="265" y="118"
+        fill="#294C3A"
+        font-family="Arial, sans-serif"
+        font-size="16"
+        font-weight="700">
+    READY FOR ASSESSMENT
+  </text>
+
+</svg>
