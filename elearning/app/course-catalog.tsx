@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import type { CourseSummary } from "@/lib/course-types";
+import SubjectArtwork from "@/components/subject-artwork";
 import styles from "./course-catalog.module.css";
 
 type CatalogState = "loading" | "ready" | "error";
@@ -239,6 +240,9 @@ export default function CourseCatalog() {
             const tone = subjectTones[course.subject] ?? "mint";
             return (
               <article className={styles.courseCard} key={course.id}>
+                <div className={styles.courseArtwork}>
+                  <SubjectArtwork subject={course.subject} />
+                </div>
                 <div className={styles.cardTop}>
                   <span className={`${styles.subjectIcon} ${styles[tone]}`}><CourseIcon size={20} strokeWidth={1.8} /></span>
                   <div className={styles.courseMeta}>
