@@ -330,7 +330,7 @@ function mapCourseSummary(row) {
     subjectId: row.subject_id === null ? null : Number(row.subject_id),
     level: row.level,
     description: row.description,
-    thumbnailUrl: row.thumbnail_url,
+    thumbnailUrl: row.thumbnail_url || getSubjectImage(row.subject),
     instructorName: row.instructor_name,
     durationMinutes: Number(row.duration_minutes ?? 0),
     lessonCount: Number(row.lesson_count ?? 0),
@@ -338,6 +338,27 @@ function mapCourseSummary(row) {
     examQuestionCount: Number(row.exam_question_count ?? 0),
     examPassingScore: row.exam_passing_score === null ? null : Number(row.exam_passing_score),
   };
+}
+
+const subjectImages = {
+  Science: "https://images.unsplash.com/photo-1532094349884-543bc11b234d?auto=format&fit=crop&w=900&q=80",
+  Mathematics: "https://images.unsplash.com/photo-1509228468518-180dd4864904?auto=format&fit=crop&w=900&q=80",
+  English: "https://images.unsplash.com/photo-1506880018603-83d5b814b5a6?auto=format&fit=crop&w=900&q=80",
+  History: "https://images.unsplash.com/photo-1461360228754-6e81c478b882?auto=format&fit=crop&w=900&q=80",
+  Technology: "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=900&q=80",
+  Business: "https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&w=900&q=80",
+  Art: "https://images.unsplash.com/photo-1561214115-f2f134cc4912?auto=format&fit=crop&w=900&q=80",
+  Languages: "https://images.unsplash.com/photo-1546410531-bb4caa6b424d?auto=format&fit=crop&w=900&q=80",
+  Geography: "https://images.unsplash.com/photo-1524666041070-9cffc8c7a4d0?auto=format&fit=crop&w=900&q=80",
+  "Computer Science": "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=900&q=80",
+  Health: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=900&q=80",
+  Music: "https://images.unsplash.com/photo-1524368535928-5b5e00ddc76b?auto=format&fit=crop&w=900&q=80",
+};
+const fallbackSubjectImage =
+  "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=1000&q=80";
+
+function getSubjectImage(subject) {
+  return subjectImages[subject] ?? fallbackSubjectImage;
 }
 
 const courseSummaryQuery = `
