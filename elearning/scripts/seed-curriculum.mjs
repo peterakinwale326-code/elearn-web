@@ -363,7 +363,7 @@ async function insertQuestion(
     [
       assessmentId,
       question.prompt,
-      'Review the lesson topic carefully and compare each option with the definition, process or example taught.',
+      question.explanation ??\n        'Review the lesson topic carefully and compare each option with the definition, process or example taught.',
       position,
     ]
   );
