@@ -8,45 +8,86 @@ let moduleTests = 0;
 let finalExams = 0;
 let moduleQuestions = 0;
 let finalQuestions = 0;
-const prompts = new Map();
+const promptCounts = new Map();
 const bad = [];
 
-for (const course of data.courses || []) {
-  for (const module of course.modules || []) {
-    moduleTests += 1;
-    const questions = module.test?.questions || [];
-    if (questions.length !== 9) bad.push(course.title + " / " + module.title + ": expected 9 questions, found " + questions.length);
-    moduleQuestions += questions.length;
+function inspectQuestion(courseTitle, assessmentLabel, question, index) {
+  const prompt = String(question?.prompt ?? "").trim();
+  const correct = String(question?.correct ?? "").trim();
+  const distractors = Array.isArray(question?.distractors)
+    ? question.distractors.map((item) => String(item).trim()).filter(Boolean)
+    : [];
 
-    for (const question of questions) {
-      const prompt = String(question.prompt || "").trim().toLowerCase();
-      prompts.set(prompt, (prompts.get(prompt) || 0) + 1);
-      if (/which topic belongs|only a lesson title|memorised without understanding|without considering the situation/i.test(prompt)) {
-        bad.push(course.title + " / " + module.title + ": generic placeholder prompt");
-      }
-      if (!question.correct || !Array.isArray(question.distractors) || question.distractors.length !== 3) {
-        bad.push(course.title + " / " + module.title + ": invalid option set");
-      }
+  if (!prompt || !correct || distractors.length !== 3) {
+    bad.push(`${courseTitle} / ${assessmentLabel} / Q${index}: invalid question or option set`);
+  }
+
+  if (/only a lesson title|memorised without understanding|without considering the situation/i.test(
+    `${prompt} ${correct} ${distractors.join(" ")}`
+  )) {
+    bad.push(`${courseTitle} / ${assessmentLabel} / Q${index}: placeholder wording detected`);
+  }
+
+  const allOptions = [correct, ...distractors].map((item) => item.toLowerCase());
+  if (new Set(allOptions).size !== allOptions.length) {
+    bad.push(`${courseTitle} / ${assessmentLabel} / Q${index}: duplicate options`);
+  }
+
+  if (prompt) {
+    const key = prompt.toLowerCase();
+    promptCounts.set(key, (promptCounts.get(key) ?? 0) + 1);
+  }
+}
+
+for (const course of data.courses ?? []) {
+  for (const module of course.modules ?? []) {
+    moduleTests += 1;
+    const questions = module.test?.questions ?? [];
+
+    if (questions.length !== 9) {
+      bad.push(
+        `${course.title} / ${module.title}: expected 9 module-test questions, found ${questions.length}`
+      );
     }
+
+    moduleQuestions += questions.length;
+    questions.forEach((question, index) =>
+      inspectQuestion(course.title, `${module.title} module test`, question, index + 1)
+    );
   }
 
   finalExams += 1;
-  const questions = course.finalExam?.questions || [];
-  if (questions.length !== 20) bad.push(course.title + ": expected 20 final-exam questions, found " + questions.length);
+  const questions = course.finalExam?.questions ?? [];
+
+  if (questions.length !== 20) {
+    bad.push(
+      `${course.title}: expected 20 final-exam questions, found ${questions.length}`
+    );
+  }
+
   finalQuestions += questions.length;
+  questions.forEach((question, index) =>
+    inspectQuestion(course.title, "final exam", question, index + 1)
+  );
 }
 
-const duplicates = [...prompts.entries()].filter(([, count]) => count > 1);
-console.log(JSON.stringify({
-  courses: (data.courses || []).length,
+const duplicatePrompts = [...promptCounts.entries()]
+  .filter(([, count]) => count > 1);
+
+const result = {
+  courses: data.courses?.length ?? 0,
   moduleTests,
   finalExams,
   moduleQuestions,
   finalQuestions,
   totalQuestions: moduleQuestions + finalQuestions,
-  duplicatePrompts: duplicates.length,
+  duplicatePrompts: duplicatePrompts.length,
   invalidItems: bad.length,
   sampleProblems: bad.slice(0, 20)
-}, null, 2));
+};
 
-if (bad.length || duplicates.length) process.exitCode = 1;
+console.log(JSON.stringify(result, null, 2));
+
+if (bad.length || duplicatePrompts.length) {
+  process.exitCode = 1;
+}
