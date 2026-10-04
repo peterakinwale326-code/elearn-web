@@ -61,8 +61,8 @@ const subjectImages: Record<string, string> = {
 const fallbackImage =
   "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=1000&q=80";
 
-function getCourseImage(subject: string) {
-  return subjectImages[subject] ?? fallbackImage;
+function getCourseImage(subject: string, thumbnailUrl?: string | null) {
+  return thumbnailUrl || subjectImages[subject] || fallbackImage;
 }
 
 function SkeletonCard() {
@@ -259,7 +259,7 @@ export default function LandingPage() {
                 return (
                   <Link href={`/courses/${course.id}`} className={styles.courseCard} key={course.id}>
                     <div className={styles.courseImage}>
-                      <img src={getCourseImage(course.subject)} alt="" loading="lazy" />
+                      <img src={getCourseImage(course.subject, course.thumbnailUrl)} alt="" loading="lazy" />
                       <span className={styles.courseSubject}>
                         <CourseIcon size={13} /> {course.subject}
                       </span>
