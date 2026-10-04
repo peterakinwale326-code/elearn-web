@@ -706,6 +706,37 @@ function AssessmentIntro({
           </div>
         </div>
 
+        <div className="assessmentSources">
+          <strong>Assessment references</strong>
+          <p>
+            The assessment format is informed by Nigerian examination structures.
+            These are reference sources, not copied question banks.
+          </p>
+          <div>
+            <a
+              href="https://www.waecnigeria.org/sites/default/files/2026-03/FINAL%20TIMETABLE%20WASSCE%20%28SC%29%202026%20-%20NIGERIA.pdf"
+              target="_blank"
+              rel="noreferrer"
+            >
+              WAEC 2026 structure
+            </a>
+            <a
+              href="https://neco.gov.ng/2026%20SSCE%20INTERNAL%20TIMETABLE-2.pdf"
+              target="_blank"
+              rel="noreferrer"
+            >
+              NECO 2026 structure
+            </a>
+            <a
+              href="https://www.nerdc.gov.ng/content_manager/jss1-3.html"
+              target="_blank"
+              rel="noreferrer"
+            >
+              NERDC JSS curriculum
+            </a>
+          </div>
+        </div>
+
         <button
           type="button"
           className="primaryButton"
