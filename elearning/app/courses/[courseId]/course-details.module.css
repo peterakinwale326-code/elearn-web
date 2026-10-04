@@ -566,6 +566,36 @@
   font-weight: 750;
 }
 
+.lessonContent code {
+  padding: 2px 5px;
+  border-radius: 5px;
+  background: #f1f5f9;
+  color: #7c3aed;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: .9em;
+}
+
+.lessonCode {
+  overflow-x: auto;
+  margin: 20px 0 24px;
+  padding: 18px 20px;
+  border: 1px solid #1e293b;
+  border-radius: 12px;
+  background: #0f172a;
+  color: #e2e8f0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 13px;
+  line-height: 1.7;
+  white-space: pre;
+}
+
+.lessonCode code {
+  padding: 0;
+  background: transparent;
+  color: inherit;
+  font-size: inherit;
+}
+
 .lessonContent ul,
 .lessonContent ol {
   margin: 10px 0 22px;
