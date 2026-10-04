@@ -11,7 +11,9 @@
     "db:check": "node --env-file=.env.local scripts/check-db.cjs",
     "db:seed": "node --env-file=.env.local scripts/seed-courses.mjs",
     "db:migrate-auth": "node --env-file=.env.local scripts/migrate-auth.mjs",
-    "lint": "eslint"
+    "lint": "eslint",
+    "curriculum:enrich": "node scripts/enrich-curriculum.mjs",
+    "curriculum:validate": "node scripts/validate-curriculum.mjs"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
