@@ -606,7 +606,6 @@ echo "Score: " . $score;
 ?>`;
     walkthrough = "The dollar-prefixed variables store the student's data. echo sends the values to the generated page output.";
   } else if (isJava || isCSharp || isDart || isRuby || isC || isCpp) {
-    const name = isJava ? "String" : isCSharp ? "string" : isDart ? "String" : isRuby ? "" : isC || isCpp ? "char[]" : "";
     code = isJava
       ? `public class Main {
   public static void main(String[] args) {
