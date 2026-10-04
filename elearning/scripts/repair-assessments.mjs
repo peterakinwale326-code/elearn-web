@@ -91,4 +91,4 @@ for (const course of curriculum.courses || []) {
 }
 curriculum.meta = Object.assign({}, curriculum.meta, { assessmentRevision: { version: "4.0", status: "Content-based assessment repair", sources: [SOURCES.waec, SOURCES.neco, SOURCES.jss] } });
 await fs.writeFile(file, JSON.stringify(curriculum, null, 2) + "\n", "utf8");
-console.log("Repaired " + curriculum.courses.length + " courses: 225 module tests, 75 final exams, 3501 MCQs.");
+console.log("Repaired " + curriculum.courses.length + " courses: " + (curriculum.courses.length * 3) + " module tests, " + curriculum.courses.length + " final exams, 3525 MCQs.");
