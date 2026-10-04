@@ -361,6 +361,430 @@ function getSubjectImage(subject) {
   return subjectImages[subject] ?? fallbackSubjectImage;
 }
 
+function cleanLessonTitle(title) {
+  return String(title ?? "")
+    .replace(/^\d+(?:\.\d+)?\s*/, "")
+    .trim();
+}
+
+function htmlLessonContent(title) {
+  const topic = cleanLessonTitle(title);
+  const lower = topic.toLowerCase();
+
+  if (lower === "html document structure") {
+    return {
+      objective:
+        "Explain the purpose of the HTML document structure, identify the role of doctype, html, head, title, meta and body elements, and create a valid basic web page.",
+      content: `# HTML document structure
+
+### Learning Objectives
+
+By the end of this lesson, you should be able to:
+
+- explain what HTML document structure means;
+- identify the purpose of the doctype, html, head, title, meta and body elements;
+- create a basic HTML document and open it in a browser;
+- make a small change to the document and predict the result.
+
+### Introduction
+
+Every HTML page has a structure. The browser reads that structure from top to bottom and uses the elements to build the document that the user sees. Learning the structure first makes later topics such as headings, links, images and forms much easier.
+
+### Detailed Explanation
+
+An HTML document normally has a document type declaration, one root html element, a head section and a body section.
+
+- **DOCTYPE** tells the browser that the document uses modern HTML.
+- **html** is the root element that contains the whole document.
+- **head** contains information about the page that is not normally displayed as page content.
+- **meta charset** tells the browser which character encoding to use.
+- **title** supplies the text shown in the browser tab.
+- **body** contains the visible page content.
+
+### Code Example
+
+\`\`\`html
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My School</title>
+</head>
+<body>
+  <h1>Welcome to my school</h1>
+</body>
+</html>
+\`\`\`
+
+### Line-by-Line Walkthrough
+
+1. **`<!doctype html>`** — Declares the document as an HTML5 document. It is a declaration, not a normal HTML element.
+2. **`<html lang="en">`** — Starts the root HTML element. The `lang` attribute tells browsers and assistive technologies that the main language is English.
+3. **`<head>`** — Starts the head section, where document information such as the title and metadata is placed.
+4. **`<meta charset="UTF-8">`** — Sets the character encoding to UTF-8 so the browser can correctly handle a wide range of characters.
+5. **`<title>My School</title>`** — Sets the page title displayed in the browser tab or window title.
+6. **`</head>`** — Closes the head section.
+7. **`<body>`** — Starts the section containing the content displayed on the page.
+8. **`<h1>Welcome to my school</h1>`** — Creates the main heading visible on the page. The `h1` element represents the page's primary heading.
+9. **`</body>`** — Closes the visible page-content section.
+10. **`</html>`** — Closes the root HTML element and therefore ends the document.
+
+### What the Browser Does
+
+The browser does not display the tags themselves as ordinary text. It interprets the markup and builds a document tree. In this example, the browser tab shows **My School**, while the page displays **Welcome to my school** as the main heading.
+
+### Change the Code
+
+Change the title and heading:
+
+\`\`\`html
+<title>PStacks Secondary School</title>
+<h1>Welcome to PStacks Secondary School</h1>
+\`\`\`
+
+Save the file, refresh the browser and explain which change affected the browser tab and which change affected the page.
+
+### Common Mistakes
+
+- forgetting to close an element that requires a closing tag;
+- placing visible page content inside the head instead of the body;
+- using a different character encoding without understanding the effect;
+- confusing the document title with the visible `h1` heading;
+- forgetting the `lang` attribute on the root element.
+
+### Practical Activity
+
+Create a school home page containing a page title, the school's name as an `h1`, one short paragraph and a second heading for **Our Subjects**. Open it in a browser and inspect the HTML structure with the browser developer tools.
+
+### Quick Check
+
+1. What is the purpose of `<!doctype html>`?
+2. What belongs inside `<head>`?
+3. Where should visible page content be placed?
+4. What is the difference between `<title>` and `<h1>`?
+5. Why is `lang="en"` useful?
+
+### Summary
+
+HTML structure gives the browser a clear hierarchy for the page. Once you understand the relationship between the document declaration, root element, head and body, you have a foundation for building complete web pages.`,
+    };
+  }
+
+  const topicMap = [
+    ["text, headings and paragraphs", "Use heading elements to create a clear hierarchy and paragraph elements for blocks of text. A page should normally have one main h1 and then use h2 and h3 headings according to the content structure."],
+    ["links and navigation", "Links use the anchor element. The href attribute identifies the destination, while meaningful link text tells users where the link leads. Navigation should connect related pages without relying on vague labels such as 'click here'."],
+    ["lists", "HTML provides unordered lists for items where order does not matter and ordered lists where sequence matters. List items belong inside ul or ol elements rather than being separated with manual hyphens."],
+    ["images and image alternatives", "Images are inserted with the img element. The src attribute identifies the image resource and alt provides a text alternative. Informative images need meaningful alternatives; decorative images can use an empty alt attribute."],
+    ["tables", "Tables represent relationships between rows and columns of data. Use table, thead, tbody, tr, th and td according to their roles, and use th for headings rather than using bold text to imitate a table heading."],
+    ["forms and form controls", "Forms collect user input. Labels should be connected to their controls, names identify submitted values, and appropriate input types help browsers validate and present controls correctly."],
+    ["semantic html", "Semantic elements communicate the purpose of content. Elements such as header, nav, main, section, article, aside and footer make the document easier for browsers, search engines and assistive technologies to understand."],
+    ["html validation and debugging", "Validation and browser developer tools help you find structural problems. Check nesting, missing closing tags, invalid attributes and incorrect paths before changing several parts of a page at once."],
+    ["audio and video", "The audio and video elements provide native controls for media. Include controls when users need playback controls and provide useful fallback text or source formats when appropriate."],
+    ["embedding external content", "The iframe element can embed another document, such as a trusted map or video player. External content should be selected carefully and given an accessible title."],
+    ["form labels and accessibility", "A form control needs a clear label. The label element can reference a control through its for and id attributes, making the form easier to use with keyboards and assistive technologies."],
+    ["page metadata", "Metadata describes the document to browsers, search engines and sharing systems. Common examples include charset, viewport and a useful title."],
+    ["responsive images", "Responsive image techniques allow a browser to choose an appropriate image resource for the available space and screen resolution. The picture element and srcset are useful when different image versions are needed."],
+    ["accessible navigation", "Navigation should have a clear structure, meaningful link names and a predictable keyboard order. A nav element identifies a major navigation area."],
+    ["content organization", "Good HTML separates content into meaningful sections instead of using empty div elements for everything. Structure the page according to the information users need to understand."],
+    ["web page structure planning", "Plan the page before writing markup. Identify the main content, navigation, supporting information and footer, then choose semantic elements that match those roles."],
+    ["multi-section school page", "A school page can combine header, navigation, main content, sections for subjects or announcements, and a footer. Each section should have a clear purpose and appropriate heading."],
+    ["article and news page", "An article page should identify the article itself, its heading, author or publication information where relevant, and the main content. The article element is appropriate for a self-contained piece of content."],
+    ["contact and registration form", "A registration form should collect only necessary information, use labels and suitable input types, and provide clear instructions. Required fields should be marked with the required attribute when appropriate."],
+    ["student profile page", "A student profile can use headings, paragraphs, lists and semantic sections to present a name, class, interests, subjects and achievements in a readable hierarchy."],
+    ["media-rich lesson page", "A media-rich lesson combines explanatory text with images, audio or video. Keep the text understandable on its own and provide alternatives for important media."],
+    ["accessible course page", "An accessible course page uses semantic landmarks, logical headings, visible focus states and meaningful labels so learners can navigate it with different input methods."],
+    ["mini website assembly", "A small website is easier to maintain when common structure is planned consistently across pages. Keep navigation labels, headings and document structure predictable."],
+    ["reviewing html with browser tools", "Browser developer tools let you inspect the live DOM, attributes, styles and accessibility information. Use the inspector to understand what the browser actually built from your source."],
+    ["html project cleanup", "Project cleanup means removing invalid markup, unnecessary wrappers, duplicate content and unclear labels. Check paths, indentation and heading order before considering the page finished."],
+    ["html project review", "Review the final page for valid structure, readable content, useful navigation, accessible labels and appropriate alternatives for images and media."]
+  ];
+
+  const match = topicMap.find(([name]) => lower.includes(name));
+  const explanation = match?.[1] ??
+    `This lesson focuses on **${topic}**. Read the topic as a practical HTML skill: identify the element or attribute involved, understand what it represents, use it in a small page, and inspect the result in a browser.`;
+
+  return {
+    objective: `Explain ${topic.toLowerCase()}, use the appropriate HTML elements and attributes, and apply the idea in a small school web page.`,
+    content: `# ${topic}
+
+### Introduction
+
+HTML describes the structure and meaning of web content. In this lesson, the focus is **${topic}**. The goal is not to memorise tags in isolation, but to understand why an element is appropriate and how the browser interprets it.
+
+### Detailed Explanation
+
+${explanation}
+
+### Example
+
+\`\`\`html
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>School Example</title>
+</head>
+<body>
+  <main>
+    <h1>Our School</h1>
+    <section>
+      <h2>${topic}</h2>
+      <p>Practice this HTML idea with a small, meaningful page.</p>
+    </section>
+  </main>
+</body>
+</html>
+\`\`\`
+
+### How to Read the Example
+
+Start at the document root, identify the head and body, then find the element that represents the lesson topic. Change one element at a time and refresh the browser so you can see exactly what changed.
+
+### Common Mistakes
+
+- choosing an element because of how it looks instead of what it means;
+- forgetting required attributes or closing tags;
+- changing several parts of the page before checking the first error;
+- using vague text when a meaningful heading or label would be clearer.
+
+### Practical Activity
+
+Create a small school page that demonstrates **${topic}**. Use realistic school information, open the page in a browser and inspect the resulting HTML.
+
+### Quick Check
+
+1. What problem does **${topic}** solve?
+2. Which HTML element or attribute is most important in this lesson?
+3. What would happen if you changed one part of the example?
+4. Name one common mistake.
+5. Explain the topic in your own words.
+
+### Summary
+
+A strong understanding of **${topic}** means knowing the correct HTML structure, understanding why it is used and being able to apply it in a small page.`,
+  };
+}
+
+function programmingLessonContent(subject, title) {
+  const topic = cleanLessonTitle(title);
+  const language = subject.toLowerCase();
+  const isPython = language.includes("python");
+  const isJavaScript = language.includes("javascript");
+  const isTypeScript = language.includes("typescript");
+  const isJava = language === "java";
+  const isCSharp = language === "c#";
+  const isPHP = language === "php";
+  const isDart = language === "dart";
+  const isRuby = language === "ruby";
+  const isC = language === "c";
+  const isCpp = language.includes("c++");
+
+  let code = "";
+  let walkthrough = "";
+
+  if (isPython) {
+    code = `name = "Amina"
+score = 82
+
+print(name)
+print("Score:", score)`;
+    walkthrough = "The first line stores the student's name, the second stores a numeric score, and the print statements send those values to the console.";
+  } else if (isJavaScript || isTypeScript) {
+    code = `const student = "Amina";
+const score = 82;
+
+console.log(student);
+console.log("Score:", score);`;
+    walkthrough = "The const declarations create values that the program can use. console.log displays those values in the browser console or runtime output.";
+  } else if (isPHP) {
+    code = `<?php
+$student = "Amina";
+$score = 82;
+
+echo $student;
+echo "Score: " . $score;
+?>`;
+    walkthrough = "The dollar-prefixed variables store the student's data. echo sends the values to the generated page output.";
+  } else if (isJava || isCSharp || isDart || isRuby || isC || isCpp) {
+    const name = isJava ? "String" : isCSharp ? "string" : isDart ? "String" : isRuby ? "" : isC || isCpp ? "char[]" : "";
+    code = isJava
+      ? `public class Main {
+  public static void main(String[] args) {
+    String student = "Amina";
+    int score = 82;
+    System.out.println(student);
+    System.out.println("Score: " + score);
+  }
+}`
+      : isCSharp
+        ? `string student = "Amina";
+int score = 82;
+
+Console.WriteLine(student);
+Console.WriteLine("Score: " + score);`
+        : isDart
+          ? `void main() {
+  String student = "Amina";
+  int score = 82;
+  print(student);
+  print("Score: $score");
+}`
+          : isRuby
+            ? `student = "Amina"
+score = 82
+
+puts student
+puts "Score: #{score}"`
+            : isC || isCpp
+              ? `#include <stdio.h>
+
+int main(void) {
+  char student[] = "Amina";
+  int score = 82;
+  printf("%s\\n", student);
+  printf("Score: %d\\n", score);
+  return 0;
+}`
+              : `student = "Amina"
+score = 82`;
+    walkthrough = "The example creates values for a student record and then displays them. Read each declaration first, then trace the output statements in the same order the runtime executes them.";
+  } else {
+    code = `const student = "Amina";
+const score = 82;
+
+console.log(student, score);`;
+    walkthrough = "The example stores two pieces of student data and then displays them. Trace the values from their declaration to the output.";
+  }
+
+  return {
+    objective: `Explain ${topic.toLowerCase()}, write a small ${subject} example, trace the code line by line, and modify it without breaking the program.`,
+    content: `# ${topic}
+
+### Learning Objectives
+
+By the end of this lesson, you should be able to explain **${topic}**, read the example from top to bottom, predict its result and make a controlled change.
+
+### Introduction
+
+${subject} is learned most effectively by connecting syntax to a real problem. In this lesson, **${topic}** is demonstrated with a small student-record example so that each line has a clear purpose.
+
+### Concept
+
+Focus on what the language is doing rather than copying punctuation. Identify the values, statements, expressions and output involved in the example.
+
+### Code Example
+
+\`\`\`
+${code}
+\`\`\`
+
+### Line-by-Line Walkthrough
+
+${walkthrough}
+
+Read the example again and identify what data exists before each line and what changes after it runs. This tracing habit is useful when debugging larger programs.
+
+### Expected Behaviour
+
+The program displays the student's name and score. Before running it, predict the exact output. Then execute it and compare the result with your prediction.
+
+### Change the Code
+
+Change the student name to your own name and change the score to another value. Run the program again and explain why the output changed.
+
+### Common Mistakes
+
+- confusing a value with the name used to store it;
+- changing several lines at once and losing track of the cause of an error;
+- ignoring the compiler, interpreter or runtime error message;
+- using syntax from another programming language by mistake.
+
+### Practical Activity
+
+Create a small record for two students. Store their names and scores, display the records and explain each line before moving to the next change.
+
+### Quick Check
+
+1. What concept is this lesson teaching?
+2. What value is stored first?
+3. What line produces the output?
+4. What happens if the score changes?
+5. Describe one mistake you would check first when the program fails.
+
+### Summary
+
+The goal is to understand **${topic}**, not simply reproduce the example. You should be able to read the code, predict its behaviour, run it and make a small change confidently.`,
+  };
+}
+
+function buildLessonContent(subject, title, courseTitle) {
+  const subjectName = String(subject ?? courseTitle ?? "").trim();
+  const lower = subjectName.toLowerCase();
+  if (
+    lower.includes("html") ||
+    lower.includes("web development")
+  ) {
+    return htmlLessonContent(title);
+  }
+
+  const programmingSubjects = [
+    "python", "javascript", "typescript", "java", "c#", "c++",
+    "c programming", "dart", "ruby", "php"
+  ];
+  if (programmingSubjects.some((name) => lower.includes(name))) {
+    return programmingLessonContent(subjectName, title);
+  }
+
+  const topic = cleanLessonTitle(title);
+  return {
+    objective:
+      `Explain ${topic.toLowerCase()}, identify its main ideas and apply the concept to a realistic school or everyday example.`,
+    content: `# ${topic}
+
+### Introduction
+
+This lesson focuses on **${topic}** in **${subjectName}**. Start with the meaning of the topic, then connect it to an example that a secondary-school learner can recognise.
+
+### Key Idea
+
+${topic} should be understood as a concept with a purpose, not as a definition to memorise. Identify what the concept means, what problem it addresses, its important parts and where it is used.
+
+### Worked Example
+
+Consider a realistic school situation involving **${topic}**. Identify the information given, apply the concept step by step and explain why the result or conclusion follows from the information.
+
+### Key Points
+
+- define the main concept in your own words;
+- identify its important parts or stages;
+- connect the idea to a realistic example;
+- check the result against the information in the question.
+
+### Common Mistakes
+
+- memorising a definition without understanding the idea;
+- skipping a step in a worked example;
+- using an unrelated example;
+- giving an answer without explaining the reasoning.
+
+### Practical Activity
+
+Create your own school-related example of **${topic}**. Explain the situation, apply the concept and write a short conclusion.
+
+### Quick Check
+
+1. What does **${topic}** mean?
+2. Why is it important in **${subjectName}**?
+3. What are its main parts or stages?
+4. Give one realistic example.
+5. Explain the idea without copying the definition.
+
+### Summary
+
+You should now be able to explain **${topic}**, recognise it in a question and apply it to a realistic example.`,
+  };
+}
+
 const courseSummaryQuery = `
   SELECT
     c.id,
@@ -529,23 +953,31 @@ async function getCourseDetails(courseId) {
   }
 
   const assessments = [...assessmentById.values()];
-  const lessons = lessonRows.map((lesson) => ({
-    id: Number(lesson.id),
-    moduleId: Number(lesson.module_id),
-    moduleNumber: Number(lesson.module_number),
-    moduleCode: lesson.module_code,
-    lessonCode: lesson.lesson_code,
-    position: Number(lesson.position),
-    title: lesson.title,
-    durationMinutes: Number(lesson.duration_minutes ?? 0),
-    objective: lesson.objective,
-    content: lesson.content,
-    summary: lesson.summary,
-    videoUrl: lesson.video_url,
-    documentUrl: lesson.document_url,
-    isFree: Boolean(lesson.is_free),
-    isPublished: Boolean(lesson.is_published),
-  }));
+  const lessons = lessonRows.map((lesson) => {
+    const generated = buildLessonContent(
+      courseRow.subject,
+      lesson.title,
+      courseRow.title,
+    );
+
+    return {
+      id: Number(lesson.id),
+      moduleId: Number(lesson.module_id),
+      moduleNumber: Number(lesson.module_number),
+      moduleCode: lesson.module_code,
+      lessonCode: lesson.lesson_code,
+      position: Number(lesson.position),
+      title: lesson.title,
+      durationMinutes: Number(lesson.duration_minutes ?? 0),
+      objective: generated.objective,
+      content: generated.content,
+      summary: lesson.summary || generated.objective,
+      videoUrl: lesson.video_url,
+      documentUrl: lesson.document_url,
+      isFree: Boolean(lesson.is_free),
+      isPublished: Boolean(lesson.is_published),
+    };
+  });
 
   const modules = moduleRows.map((module) => {
     const moduleId = Number(module.id);
