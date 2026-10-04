@@ -1,0 +1,51 @@
+{
+  "examStructure": {
+    "waec": {
+      "name": "WAEC WASSCE (Nigeria)",
+      "officialTimetable": "https://www.waecnigeria.org/sites/default/files/2026-03/FINAL%20TIMETABLE%20WASSCE%20%28SC%29%202026%20-%20NIGERIA.pdf",
+      "faq": "https://www.waecnigeria.org/faq?page=0",
+      "notes": "The 2026 WAEC Nigeria timetable shows subject-specific Objective and Essay papers, with practical/oral papers for some subjects. Durations vary by subject, so this platform uses the official timetable as the structural reference rather than forcing one duration on every course."
+    },
+    "neco": {
+      "name": "NECO SSCE (Nigeria)",
+      "officialTimetable": "https://neco.gov.ng/2026%20SSCE%20INTERNAL%20TIMETABLE-2.pdf",
+      "externalTimetable": "https://neco.gov.ng/2026%20SSCE%20EXTERNAL%20TIMETABLE.pdf",
+      "notes": "The 2026 NECO timetables show Objective and Essay papers and, where applicable, Practical, Alternative-to-Practical, Theory & Practice, or Orals papers. Durations vary by subject."
+    },
+    "nerdc": {
+      "jssCurriculum": "https://www.nerdc.gov.ng/content_manager/jss1-3.html",
+      "curriculumHome": "https://www.nerdc.gov.ng/content_manager/curriculum.html",
+      "subjectOfferings": "https://www.nerdc.gov.ng/content_manager/Press%20Release%20On%20New%20FG%20Curriculum.pdf",
+      "notes": "NERDC is the curriculum reference for Nigerian JSS subject coverage. The platform should describe its catalogue as Nigeria-aligned unless a course is directly verified against the current official curriculum."
+    }
+  },
+  "openLearningReferences": {
+    "openStax": "https://openstax.org/subjects",
+    "oerAfrica": "https://www.oerafrica.org/",
+    "mdn": "https://developer.mozilla.org/",
+    "python": "https://docs.python.org/3/",
+    "java": "https://docs.oracle.com/en/java/",
+    "php": "https://www.php.net/docs.php",
+    "cppreference": "https://en.cppreference.com/",
+    "ruby": "https://www.ruby-lang.org/en/documentation/",
+    "dart": "https://dart.dev/language",
+    "typescript": "https://www.typescriptlang.org/docs/",
+    "csharp": "https://learn.microsoft.com/dotnet/csharp/",
+    "cobol": "https://gnucobol.sourceforge.io/guides.html"
+  },
+  "questionPolicy": {
+    "sourceOfTruth": "Questions must test concepts taught in the platform lesson notes. External sources are used to verify curriculum and assessment structure; copyrighted past-question banks are not copied wholesale.",
+    "moduleTest": {
+      "purpose": "Test the lessons in the current module",
+      "defaultQuestionCount": 9,
+      "defaultDurationMinutes": 15,
+      "passingScore": 50
+    },
+    "finalExam": {
+      "purpose": "Test concepts across the whole course",
+      "defaultQuestionCount": 20,
+      "defaultDurationMinutes": 30,
+      "passingScore": 50
+    }
+  }
+}
