@@ -12,7 +12,8 @@
     "db:seed": "node --env-file=.env.local scripts/repair-assessments.mjs && node --env-file=.env.local scripts/seed-curriculum.mjs",
     "db:migrate-auth": "node --env-file=.env.local scripts/migrate-auth.mjs",
     "lint": "eslint",
-    "db:audit-assessments": "node scripts/audit-assessments.mjs"
+    "db:audit-assessments": "node scripts/audit-assessments.mjs",
+    "curriculum:import-sources": "node scripts/import-source-curriculum.mjs"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
