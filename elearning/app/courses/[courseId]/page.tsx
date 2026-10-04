@@ -1527,7 +1527,16 @@ export default function CourseDetailsPage({
                     }`}
                     key={idString(module.id)}
                   >
-                    <div className="moduleHeading">
+                    <button
+                      type="button"
+                      className="moduleHeading"
+                      onClick={() => {
+                        setActiveModuleIndex(moduleIndex);
+                        const firstLesson = moduleLessons[0];
+                        if (firstLesson) setActiveLessonId(idString(firstLesson.id));
+                        setViewMode("lesson");
+                      }}
+                    >
                       <div className="moduleNumber">
                         {getModuleCode(
                           module,
@@ -1559,7 +1568,7 @@ export default function CourseDetailsPage({
                           className="moduleCheck"
                         />
                       ) : null}
-                    </div>
+                    </button>
 
                     {activeModuleIndex === moduleIndex && (
                       <div className="lessonList">
