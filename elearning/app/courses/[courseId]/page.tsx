@@ -1738,7 +1738,6 @@ export default function CourseDetailsPage({
                         </button>
                       )}
                     </div>
-                  </div>
                 );
               },
             )}
