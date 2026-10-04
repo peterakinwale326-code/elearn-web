@@ -257,7 +257,7 @@ async function insertLesson(
     null;
 
   const sourceNote = sourceUrl
-    ? '\\n\\n## Further Reading\\n\\nThis lesson is part of the platform curriculum and should be studied together with the referenced documentation. Use the source to check terminology, examples and additional details rather than copying it as lesson text.\\n\\n**Reference:** ' + sourceUrl + '\\n'
+    ? '\n\n## Further Reading\n\nThis lesson is part of the platform curriculum and should be studied together with the referenced documentation. Use the source to check terminology, examples and additional details rather than copying it as lesson text.\n\n**Reference:** ' + sourceUrl + '\\n'
     : '';
 
   const lessonContent = String(lesson.content ?? '') + sourceNote;
