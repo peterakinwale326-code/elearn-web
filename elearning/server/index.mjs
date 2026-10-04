@@ -501,10 +501,10 @@ HTML structure gives the browser a clear hierarchy for the page. Once you unders
 
   const match = topicMap.find(([name]) => lower.includes(name));
   const explanation = match?.[1] ??
-    <code>This lesson focuses on **${topic}**. Read the topic as a practical HTML skill: identify the element or attribute involved, understand what it represents, use it in a small page, and inspect the result in a browser.</code>;
+    `This lesson focuses on **${topic}**. Read the topic as a practical HTML skill: identify the element or attribute involved, understand what it represents, use it in a small page, and inspect the result in a browser.`;
 
   return {
-    objective: <code>Explain ${topic.toLowerCase()}, use the appropriate HTML elements and attributes, and apply the idea in a small school web page.</code>,
+    objective: `Explain ${topic.toLowerCase()}, use the appropriate HTML elements and attributes, and apply the idea in a small school web page.`,
     content: `# ${topic}
 
 ### Introduction
