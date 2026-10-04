@@ -87,7 +87,24 @@ async function main() {
 
       if (rows.length < 6) throw new Error(`Only ${rows.length} curriculum rows were detected`);
 
-      const terms = [rows.slice(0, Math.ceil(rows.length / 3)), rows.slice(Math.ceil(rows.length / 3), Math.ceil(rows.length * 2 / 3)), rows.slice(Math.ceil(rows.length * 2 / 3))];
+      const terms = [];
+      let currentTerm = [];
+      let previousWeek = 0;
+      for (const row of rows) {
+        const week = Number(String(row[0]).match(/\\d+/)?.[0] ?? 0);
+        if (currentTerm.length && week === 1 && previousWeek > 1) {
+          terms.push(currentTerm);
+          currentTerm = [];
+        }
+        currentTerm.push(row);
+        previousWeek = week;
+      }
+      if (currentTerm.length) terms.push(currentTerm);
+      while (terms.length < 3) terms.push([]);
+      if (terms.length > 3) {
+        const merged = terms.slice(2).flat();
+        terms.splice(2, terms.length - 2, merged);
+      }
 
       course.modules = terms.map((termRows, moduleIndex) => ({
         code: String(moduleIndex + 1),
