@@ -700,14 +700,14 @@
   overflow: hidden;
 }
 
-.subjectImage img {
+.subjectImage .subjectArtwork {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  display: block;
   transition: 300ms ease;
 }
 
-.subjectCard:hover .subjectImage img {
+.subjectCard:hover .subjectImage .subjectArtwork {
   transform: scale(1.05);
 }
 
