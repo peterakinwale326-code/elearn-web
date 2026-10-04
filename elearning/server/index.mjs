@@ -716,71 +716,216 @@ The goal is to understand **${topic}**, not simply reproduce the example. You sh
   };
 }
 
-function buildLessonContent(subject, title, courseTitle) {
-  const subjectName = String(subject ?? courseTitle ?? "").trim();
-  const lower = subjectName.toLowerCase();
-  if (
-    lower.includes("html") ||
-    lower.includes("web development")
-  ) {
-    return htmlLessonContent(title);
-  }
+function wrapLessonLines(items, wordsPerLine = 14) {
+  return items.map((item) => {
+    const words = String(item).trim().split(/\s+/).filter(Boolean);
+    const lines = [];
+    for (let i = 0; i < words.length; i += wordsPerLine) {
+      lines.push(words.slice(i, i + wordsPerLine).join(" "));
+    }
+    return lines.join("\n");
+  }).join("\n");
+}
 
-  const programmingSubjects = [
-    "python", "javascript", "typescript", "java", "c#", "c++",
-    "c programming", "dart", "ruby", "php"
+function getLessonProfile(subject) {
+  const name = String(subject ?? "").trim();
+  const lower = name.toLowerCase();
+  const profiles = [
+    [/cobol/, "business programming and record processing", "a school fee record", "program divisions, data items, PIC clauses, procedures, files and reports"],
+    [/accounting/, "financial records and business transactions", "a school shop sale", "debit, credit, journals, ledgers, balances, revenue and expenses"],
+    [/biology/, "living organisms and their life processes", "a plant observed during practical work", "cells, tissues, organs, systems, processes and adaptations"],
+    [/chemistry/, "matter and chemical change", "a controlled school laboratory experiment", "atoms, elements, compounds, mixtures, reactions and energy"],
+    [/physics/, "matter, forces, motion and energy", "a classroom experiment measuring movement", "force, mass, distance, time, speed, energy and measurement"],
+    [/mathematics|maths/, "numbers, patterns, relationships and mathematical reasoning", "a school calculation using real values", "values, operations, formulas, units, patterns and logical reasoning"],
+    [/statistics/, "collecting, organising, analysing and interpreting data", "a class survey", "data, frequency, mean, median, mode, range and interpretation"],
+    [/economics/, "choices, resources, production and markets", "a student deciding how to spend limited money", "scarcity, choice, opportunity cost, demand, supply and markets"],
+    [/government/, "government institutions, political systems and public administration", "a community decision", "constitution, legislature, executive, judiciary, elections and citizenship"],
+    [/civic/, "citizenship, rights, responsibilities and community values", "students solving a school community problem", "rights, duties, values, responsibility, participation and cooperation"],
+    [/geography/, "places, people, environments and spatial relationships", "a community studying rainfall and settlement", "location, climate, population, resources, environment and spatial patterns"],
+    [/agricultural/, "crop production, animal production and farm management", "a school garden", "soil, crops, livestock, pests, nutrients and farm management"],
+    [/business/, "business activities, customers, management and entrepreneurship", "a small student business", "customers, products, finance, marketing, management and profit"],
+    [/english/, "language, communication, reading and effective expression", "a school announcement", "grammar, vocabulary, sentence structure, meaning and context"],
+    [/literature/, "stories, drama, poetry and literary expression", "a classroom discussion of a literary scene", "character, setting, theme, conflict, imagery, tone and plot"],
+    [/computer|technology|ict|basic technology/, "computing systems and digital problem solving", "a computer laboratory task", "hardware, software, data, networks, users, security and processes"],
+    [/social studies/, "people, society, culture and responsible community life", "a local community problem", "family, culture, society, relationships, values and social responsibility"],
+    [/physical|health|phe/, "health, fitness, movement and safe living", "a school fitness activity", "fitness, nutrition, exercise, safety, movement and healthy habits"],
   ];
-  if (programmingSubjects.some((name) => lower.includes(name))) {
-    return programmingLessonContent(subjectName, title);
-  }
+  const match = profiles.find(([pattern]) => pattern.test(lower));
+  return match
+    ? { name, domain: match[1], example: match[2], terms: match[3] }
+    : { name, domain: name + " concepts, skills and practical applications", example: "a realistic secondary-school situation involving " + name, terms: "definitions, important ideas, examples, relationships and practical applications" };
+}
 
+function programmingLessonCode(subject) {
+  const lower = subject.toLowerCase();
+  if (lower.includes("cobol")) return "       IDENTIFICATION DIVISION.\n       PROGRAM-ID. STUDENT-SCORE.\n       DATA DIVISION.\n       WORKING-STORAGE SECTION.\n       01 STUDENT-NAME PIC A(20) VALUE 'AMINA'.\n       01 SCORE PIC 9(3) VALUE 82.\n       PROCEDURE DIVISION.\n           DISPLAY 'STUDENT: ' STUDENT-NAME.\n           DISPLAY 'SCORE: ' SCORE.\n           STOP RUN.";
+  if (lower.includes("python")) return "name = \"Amina\"\nscore = 82\nprint(\"Student:\", name)\nprint(\"Score:\", score)";
+  if (lower.includes("javascript")) return "const name = \"Amina\";\nconst score = 82;\nconsole.log(\"Student:\", name);\nconsole.log(\"Score:\", score);";
+  if (lower.includes("typescript")) return "const name: string = \"Amina\";\nconst score: number = 82;\nconsole.log(\"Student:\", name);\nconsole.log(\"Score:\", score);";
+  if (lower === "java") return "public class Main {\n  public static void main(String[] args) {\n    String name = \"Amina\";\n    int score = 82;\n    System.out.println(\"Student: \" + name);\n    System.out.println(\"Score: \" + score);\n  }\n}";
+  if (lower.includes("c#")) return "string name = \"Amina\";\nint score = 82;\nConsole.WriteLine(\"Student: \" + name);\nConsole.WriteLine(\"Score: \" + score);";
+  if (lower.includes("c++")) return "#include <iostream>\nusing namespace std;\nint main() {\n  string name = \"Amina\";\n  int score = 82;\n  cout << \"Student: \" << name << endl;\n  cout << \"Score: \" << score << endl;\n  return 0;\n}";
+  if (lower.includes("dart")) return "void main() {\n  String name = \"Amina\";\n  int score = 82;\n  print(\"Student: $name\");\n  print(\"Score: $score\");\n}";
+  if (lower.includes("ruby")) return "name = \"Amina\"\nscore = 82\nputs \"Student: #{name}\"\nputs \"Score: #{score}\"";
+  if (lower.includes("php")) return "<?php\n$name = \"Amina\";\n$score = 82;\necho \"Student: \" . $name;\necho \"Score: \" . $score;\n?>";
+  if (lower.includes("c programming") || lower === "c") return "#include <stdio.h>\nint main(void) {\n  char name[] = \"Amina\";\n  int score = 82;\n  printf(\"Student: %s\\n\", name);\n  printf(\"Score: %d\\n\", score);\n  return 0;\n}";
+  return "";
+}
+
+function buildLessonContent(subject, title, courseTitle) {
+  const profile = getLessonProfile(subject || courseTitle);
   const topic = cleanLessonTitle(title);
+  const subjectName = profile.name || courseTitle || "this subject";
+  const lowerTopic = topic.toLowerCase();
+  const programming = /python|javascript|typescript|java|c#|c\+\+|c programming|^c$|dart|ruby|php|cobol/i.test(subjectName);
+  const code = programming ? programmingLessonCode(subjectName) : "";
+
+  const lines = {
+    intro: [
+      topic + " is an important " + subjectName + " topic because it connects classroom knowledge with practical situations.",
+      "The goal is to understand how " + lowerTopic + " works instead of memorising one short definition.",
+      "In " + subjectName + ", this lesson belongs to " + profile.domain + ", so its ideas have practical meaning.",
+      "Start by learning the meaning of each important word used when discussing this topic.",
+      "Then identify the parts, stages, rules or relationships that make the topic work.",
+      "A familiar example makes the lesson easier to understand and easier to remember.",
+      "The example for this lesson is " + profile.example + ", because students can recognise the situation.",
+      "Always ask what happens first, what happens next, and why each step matters.",
+      "When solving questions, show enough reasoning for another student to follow your method.",
+      "By the end, you should explain the topic without copying the original note.",
+    ],
+    explanation: [
+      "First, know exactly what " + lowerTopic + " means in " + subjectName + ".",
+      "Second, recognise the main terms connected with the topic.",
+      "Important terms include " + profile.terms + ", and each term should have a clear meaning.",
+      "Third, understand how the different parts work together.",
+      "Fourth, know when this knowledge should be used in questions.",
+      "Fifth, choose the correct rule, process or method before acting.",
+      "Sixth, explain why your chosen method fits the problem.",
+      "Seventh, check the result against the information given.",
+      "Eighth, find the exact step when an answer becomes incorrect.",
+      "Ninth, practise with a new example rather than copying one.",
+      "Tenth, connect this lesson with related topics studied earlier.",
+      "These habits turn " + lowerTopic + " from a definition into usable knowledge.",
+    ],
+    worked: [
+      "Begin with the situation: " + profile.example + ".",
+      "First, write down the information that is given in the question.",
+      "Next, identify the part of " + lowerTopic + " that controls the situation.",
+      "Choose the correct rule, process, formula, structure or procedure for that situation.",
+      "Apply the chosen method carefully and keep important steps visible.",
+      "Explain what each step changes instead of jumping directly to the final answer.",
+      "Check whether the result makes sense for the original situation.",
+      "If the result looks wrong, return to the first step and check assumptions.",
+      "State the final answer clearly and explain why it is reasonable.",
+      "Use the same reasoning pattern when a different question tests this concept.",
+    ],
+    application: [
+      "In real life, " + lowerTopic + " helps people understand situations and make better decisions.",
+      "A student can recognise the topic when its important terms appear in a question.",
+      "The main skill is selecting the correct idea instead of using every idea available.",
+      "For practical work, record observations before deciding what those observations mean.",
+      "For calculations, write values, units, operations and the final interpretation clearly.",
+      "For processes, arrange the stages in order and explain the purpose of each stage.",
+      "For written subjects, support explanations with relevant examples and accurate terminology.",
+      "For programming, trace the input, processing and output before changing code.",
+      "For science, separate what you observe from what you conclude from evidence.",
+      "For business and social topics, connect decisions with their effects on people.",
+      "This reasoning habit makes later lessons easier because knowledge becomes connected.",
+    ],
+    mistakes: [
+      "A common mistake is memorising a definition without understanding the words.",
+      "Another mistake is choosing a method before identifying the information given.",
+      "Students also lose marks when important reasoning steps are skipped.",
+      "Using an unrelated example can make a correct idea appear poorly understood.",
+      "Mixing similar terms is dangerous when their meanings or purposes are different.",
+      "For calculations, ignoring units can produce an answer with the wrong meaning.",
+      "For practical work, ignoring instructions can make an otherwise correct method fail.",
+      "For programming, changing many lines at once makes errors harder to locate.",
+      "For science, never claim a conclusion that the available evidence cannot support.",
+      "When unsure, return to the definition and reconnect it with the example.",
+    ],
+    activity: [
+      "Write the topic name and explain it using your own simple words.",
+      "List five important terms connected with the lesson and define each term.",
+      "Create one school example where this topic would be useful.",
+      "Write the information given in your example before attempting the solution.",
+      "Apply the correct process and show every important step clearly.",
+      "Explain why your chosen method is suitable for the example.",
+      "Change one condition and predict what should happen next.",
+      "Compare your prediction with the actual result and explain any difference.",
+      "Ask another student to read your explanation and identify anything unclear.",
+      "Rewrite the unclear part using simpler words and a familiar example.",
+    ],
+    summary: [
+      "You should now understand " + lowerTopic + " as a useful " + subjectName + " concept.",
+      "You should explain the topic without depending on memorised sentences.",
+      "You should recognise important terms and explain how they connect.",
+      "You should identify the correct method when a practical question presents the topic.",
+      "You should show reasoning clearly instead of giving unexplained final answers.",
+      "You should use examples to test your understanding beyond one question.",
+      "You should check calculations, evidence, processes, code or explanations carefully.",
+      "You should correct mistakes by locating the exact step causing the problem.",
+      "You should connect this lesson with earlier knowledge and related topics.",
+      "Most importantly, you should use " + lowerTopic + " confidently in new situations.",
+    ],
+  };
+
+  const codeSection = code
+    ? "### Practical Code Example\n\n~~~\n" + code + "\n~~~\n\n### Code Walkthrough\n\n" +
+      wrapLessonLines([
+        "The program demonstrates " + lowerTopic + " using a small student record example.",
+        "The first data item represents the student's name used throughout the example.",
+        "The second data item stores the student's score for later output.",
+        "The declaration or assignment gives each value a clear place in the program.",
+        "The output instruction displays information so the programmer can inspect the result.",
+        "In COBOL, divisions organise program information and executable procedure instructions.",
+        "In other languages, declarations and statements execute according to language rules.",
+        "Read each line from top to bottom and predict what the program produces.",
+        "Change the student name and score, then run the program again.",
+        "Compare the new output with your prediction and explain why it changed.",
+      ]) + "\n\n"
+    : "";
+
+  const learningObjectives = [
+    "Explain " + lowerTopic + " using simple language and accurate " + subjectName + " terminology.",
+    "Identify the important ideas, terms, stages or structures connected with this lesson.",
+    "Apply the lesson to a realistic secondary-school example without guessing information.",
+    "Explain your reasoning clearly enough for another student to follow.",
+    "Check answers using evidence, rules, calculations, observations or expected behaviour.",
+    "Correct common mistakes by finding the exact point where reasoning changed.",
+    "Use the knowledge in a new question instead of copying the example.",
+    "Connect this lesson with earlier topics and prepare for related lessons.",
+    "Practise until you can explain the idea without reading the note.",
+    "Use the final activity and questions to test your understanding honestly.",
+  ];
+
+  const questions = [
+    "What does " + lowerTopic + " mean in " + subjectName + "?",
+    "Why is " + lowerTopic + " important when studying " + subjectName + "?",
+    "Which important terms should you know before answering questions about this topic?",
+    "What should you identify first when applying this topic to a problem?",
+    "What happens next, and why does that step matter?",
+    "Give one realistic school example where this knowledge can be applied.",
+    "What mistake could produce an incorrect answer even when the definition is remembered?",
+    "How would you check whether your answer is reasonable and supported?",
+    "Explain the topic to a classmate without reading the note.",
+    "What related lesson would you study next to strengthen your understanding?",
+  ];
+
   return {
-    objective:
-      `Explain ${topic.toLowerCase()}, identify its main ideas and apply the concept to a realistic school or everyday example.`,
-    content: `# ${topic}
-
-### Introduction
-
-This lesson focuses on **${topic}** in **${subjectName}**. Start with the meaning of the topic, then connect it to an example that a secondary-school learner can recognise.
-
-### Key Idea
-
-${topic} should be understood as a concept with a purpose, not as a definition to memorise. Identify what the concept means, what problem it addresses, its important parts and where it is used.
-
-### Worked Example
-
-Consider a realistic school situation involving **${topic}**. Identify the information given, apply the concept step by step and explain why the result or conclusion follows from the information.
-
-### Key Points
-
-- define the main concept in your own words;
-- identify its important parts or stages;
-- connect the idea to a realistic example;
-- check the result against the information in the question.
-
-### Common Mistakes
-
-- memorising a definition without understanding the idea;
-- skipping a step in a worked example;
-- using an unrelated example;
-- giving an answer without explaining the reasoning.
-
-### Practical Activity
-
-Create your own school-related example of **${topic}**. Explain the situation, apply the concept and write a short conclusion.
-
-### Quick Check
-
-1. What does **${topic}** mean?
-2. Why is it important in **${subjectName}**?
-3. What are its main parts or stages?
-4. Give one realistic example.
-5. Explain the idea without copying the definition.
-
-### Summary
-
-You should now be able to explain **${topic}**, recognise it in a question and apply it to a realistic example.`,
+    objective: "Explain " + lowerTopic + " in " + subjectName + ", apply it to a practical example, and clearly explain each important step.",
+    content:
+      "# " + topic + "\n\n" +
+      "### Learning Objectives\n\n" + wrapLessonLines(learningObjectives) + "\n\n" +
+      "### Introduction\n\n" + wrapLessonLines(lines.intro) + "\n\n" +
+      "### Detailed Explanation\n\n" + wrapLessonLines(lines.explanation) + "\n\n" +
+      "### Worked Example\n\n" + wrapLessonLines(lines.worked) + "\n\n" +
+      codeSection +
+      "### Real-Life Application\n\n" + wrapLessonLines(lines.application) + "\n\n" +
+      "### Common Mistakes\n\n" + wrapLessonLines(lines.mistakes) + "\n\n" +
+      "### Practical Activity\n\n" + wrapLessonLines(lines.activity) + "\n\n" +
+      "### Quick Check\n\n" + questions.map((question, index) => (index + 1) + ". " + question).join("\n") + "\n\n" +
+      "### Summary\n\n" + wrapLessonLines(lines.summary) + "\n",
   };
 }
 
