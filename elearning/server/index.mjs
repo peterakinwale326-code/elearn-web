@@ -902,7 +902,7 @@ function buildLessonContent(subject, title, courseTitle) {
         "Change the student name and score, then run the program again.",
         "Compare the new output with your prediction and explain why it changed.",
       ]) + "\n\n"
-    : "";
+    : "");
 
   function structuredCore() {
     const subjectLower = subjectName.toLowerCase();
