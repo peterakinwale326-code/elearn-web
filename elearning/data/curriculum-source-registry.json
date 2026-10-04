@@ -1,0 +1,607 @@
+{
+  "version": "1.0",
+  "status": "source-backed-course-registry",
+  "note": "This registry records the external curriculum/scheme source for every course. It does not reproduce copyrighted lesson notes.",
+  "courses": [
+    {
+      "course": "JSS1 English Studies",
+      "level": "JSS1",
+      "subject": "English Studies",
+      "source": "https://syllabus.ng/jss1-scheme-of-work/english",
+      "sourceType": "published_scheme_of_work",
+      "license": "copyrighted_source; link-only reference"
+    },
+    {
+      "course": "JSS2 English Studies",
+      "level": "JSS2",
+      "subject": "English Studies",
+      "source": "https://syllabus.ng/jss2-scheme-of-work/english",
+      "sourceType": "published_scheme_of_work",
+      "license": "copyrighted_source; link-only reference"
+    },
+    {
+      "course": "JSS3 English Studies",
+      "level": "JSS3",
+      "subject": "English Studies",
+      "source": "https://syllabus.ng/jss3-scheme-of-work/english",
+      "sourceType": "published_scheme_of_work",
+      "license": "copyrighted_source; link-only reference"
+    },
+    {
+      "course": "JSS1 Mathematics",
+      "level": "JSS1",
+      "subject": "Mathematics",
+      "source": "https://syllabus.ng/jss1-scheme-of-work/mathematics",
+      "sourceType": "published_scheme_of_work",
+      "license": "copyrighted_source; link-only reference"
+    },
+    {
+      "course": "JSS2 Mathematics",
+      "level": "JSS2",
+      "subject": "Mathematics",
+      "source": "https://syllabus.ng/jss2-scheme-of-work/mathematics",
+      "sourceType": "published_scheme_of_work",
+      "license": "copyrighted_source; link-only reference"
+    },
+    {
+      "course": "JSS3 Mathematics",
+      "level": "JSS3",
+      "subject": "Mathematics",
+      "source": "https://syllabus.ng/jss3-scheme-of-work/mathematics",
+      "sourceType": "published_scheme_of_work",
+      "license": "copyrighted_source; link-only reference"
+    },
+    {
+      "course": "JSS1 Basic Science and Technology",
+      "level": "JSS1",
+      "subject": "Basic Science and Technology",
+      "source": "https://syllabus.ng/jss1-scheme-of-work/basic-science",
+      "sourceType": "published_scheme_of_work",
+      "license": "copyrighted_source; link-only reference"
+    },
+    {
+      "course": "JSS2 Basic Science and Technology",
+      "level": "JSS2",
+      "subject": "Basic Science and Technology",
+      "source": "https://syllabus.ng/jss2-scheme-of-work/basic-science",
+      "sourceType": "published_scheme_of_work",
+      "license": "copyrighted_source; link-only reference"
+    },
+    {
+      "course": "JSS3 Basic Science and Technology",
+      "level": "JSS3",
+      "subject": "Basic Science and Technology",
+      "source": "https://syllabus.ng/jss3-scheme-of-work/basic-science",
+      "sourceType": "published_scheme_of_work",
+      "license": "copyrighted_source; link-only reference"
+    },
+    {
+      "course": "JSS1 Basic Technology",
+      "level": "JSS1",
+      "subject": "Basic Technology",
+      "source": "https://syllabus.ng/jss1-scheme-of-work/basic-technology",
+      "sourceType": "published_scheme_of_work",
+      "license": "copyrighted_source; link-only reference"
+    },
+    {
+      "course": "JSS2 Basic Technology",
+      "level": "JSS2",
+      "subject": "Basic Technology",
+      "source": "https://syllabus.ng/jss2-scheme-of-work/basic-technology",
+      "sourceType": "published_scheme_of_work",
+      "license": "copyrighted_source; link-only reference"
+    },
+    {
+      "course": "JSS3 Basic Technology",
+      "level": "JSS3",
+      "subject": "Basic Technology",
+      "source": "https://syllabus.ng/jss3-scheme-of-work/basic-technology",
+      "sourceType": "published_scheme_of_work",
+      "license": "copyrighted_source; link-only reference"
+    },
+    {
+      "course": "JSS1 Computer Studies",
+      "level": "JSS1",
+      "subject": "Computer Studies",
+      "source": "https://syllabus.ng/jss1-scheme-of-work/computer-studies",
+      "sourceType": "published_scheme_of_work",
+      "license": "copyrighted_source; link-only reference"
+    },
+    {
+      "course": "JSS2 Computer Studies",
+      "level": "JSS2",
+      "subject": "Computer Studies",
+      "source": "https://syllabus.ng/jss2-scheme-of-work/computer-studies",
+      "sourceType": "published_scheme_of_work",
+      "license": "copyrighted_source; link-only reference"
+    },
+    {
+      "course": "JSS3 Computer Studies",
+      "level": "JSS3",
+      "subject": "Computer Studies",
+      "source": "https://syllabus.ng/jss3-scheme-of-work/computer-studies",
+      "sourceType": "published_scheme_of_work",
+      "license": "copyrighted_source; link-only reference"
+    },
+    {
+      "course": "JSS1 Business Studies",
+      "level": "JSS1",
+      "subject": "Business Studies",
+      "source": "https://syllabus.ng/jss1-scheme-of-work/business-studies",
+      "sourceType": "published_scheme_of_work",
+      "license": "copyrighted_source; link-only reference"
+    },
+    {
+      "course": "JSS2 Business Studies",
+      "level": "JSS2",
+      "subject": "Business Studies",
+      "source": "https://syllabus.ng/jss2-scheme-of-work/business-studies",
+      "sourceType": "published_scheme_of_work",
+      "license": "copyrighted_source; link-only reference"
+    },
+    {
+      "course": "JSS3 Business Studies",
+      "level": "JSS3",
+      "subject": "Business Studies",
+      "source": "https://syllabus.ng/jss3-scheme-of-work/business-studies",
+      "sourceType": "published_scheme_of_work",
+      "license": "copyrighted_source; link-only reference"
+    },
+    {
+      "course": "JSS1 Social Studies",
+      "level": "JSS1",
+      "subject": "Social Studies",
+      "source": "https://syllabus.ng/jss1-scheme-of-work/social-studies",
+      "sourceType": "published_scheme_of_work",
+      "license": "copyrighted_source; link-only reference"
+    },
+    {
+      "course": "JSS2 Social Studies",
+      "level": "JSS2",
+      "subject": "Social Studies",
+      "source": "https://syllabus.ng/jss2-scheme-of-work/social-studies",
+      "sourceType": "published_scheme_of_work",
+      "license": "copyrighted_source; link-only reference"
+    },
+    {
+      "course": "JSS3 Social Studies",
+      "level": "JSS3",
+      "subject": "Social Studies",
+      "source": "https://syllabus.ng/jss3-scheme-of-work/social-studies",
+      "sourceType": "published_scheme_of_work",
+      "license": "copyrighted_source; link-only reference"
+    },
+    {
+      "course": "JSS1 Civic Education",
+      "level": "JSS1",
+      "subject": "Civic Education",
+      "source": "https://syllabus.ng/jss1-scheme-of-work/civic-education",
+      "sourceType": "published_scheme_of_work",
+      "license": "copyrighted_source; link-only reference"
+    },
+    {
+      "course": "JSS2 Civic Education",
+      "level": "JSS2",
+      "subject": "Civic Education",
+      "source": "https://syllabus.ng/jss2-scheme-of-work/civic-education",
+      "sourceType": "published_scheme_of_work",
+      "license": "copyrighted_source; link-only reference"
+    },
+    {
+      "course": "JSS3 Civic Education",
+      "level": "JSS3",
+      "subject": "Civic Education",
+      "source": "https://syllabus.ng/jss3-scheme-of-work/civic-education",
+      "sourceType": "published_scheme_of_work",
+      "license": "copyrighted_source; link-only reference"
+    },
+    {
+      "course": "JSS1 Agricultural Science",
+      "level": "JSS1",
+      "subject": "Agricultural Science",
+      "source": "https://syllabus.ng/jss1-scheme-of-work/agricultural-science",
+      "sourceType": "published_scheme_of_work",
+      "license": "copyrighted_source; link-only reference"
+    },
+    {
+      "course": "JSS2 Agricultural Science",
+      "level": "JSS2",
+      "subject": "Agricultural Science",
+      "source": "https://syllabus.ng/jss2-scheme-of-work/agricultural-science",
+      "sourceType": "published_scheme_of_work",
+      "license": "copyrighted_source; link-only reference"
+    },
+    {
+      "course": "JSS3 Agricultural Science",
+      "level": "JSS3",
+      "subject": "Agricultural Science",
+      "source": "https://syllabus.ng/jss3-scheme-of-work/agricultural-science",
+      "sourceType": "published_scheme_of_work",
+      "license": "copyrighted_source; link-only reference"
+    },
+    {
+      "course": "JSS1 Physical and Health Education",
+      "level": "JSS1",
+      "subject": "Physical and Health Education",
+      "source": "https://syllabus.ng/jss1-scheme-of-work/physical-health-education",
+      "sourceType": "published_scheme_of_work",
+      "license": "copyrighted_source; link-only reference"
+    },
+    {
+      "course": "JSS2 Physical and Health Education",
+      "level": "JSS2",
+      "subject": "Physical and Health Education",
+      "source": "https://syllabus.ng/jss2-scheme-of-work/physical-health-education",
+      "sourceType": "published_scheme_of_work",
+      "license": "copyrighted_source; link-only reference"
+    },
+    {
+      "course": "JSS3 Physical and Health Education",
+      "level": "JSS3",
+      "subject": "Physical and Health Education",
+      "source": "https://syllabus.ng/jss3-scheme-of-work/physical-health-education",
+      "sourceType": "published_scheme_of_work",
+      "license": "copyrighted_source; link-only reference"
+    },
+    {
+      "course": "SS1 English Studies",
+      "level": "SS1",
+      "subject": "English Studies",
+      "source": "https://syllabus.ng/ss1-scheme-of-work/english",
+      "sourceType": "published_scheme_of_work",
+      "license": "copyrighted_source; link-only reference"
+    },
+    {
+      "course": "SS2 English Studies",
+      "level": "SS2",
+      "subject": "English Studies",
+      "source": "https://syllabus.ng/ss2-scheme-of-work/english",
+      "sourceType": "published_scheme_of_work",
+      "license": "copyrighted_source; link-only reference"
+    },
+    {
+      "course": "SS3 English Studies",
+      "level": "SS3",
+      "subject": "English Studies",
+      "source": "https://syllabus.ng/ss3-scheme-of-work/english",
+      "sourceType": "published_scheme_of_work",
+      "license": "copyrighted_source; link-only reference"
+    },
+    {
+      "course": "SS1 Mathematics",
+      "level": "SS1",
+      "subject": "Mathematics",
+      "source": "https://syllabus.ng/ss1-scheme-of-work/mathematics",
+      "sourceType": "published_scheme_of_work",
+      "license": "copyrighted_source; link-only reference"
+    },
+    {
+      "course": "SS2 Mathematics",
+      "level": "SS2",
+      "subject": "Mathematics",
+      "source": "https://syllabus.ng/ss2-scheme-of-work/mathematics",
+      "sourceType": "published_scheme_of_work",
+      "license": "copyrighted_source; link-only reference"
+    },
+    {
+      "course": "SS3 Mathematics",
+      "level": "SS3",
+      "subject": "Mathematics",
+      "source": "https://syllabus.ng/ss3-scheme-of-work/mathematics",
+      "sourceType": "published_scheme_of_work",
+      "license": "copyrighted_source; link-only reference"
+    },
+    {
+      "course": "SS1 Biology",
+      "level": "SS1",
+      "subject": "Biology",
+      "source": "https://syllabus.ng/ss1-scheme-of-work/biology",
+      "sourceType": "published_scheme_of_work",
+      "license": "copyrighted_source; link-only reference"
+    },
+    {
+      "course": "SS2 Biology",
+      "level": "SS2",
+      "subject": "Biology",
+      "source": "https://syllabus.ng/ss2-scheme-of-work/biology",
+      "sourceType": "published_scheme_of_work",
+      "license": "copyrighted_source; link-only reference"
+    },
+    {
+      "course": "SS3 Biology",
+      "level": "SS3",
+      "subject": "Biology",
+      "source": "https://syllabus.ng/ss3-scheme-of-work/biology",
+      "sourceType": "published_scheme_of_work",
+      "license": "copyrighted_source; link-only reference"
+    },
+    {
+      "course": "SS1 Chemistry",
+      "level": "SS1",
+      "subject": "Chemistry",
+      "source": "https://syllabus.ng/ss1-scheme-of-work/chemistry",
+      "sourceType": "published_scheme_of_work",
+      "license": "copyrighted_source; link-only reference"
+    },
+    {
+      "course": "SS2 Chemistry",
+      "level": "SS2",
+      "subject": "Chemistry",
+      "source": "https://syllabus.ng/ss2-scheme-of-work/chemistry",
+      "sourceType": "published_scheme_of_work",
+      "license": "copyrighted_source; link-only reference"
+    },
+    {
+      "course": "SS3 Chemistry",
+      "level": "SS3",
+      "subject": "Chemistry",
+      "source": "https://syllabus.ng/ss3-scheme-of-work/chemistry",
+      "sourceType": "published_scheme_of_work",
+      "license": "copyrighted_source; link-only reference"
+    },
+    {
+      "course": "SS1 Physics",
+      "level": "SS1",
+      "subject": "Physics",
+      "source": "https://syllabus.ng/ss1-scheme-of-work/physics",
+      "sourceType": "published_scheme_of_work",
+      "license": "copyrighted_source; link-only reference"
+    },
+    {
+      "course": "SS2 Physics",
+      "level": "SS2",
+      "subject": "Physics",
+      "source": "https://syllabus.ng/ss2-scheme-of-work/physics",
+      "sourceType": "published_scheme_of_work",
+      "license": "copyrighted_source; link-only reference"
+    },
+    {
+      "course": "SS3 Physics",
+      "level": "SS3",
+      "subject": "Physics",
+      "source": "https://syllabus.ng/ss3-scheme-of-work/physics",
+      "sourceType": "published_scheme_of_work",
+      "license": "copyrighted_source; link-only reference"
+    },
+    {
+      "course": "SS1 Economics",
+      "level": "SS1",
+      "subject": "Economics",
+      "source": "https://syllabus.ng/ss1-scheme-of-work/economics",
+      "sourceType": "published_scheme_of_work",
+      "license": "copyrighted_source; link-only reference"
+    },
+    {
+      "course": "SS2 Economics",
+      "level": "SS2",
+      "subject": "Economics",
+      "source": "https://syllabus.ng/ss2-scheme-of-work/economics",
+      "sourceType": "published_scheme_of_work",
+      "license": "copyrighted_source; link-only reference"
+    },
+    {
+      "course": "SS3 Economics",
+      "level": "SS3",
+      "subject": "Economics",
+      "source": "https://syllabus.ng/ss3-scheme-of-work/economics",
+      "sourceType": "published_scheme_of_work",
+      "license": "copyrighted_source; link-only reference"
+    },
+    {
+      "course": "SS1 Government",
+      "level": "SS1",
+      "subject": "Government",
+      "source": "https://syllabus.ng/ss1-scheme-of-work/government",
+      "sourceType": "published_scheme_of_work",
+      "license": "copyrighted_source; link-only reference"
+    },
+    {
+      "course": "SS2 Government",
+      "level": "SS2",
+      "subject": "Government",
+      "source": "https://syllabus.ng/ss2-scheme-of-work/government",
+      "sourceType": "published_scheme_of_work",
+      "license": "copyrighted_source; link-only reference"
+    },
+    {
+      "course": "SS3 Government",
+      "level": "SS3",
+      "subject": "Government",
+      "source": "https://syllabus.ng/ss3-scheme-of-work/government",
+      "sourceType": "published_scheme_of_work",
+      "license": "copyrighted_source; link-only reference"
+    },
+    {
+      "course": "SS1 Literature in English",
+      "level": "SS1",
+      "subject": "Literature in English",
+      "source": "https://syllabus.ng/ss1-scheme-of-work/literature",
+      "sourceType": "published_scheme_of_work",
+      "license": "copyrighted_source; link-only reference"
+    },
+    {
+      "course": "SS2 Literature in English",
+      "level": "SS2",
+      "subject": "Literature in English",
+      "source": "https://syllabus.ng/ss2-scheme-of-work/literature",
+      "sourceType": "published_scheme_of_work",
+      "license": "copyrighted_source; link-only reference"
+    },
+    {
+      "course": "SS3 Literature in English",
+      "level": "SS3",
+      "subject": "Literature in English",
+      "source": "https://syllabus.ng/ss3-scheme-of-work/literature",
+      "sourceType": "published_scheme_of_work",
+      "license": "copyrighted_source; link-only reference"
+    },
+    {
+      "course": "SS1 Accounting",
+      "level": "SS1",
+      "subject": "Accounting",
+      "source": "https://syllabus.ng/ss1-scheme-of-work/financial-accounting",
+      "sourceType": "published_scheme_of_work",
+      "license": "copyrighted_source; link-only reference"
+    },
+    {
+      "course": "SS2 Accounting",
+      "level": "SS2",
+      "subject": "Accounting",
+      "source": "https://syllabus.ng/ss2-scheme-of-work/financial-accounting",
+      "sourceType": "published_scheme_of_work",
+      "license": "copyrighted_source; link-only reference"
+    },
+    {
+      "course": "SS3 Accounting",
+      "level": "SS3",
+      "subject": "Accounting",
+      "source": "https://syllabus.ng/ss3-scheme-of-work/financial-accounting",
+      "sourceType": "published_scheme_of_work",
+      "license": "copyrighted_source; link-only reference"
+    },
+    {
+      "course": "SS1 Computer Studies",
+      "level": "SS1",
+      "subject": "Computer Studies",
+      "source": "https://syllabus.ng/ss1-scheme-of-work/computer-studies",
+      "sourceType": "published_scheme_of_work",
+      "license": "copyrighted_source; link-only reference"
+    },
+    {
+      "course": "SS2 Computer Studies",
+      "level": "SS2",
+      "subject": "Computer Studies",
+      "source": "https://syllabus.ng/ss2-scheme-of-work/computer-studies",
+      "sourceType": "published_scheme_of_work",
+      "license": "copyrighted_source; link-only reference"
+    },
+    {
+      "course": "SS3 Computer Studies",
+      "level": "SS3",
+      "subject": "Computer Studies",
+      "source": "https://syllabus.ng/ss3-scheme-of-work/computer-studies",
+      "sourceType": "published_scheme_of_work",
+      "license": "copyrighted_source; link-only reference"
+    },
+    {
+      "course": "SS1 Physical Education",
+      "level": "SS1",
+      "subject": "Physical Education",
+      "source": "https://syllabus.ng/ss1-scheme-of-work/physical-health-education",
+      "sourceType": "published_scheme_of_work",
+      "license": "copyrighted_source; link-only reference"
+    },
+    {
+      "course": "SS2 Physical Education",
+      "level": "SS2",
+      "subject": "Physical Education",
+      "source": "https://syllabus.ng/ss2-scheme-of-work/physical-health-education",
+      "sourceType": "published_scheme_of_work",
+      "license": "copyrighted_source; link-only reference"
+    },
+    {
+      "course": "SS3 Physical Education",
+      "level": "SS3",
+      "subject": "Physical Education",
+      "source": "https://syllabus.ng/ss3-scheme-of-work/physical-health-education",
+      "sourceType": "published_scheme_of_work",
+      "license": "copyrighted_source; link-only reference"
+    },
+    {
+      "course": "HTML Web Development",
+      "level": "beginner",
+      "subject": "HTML Web Development",
+      "source": "https://github.com/freeCodeCamp/freeCodeCamp/blob/main/curriculum/structure/curriculum.json",
+      "sourceType": "open_machine_readable",
+      "license": "BSD-3-Clause"
+    },
+    {
+      "course": "CSS Web Design",
+      "level": "beginner",
+      "subject": "CSS Web Design",
+      "source": "https://github.com/freeCodeCamp/freeCodeCamp/blob/main/curriculum/structure/curriculum.json",
+      "sourceType": "open_machine_readable",
+      "license": "BSD-3-Clause"
+    },
+    {
+      "course": "JavaScript Programming",
+      "level": "beginner",
+      "subject": "JavaScript Programming",
+      "source": "https://github.com/freeCodeCamp/freeCodeCamp/blob/main/curriculum/structure/curriculum.json",
+      "sourceType": "open_machine_readable",
+      "license": "BSD-3-Clause"
+    },
+    {
+      "course": "Python Programming",
+      "level": "beginner",
+      "subject": "Python Programming",
+      "source": "https://github.com/freeCodeCamp/freeCodeCamp/blob/main/curriculum/structure/curriculum.json",
+      "sourceType": "open_machine_readable",
+      "license": "BSD-3-Clause"
+    },
+    {
+      "course": "Java Programming",
+      "level": "beginner",
+      "subject": "Java Programming",
+      "source": "https://dev.java/learn/",
+      "sourceType": "official_documentation",
+      "license": "see_source"
+    },
+    {
+      "course": "PHP Programming",
+      "level": "beginner",
+      "subject": "PHP Programming",
+      "source": "https://www.php.net/manual/en/",
+      "sourceType": "official_documentation",
+      "license": "see_source"
+    },
+    {
+      "course": "C++ Programming",
+      "level": "beginner",
+      "subject": "C++ Programming",
+      "source": "https://isocpp.org/get-started",
+      "sourceType": "official_documentation",
+      "license": "see_source"
+    },
+    {
+      "course": "COBOL Programming",
+      "level": "beginner",
+      "subject": "COBOL Programming",
+      "source": "https://www.ibm.com/docs/en/cobol-zos",
+      "sourceType": "official_documentation",
+      "license": "see_source"
+    },
+    {
+      "course": "C# Programming",
+      "level": "beginner",
+      "subject": "C# Programming",
+      "source": "https://learn.microsoft.com/en-us/dotnet/csharp/",
+      "sourceType": "official_documentation",
+      "license": "see_source"
+    },
+    {
+      "course": "Ruby Programming",
+      "level": "beginner",
+      "subject": "Ruby Programming",
+      "source": "https://www.ruby-lang.org/en/documentation/quickstart/",
+      "sourceType": "official_documentation",
+      "license": "see_source"
+    },
+    {
+      "course": "Dart Programming",
+      "level": "beginner",
+      "subject": "Dart Programming",
+      "source": "https://dart.dev/language",
+      "sourceType": "official_documentation",
+      "license": "see_source"
+    },
+    {
+      "course": "TypeScript Programming",
+      "level": "beginner",
+      "subject": "TypeScript Programming",
+      "source": "https://www.typescriptlang.org/docs/",
+      "sourceType": "official_documentation",
+      "license": "see_source"
+    }
+  ]
+}
