@@ -888,7 +888,7 @@ function buildLessonContent(subject, title, courseTitle) {
     ],
   };
 
-  const codeSection = code
+  const codeSection = (structuredCore() ? structuredCore() + "\n\n" : "") + (code
     ? "### Practical Code Example\n\n~~~\n" + code + "\n~~~\n\n### Code Walkthrough\n\n" +
       wrapLessonLines([
         "The program demonstrates " + lowerTopic + " using a small student record example.",
