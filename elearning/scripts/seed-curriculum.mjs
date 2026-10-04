@@ -6,6 +6,7 @@ import mysql from 'mysql2/promise';
 
 const root = process.cwd();
 const dataPath = path.resolve(root, 'data', 'curriculum.json');
+const sourcesPath = path.resolve(root, 'data', 'lesson-sources.json');
 
 const db = mysql.createPool({
   host: process.env.DB_HOST ?? '127.0.0.1',
@@ -243,10 +244,23 @@ async function insertModule(
 async function insertLesson(
   connection,
   moduleId,
-  lesson
+  lesson,
+  courseTitle,
+  lessonSources
 ) {
   const parts = String(lesson.code).split('.');
   const position = Number(parts[1] ?? 1);
+
+  const sourceUrl =
+    lessonSources[courseTitle] ??
+    lessonSources._default ??
+    null;
+
+  const sourceNote = sourceUrl
+    ? '\\n\\n## Further Reading\\n\\nThis lesson is part of the platform curriculum and should be studied together with the referenced documentation. Use the source to check terminology, examples and additional details rather than copying it as lesson text.\\n\\n**Reference:** ' + sourceUrl + '\\n'
+    : '';
+
+  const lessonContent = String(lesson.content ?? '') + sourceNote;
 
   const [result] = await connection.execute(
     `INSERT INTO lessons
@@ -270,7 +284,7 @@ async function insertLesson(
       lesson.code,
       lesson.title,
       lesson.objective ?? '',
-      lesson.content ?? '',
+      lessonContent,
       lesson.summary ?? '',
       Number(
         lesson.durationMinutes ?? 35
@@ -397,6 +411,15 @@ async function seed() {
   );
 
   const curriculum = JSON.parse(raw);
+
+  let lessonSources = {};
+  try {
+    const sourceRaw = await fs.readFile(sourcesPath, 'utf8');
+    const sourceData = JSON.parse(sourceRaw);
+    lessonSources = sourceData.sources ?? {};
+  } catch (error) {
+    console.warn('⚠️ Lesson source map unavailable; continuing without source notes.');
+  }
 
   assert(
     Array.isArray(curriculum.subjects),
@@ -543,7 +566,9 @@ async function seed() {
           await insertLesson(
             connection,
             moduleId,
-            lesson
+            lesson,
+            course.title,
+            lessonSources
           );
         }
 
