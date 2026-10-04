@@ -292,8 +292,19 @@ function renderLessonContent(content: string) {
   const elements: React.ReactNode[] = [];
   let listItems: string[] = [];
   let orderedItems: string[] = [];
+  let proseLines: string[] = [];
   let codeLines: string[] = [];
   let codeLanguage = "";
+
+  const flushProse = () => {
+    if (!proseLines.length) return;
+    elements.push(
+      <p key={`p-${elements.length}`}>
+        {formatInlineText(proseLines.join(" "))}
+      </p>,
+    );
+    proseLines = [];
+  };
 
   const flushCode = (key: string) => {
     if (!codeLines.length) return;
@@ -309,6 +320,7 @@ function renderLessonContent(content: string) {
   };
 
   const flushLists = () => {
+    flushProse();
     if (listItems.length) {
       elements.push(
         <ul key={`ul-${elements.length}`}>
@@ -494,11 +506,7 @@ function renderLessonContent(content: string) {
       }
     }
 
-    elements.push(
-      <p key={`p-${index}`}>
-        {formatInlineText(line)}
-      </p>,
-    );
+    proseLines.push(line);
   });
 
   flushCode("code-final");
