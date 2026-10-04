@@ -278,6 +278,21 @@ function renderLessonContent(content: string) {
   const elements: React.ReactNode[] = [];
   let listItems: string[] = [];
   let orderedItems: string[] = [];
+  let codeLines: string[] = [];
+  let codeLanguage = "";
+
+  const flushCode = (key: string) => {
+    if (!codeLines.length) return;
+    elements.push(
+      <pre className="lessonCode" key={key}>
+        <code data-language={codeLanguage || undefined}>
+          {codeLines.join("\n")}
+        </code>
+      </pre>,
+    );
+    codeLines = [];
+    codeLanguage = "";
+  };
 
   const flushLists = () => {
     if (listItems.length) {
@@ -307,6 +322,25 @@ function renderLessonContent(content: string) {
 
   lines.forEach((rawLine, index) => {
     const line = rawLine.trim();
+
+    if (line.startsWith("\`\`\`")) {
+      flushLists();
+      if (codeLines.length) {
+        flushCode(`code-${index}`);
+      } else {
+        codeLanguage = line.slice(3).trim();
+      }
+      return;
+    }
+
+    if (codeLines.length || codeLanguage) {
+      if (line === "\`\`\`") {
+        flushCode(`code-${index}`);
+      } else {
+        codeLines.push(rawLine.replace(/^\\s{0,2}/, ""));
+      }
+      return;
+    }
 
     if (!line) return;
 
@@ -453,6 +487,7 @@ function renderLessonContent(content: string) {
     );
   });
 
+  flushCode("code-final");
   flushLists();
 
   return (
@@ -463,18 +498,15 @@ function renderLessonContent(content: string) {
 }
 
 function formatInlineText(text: string) {
-  const parts = text.split(/(\*\*.*?\*\*)/g);
+  const parts = text.split(/(\*\*.*?\*\*|\`[^\`]+\`)/g);
 
   return parts.map((part, index) => {
-    if (
-      part.startsWith("**") &&
-      part.endsWith("**")
-    ) {
-      return (
-        <strong key={index}>
-          {part.slice(2, -2)}
-        </strong>
-      );
+    if (part.startsWith("**") && part.endsWith("**")) {
+      return <strong key={index}>{part.slice(2, -2)}</strong>;
+    }
+
+    if (part.startsWith("\`") && part.endsWith("\`")) {
+      return <code key={index}>{part.slice(1, -1)}</code>;
     }
 
     return part;
