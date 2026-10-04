@@ -24,6 +24,7 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import type { CourseSummary } from "@/lib/course-types";
+import SubjectArtwork from "@/components/subject-artwork";
 import styles from "./landing.module.css";
 
 type LoadState = "loading" | "ready" | "error";
@@ -299,7 +300,7 @@ export default function LandingPage() {
                 return (
                   <Link href={`/courses?subject=${encodeURIComponent(subject)}`} className={styles.subjectCard} key={subject}>
                     <div className={styles.subjectImage}>
-                      <img src={getCourseImage(subject)} alt="" loading="lazy" />
+                      <SubjectArtwork subject={subject} className={styles.subjectArtwork} />
                       <div />
                     </div>
                     <div className={styles.subjectContent}>
