@@ -1561,9 +1561,10 @@ export default function CourseDetailsPage({
                       ) : null}
                     </div>
 
-                    <div className="lessonList">
-                      {moduleLessons.map(
-                        (lesson) => {
+                    {activeModuleIndex === moduleIndex && (
+                      <div className="lessonList">
+                        {moduleLessons.map(
+                          (lesson) => {
                           const lessonId =
                             idString(
                               lesson.id,
@@ -1641,8 +1642,10 @@ export default function CourseDetailsPage({
                               ) : null}
                             </button>
                           );
-                        },
-                      )}
+                          },
+                        )}
+                      </div>
+                    )}
 
                       {moduleAssessment && (
                         <button
