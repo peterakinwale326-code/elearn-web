@@ -796,7 +796,7 @@ function buildLessonContent(subject, title, courseTitle) {
   const subjectName = profile.name || courseTitle || "this subject";
   const lowerTopic = topic.toLowerCase();
   const programming = /python|javascript|typescript|java|c#|c\+\+|c programming|^c$|dart|ruby|php|cobol/i.test(subjectName);
-  const code = programming ? programmingLessonCode(subjectName) : "";
+  const code = programming ? programmingLessonCode(subjectName, topic) : "";
 
   const lines = {
     intro: [
