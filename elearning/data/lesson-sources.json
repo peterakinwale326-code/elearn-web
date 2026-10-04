@@ -1,0 +1,19 @@
+{
+  "version": "1.0",
+  "purpose": "Authoritative reference map used to attach source-backed further reading to curriculum lessons. Lesson prose is original platform content; sources are used for verification and further study.",
+  "sources": {
+    "_default": "https://nerdc.gov.ng/content_manager/curriculum.html",
+    "HTML Web Development": "https://developer.mozilla.org/en-US/docs/Web/HTML",
+    "CSS Web Design": "https://developer.mozilla.org/en-US/docs/Web/CSS",
+    "JavaScript Programming": "https://developer.mozilla.org/en-US/docs/Web/JavaScript",
+    "Python Programming": "https://docs.python.org/3/tutorial/",
+    "Java Programming": "https://dev.java/learn/",
+    "PHP Programming": "https://www.php.net/manual/en/",
+    "C++ Programming": "https://isocpp.org/get-started",
+    "C# Programming": "https://learn.microsoft.com/en-us/dotnet/csharp/",
+    "Ruby Programming": "https://www.ruby-lang.org/en/documentation/quickstart/",
+    "Dart Programming": "https://dart.dev/language",
+    "TypeScript Programming": "https://www.typescriptlang.org/docs/",
+    "COBOL Programming": "https://www.ibm.com/docs/en/cobol-zos"
+  }
+}
