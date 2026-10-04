@@ -756,9 +756,26 @@ function getLessonProfile(subject) {
     : { name, domain: name + " concepts, skills and practical applications", example: "a realistic secondary-school situation involving " + name, terms: "definitions, important ideas, examples, relationships and practical applications" };
 }
 
-function programmingLessonCode(subject) {
+function programmingLessonCode(subject, topic = "") {
   const lower = subject.toLowerCase();
-  if (lower.includes("cobol")) return "       IDENTIFICATION DIVISION.\n       PROGRAM-ID. STUDENT-SCORE.\n       DATA DIVISION.\n       WORKING-STORAGE SECTION.\n       01 STUDENT-NAME PIC A(20) VALUE 'AMINA'.\n       01 SCORE PIC 9(3) VALUE 82.\n       PROCEDURE DIVISION.\n           DISPLAY 'STUDENT: ' STUDENT-NAME.\n           DISPLAY 'SCORE: ' SCORE.\n           STOP RUN.";
+  const lesson = String(topic).toLowerCase();
+
+  if (lower.includes("cobol")) {
+    if (lesson.includes("display") || lesson.includes("accept") || lesson.includes("input") || lesson.includes("output")) {
+      return "       IDENTIFICATION DIVISION.\n       PROGRAM-ID. INPUT-DEMO.\n       DATA DIVISION.\n       WORKING-STORAGE SECTION.\n       01 STUDENT-NAME PIC A(20).\n       01 SCORE PIC 9(3).\n       PROCEDURE DIVISION.\n           DISPLAY 'Enter student name: '.\n           ACCEPT STUDENT-NAME.\n           DISPLAY 'Enter student score: '.\n           ACCEPT SCORE.\n           DISPLAY 'Student: ' STUDENT-NAME.\n           DISPLAY 'Score: ' SCORE.\n           STOP RUN.";
+    }
+    if (lesson.includes("if") || lesson.includes("condition") || lesson.includes("evaluate")) {
+      return "       IDENTIFICATION DIVISION.\n       PROGRAM-ID. RESULT-CHECK.\n       DATA DIVISION.\n       WORKING-STORAGE SECTION.\n       01 SCORE PIC 9(3) VALUE 72.\n       PROCEDURE DIVISION.\n           IF SCORE >= 50\n               DISPLAY 'PASS'\n           ELSE\n               DISPLAY 'FAIL'\n           END-IF.\n           STOP RUN.";
+    }
+    if (lesson.includes("perform") || lesson.includes("loop")) {
+      return "       IDENTIFICATION DIVISION.\n       PROGRAM-ID. COUNTING-DEMO.\n       DATA DIVISION.\n       WORKING-STORAGE SECTION.\n       01 COUNT-NUM PIC 9 VALUE 1.\n       PROCEDURE DIVISION.\n           PERFORM VARYING COUNT-NUM FROM 1 BY 1 UNTIL COUNT-NUM > 5\n               DISPLAY COUNT-NUM\n           END-PERFORM.\n           STOP RUN.";
+    }
+    if (lesson.includes("pic") || lesson.includes("data") || lesson.includes("type")) {
+      return "       DATA DIVISION.\n       WORKING-STORAGE SECTION.\n       01 STUDENT-NAME PIC A(20) VALUE 'AMINA'.\n       01 SCORE PIC 9(3) VALUE 82.\n       01 FEES-PAID PIC 9(5)V99 VALUE 45000.00.\n       PROCEDURE DIVISION.\n           DISPLAY STUDENT-NAME.\n           DISPLAY SCORE.\n           DISPLAY FEES-PAID.\n           STOP RUN.";
+    }
+    return "       IDENTIFICATION DIVISION.\n       PROGRAM-ID. STUDENT-SCORE.\n       DATA DIVISION.\n       WORKING-STORAGE SECTION.\n       01 STUDENT-NAME PIC A(20) VALUE 'AMINA'.\n       01 SCORE PIC 9(3) VALUE 82.\n       PROCEDURE DIVISION.\n           DISPLAY 'STUDENT: ' STUDENT-NAME.\n           DISPLAY 'SCORE: ' SCORE.\n           STOP RUN.";
+  }
+
   if (lower.includes("python")) return "name = \"Amina\"\nscore = 82\nprint(\"Student:\", name)\nprint(\"Score:\", score)";
   if (lower.includes("javascript")) return "const name = \"Amina\";\nconst score = 82;\nconsole.log(\"Student:\", name);\nconsole.log(\"Score:\", score);";
   if (lower.includes("typescript")) return "const name: string = \"Amina\";\nconst score: number = 82;\nconsole.log(\"Student:\", name);\nconsole.log(\"Score:\", score);";
@@ -771,6 +788,7 @@ function programmingLessonCode(subject) {
   if (lower.includes("c programming") || lower === "c") return "#include <stdio.h>\nint main(void) {\n  char name[] = \"Amina\";\n  int score = 82;\n  printf(\"Student: %s\\n\", name);\n  printf(\"Score: %d\\n\", score);\n  return 0;\n}";
   return "";
 }
+
 
 function buildLessonContent(subject, title, courseTitle) {
   const profile = getLessonProfile(subject || courseTitle);
