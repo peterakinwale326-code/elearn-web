@@ -904,6 +904,95 @@ function buildLessonContent(subject, title, courseTitle) {
       ]) + "\n\n"
     : "";
 
+  function structuredCore() {
+    const subjectLower = subjectName.toLowerCase();
+    const t = lowerTopic;
+
+    if (subjectLower.includes("cobol") && t.includes("program layout")) {
+      return [
+        "### What a COBOL Program Looks Like",
+        wrapLessonLines([
+          "A COBOL program is organised into clear divisions so each part has a specific responsibility.",
+          "The traditional layout moves from identification to environment details, data definitions, and procedures.",
+          "IDENTIFICATION DIVISION identifies the program and normally contains the PROGRAM-ID paragraph.",
+          "ENVIRONMENT DIVISION describes environment information needed by the program.",
+          "DATA DIVISION describes information that the program stores, receives, calculates, or displays.",
+          "PROCEDURE DIVISION contains executable instructions that perform the actual work.",
+          "This separation makes large business programs easier to read, maintain, test, and understand.",
+          "A beginner should understand the purpose of each division before memorising individual statements."
+        ]),
+        "### Four Main Divisions",
+        wrapLessonLines([
+          "IDENTIFICATION DIVISION gives the program its identity and descriptive information.",
+          "ENVIRONMENT DIVISION describes the relationship between the program and its operating environment.",
+          "DATA DIVISION defines files and working data items used while the program runs.",
+          "PROCEDURE DIVISION contains statements, paragraphs, sections, calculations, decisions, and processing.",
+          "Not every small example needs every possible paragraph or file description.",
+          "The important idea is that each division has a clear job and should not be mixed randomly."
+        ]),
+        "### Complete Example",
+        "~~~cobol\n       IDENTIFICATION DIVISION.\n       PROGRAM-ID. STUDENT-SCORE.\n       DATA DIVISION.\n       WORKING-STORAGE SECTION.\n       01 STUDENT-NAME PIC A(20) VALUE 'AMINA'.\n       01 SCORE PIC 9(3) VALUE 82.\n       PROCEDURE DIVISION.\n           DISPLAY 'STUDENT: ' STUDENT-NAME.\n           DISPLAY 'SCORE: ' SCORE.\n           STOP RUN.\n       ~~~",
+        "### Line-by-Line Explanation",
+        wrapLessonLines([
+          "IDENTIFICATION DIVISION starts the identification part of the program.",
+          "PROGRAM-ID names the program so its source has a clear identity.",
+          "DATA DIVISION begins the area where program data is described.",
+          "WORKING-STORAGE SECTION contains values needed while the program is running.",
+          "STUDENT-NAME stores the student's name and PIC A(20) describes its character positions.",
+          "SCORE stores a numeric value and PIC 9(3) describes three numeric positions.",
+          "PROCEDURE DIVISION begins the executable part of the program.",
+          "DISPLAY sends information to the screen or program output.",
+          "STOP RUN tells the program to finish execution.",
+          "The structure lets a reader identify data definitions separately from executable instructions."
+        ]),
+        "### Why the Layout Matters",
+        wrapLessonLines([
+          "Clear layout helps another programmer find definitions without searching through executable statements.",
+          "It also makes errors easier to locate because data and procedures have separate areas.",
+          "Business systems often process many records, so readable organisation is especially important.",
+          "Sections and paragraphs provide additional structure when a program becomes larger.",
+          "Learning the layout now makes later lessons about files, conditions, loops, and reports easier."
+        ])
+      ].join("\n\n");
+    }
+
+    if (subjectLower.includes("python") && (t.includes("print") || t.includes("hello"))) {
+      return [
+        "### First Python Program",
+        wrapLessonLines([
+          "A first Python program should be small enough that every symbol can be explained clearly.",
+          "The print() function is commonly used to send information to the console.",
+          "Text inside quotation marks is a string, so Python treats it as text data.",
+          "Parentheses contain the argument supplied to the function in this example.",
+          "The program executes instructions in order unless another control structure changes that flow."
+        ]),
+        "~~~python\nprint(\"Hello, Python!\")\n~~~",
+        "### Understanding print()",
+        wrapLessonLines([
+          "print is the function name Python uses for displaying information.",
+          "The parentheses show that the function is being called.",
+          "The string inside the parentheses is the argument passed to print().",
+          "Quotation marks tell Python that Hello, Python! should be treated as text.",
+          "When the program runs, the text appears in the console.",
+          "An empty print() produces a blank line because its default ending is a newline.",
+          "Several arguments can be passed to print() and Python normally separates them with spaces.",
+          "The sep argument changes the separator between multiple printed arguments.",
+          "The end argument changes what print() writes after its arguments."
+        ]),
+        "### Practice",
+        wrapLessonLines([
+          "Change the message to your name and run the program.",
+          "Add another print() instruction containing your department.",
+          "Use sep=\"***\" with several arguments and observe the result.",
+          "Use end=\" \" and place two print() calls on the same output line.",
+          "Remove a quotation mark deliberately, run the program, and read the error message."
+        ])
+      ].join("\n\n");
+    }
+
+    return "";
+  }
+
   const learningObjectives = [
     "Explain " + lowerTopic + " using simple language and accurate " + subjectName + " terminology.",
     "Identify the important ideas, terms, stages or structures connected with this lesson.",
