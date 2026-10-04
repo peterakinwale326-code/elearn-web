@@ -47,7 +47,12 @@ function makeQuestion(course, lesson, pool, index) {
   const correct = definition(lesson).replace(/\\s+/g, " ").slice(0, 320);
   const distractors = pool.filter(function (x) { return x !== lesson; }).map(definition).map(function (x) { return clean(x).replace(/\\s+/g, " ").slice(0, 320); }).filter(function (x) { return x && x !== correct; }).slice(0, 3);
   while (distractors.length < 3) distractors.push(["It is only a lesson title and has no practical application.", "It can be answered without using the information in the lesson.", "It should be treated as identical to every other topic in the course."][distractors.length]);
-  const prompts = ["Which statement correctly explains the main idea of " + topic + "?", "Which option is most consistent with the lesson on " + topic + "?", "Which statement shows an accurate understanding of " + topic + "?", "Which option best applies the lesson's explanation of " + topic + "?"];
+  const prompts = [
+    "In " + courseTitle + ", which statement correctly explains the main idea of " + topic + "?",
+    "For " + courseTitle + ", which option is most consistent with the lesson on " + topic + "?",
+    "Which statement shows an accurate understanding of " + topic + " in " + courseTitle + "?",
+    "Which option best applies the lesson's explanation of " + topic + " in " + courseTitle + "?"
+  ];
   return { prompt: prompts[index % prompts.length], correct: correct, distractors: distractors, explanation: "The lesson explains: " + correct, sourceUrl: sourceFor(course), sourceType: "lesson-notes" };
 }
 
