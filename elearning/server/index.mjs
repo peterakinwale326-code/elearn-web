@@ -418,16 +418,16 @@ An HTML document normally has a document type declaration, one root html element
 
 ### Line-by-Line Walkthrough
 
-1. **`<!doctype html>`** — Declares the document as an HTML5 document. It is a declaration, not a normal HTML element.
-2. **`<html lang="en">`** — Starts the root HTML element. The `lang` attribute tells browsers and assistive technologies that the main language is English.
-3. **`<head>`** — Starts the head section, where document information such as the title and metadata is placed.
-4. **`<meta charset="UTF-8">`** — Sets the character encoding to UTF-8 so the browser can correctly handle a wide range of characters.
-5. **`<title>My School</title>`** — Sets the page title displayed in the browser tab or window title.
-6. **`</head>`** — Closes the head section.
-7. **`<body>`** — Starts the section containing the content displayed on the page.
-8. **`<h1>Welcome to my school</h1>`** — Creates the main heading visible on the page. The `h1` element represents the page's primary heading.
-9. **`</body>`** — Closes the visible page-content section.
-10. **`</html>`** — Closes the root HTML element and therefore ends the document.
+1. **<code><!doctype html></code>** — Declares the document as an HTML5 document. It is a declaration, not a normal HTML element.
+2. **<code><html lang="en"></code>** — Starts the root HTML element. The <code>lang</code> attribute tells browsers and assistive technologies that the main language is English.
+3. **<code><head></code>** — Starts the head section, where document information such as the title and metadata is placed.
+4. **<code><meta charset="UTF-8"></code>** — Sets the character encoding to UTF-8 so the browser can correctly handle a wide range of characters.
+5. **<code><title>My School</title></code>** — Sets the page title displayed in the browser tab or window title.
+6. **<code></head></code>** — Closes the head section.
+7. **<code><body></code>** — Starts the section containing the content displayed on the page.
+8. **<code><h1>Welcome to my school</h1></code>** — Creates the main heading visible on the page. The <code>h1</code> element represents the page's primary heading.
+9. **<code></body></code>** — Closes the visible page-content section.
+10. **<code></html></code>** — Closes the root HTML element and therefore ends the document.
 
 ### What the Browser Does
 
@@ -449,20 +449,20 @@ Save the file, refresh the browser and explain which change affected the browser
 - forgetting to close an element that requires a closing tag;
 - placing visible page content inside the head instead of the body;
 - using a different character encoding without understanding the effect;
-- confusing the document title with the visible `h1` heading;
-- forgetting the `lang` attribute on the root element.
+- confusing the document title with the visible <code>h1</code> heading;
+- forgetting the <code>lang</code> attribute on the root element.
 
 ### Practical Activity
 
-Create a school home page containing a page title, the school's name as an `h1`, one short paragraph and a second heading for **Our Subjects**. Open it in a browser and inspect the HTML structure with the browser developer tools.
+Create a school home page containing a page title, the school's name as an <code>h1</code>, one short paragraph and a second heading for **Our Subjects**. Open it in a browser and inspect the HTML structure with the browser developer tools.
 
 ### Quick Check
 
-1. What is the purpose of `<!doctype html>`?
-2. What belongs inside `<head>`?
+1. What is the purpose of <code><!doctype html></code>?
+2. What belongs inside <code><head></code>?
 3. Where should visible page content be placed?
-4. What is the difference between `<title>` and `<h1>`?
-5. Why is `lang="en"` useful?
+4. What is the difference between <code><title></code> and <code><h1></code>?
+5. Why is <code>lang="en"</code> useful?
 
 ### Summary
 
@@ -501,10 +501,10 @@ HTML structure gives the browser a clear hierarchy for the page. Once you unders
 
   const match = topicMap.find(([name]) => lower.includes(name));
   const explanation = match?.[1] ??
-    `This lesson focuses on **${topic}**. Read the topic as a practical HTML skill: identify the element or attribute involved, understand what it represents, use it in a small page, and inspect the result in a browser.`;
+    <code>This lesson focuses on **${topic}**. Read the topic as a practical HTML skill: identify the element or attribute involved, understand what it represents, use it in a small page, and inspect the result in a browser.</code>;
 
   return {
-    objective: `Explain ${topic.toLowerCase()}, use the appropriate HTML elements and attributes, and apply the idea in a small school web page.`,
+    objective: <code>Explain ${topic.toLowerCase()}, use the appropriate HTML elements and attributes, and apply the idea in a small school web page.</code>,
     content: `# ${topic}
 
 ### Introduction
