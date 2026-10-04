@@ -1813,16 +1813,8 @@ export default function CourseDetailsPage({
                   </span>
 
                   <p>
-                    Understand{" "}
-                    {lessonTitle(
-                      activeLesson,
-                    ).replace(
-                      /^\d+(?:\.\d+)?\s*/,
-                      "",
-                    )}
-                    , apply the concept in
-                    your subject, and explain
-                    the answer accurately.
+                    {activeLesson.objective ||
+                      "Explain the lesson topic and apply it in a practical example."}
                   </p>
                 </div>
 
