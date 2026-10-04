@@ -4,6 +4,10 @@ import path from 'node:path';
 import process from 'node:process';
 import mysql from 'mysql2/promise';
 
+// Keep assessment content repaired before the database seed runs, so a direct
+// seed command cannot accidentally restore the old generic question bank.
+await import('./repair-assessments.mjs');
+
 const root = process.cwd();
 const dataPath = path.resolve(root, 'data', 'curriculum.json');
 const sourcesPath = path.resolve(root, 'data', 'lesson-sources.json');
