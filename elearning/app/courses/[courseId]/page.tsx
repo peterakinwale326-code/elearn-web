@@ -201,6 +201,26 @@ function getOptionKey(option: Option, index: number) {
   );
 }
 
+function shuffle<T>(items: T[]) {
+  const copy = [...items];
+
+  for (let index = copy.length - 1; index > 0; index -= 1) {
+    const randomIndex = Math.floor(Math.random() * (index + 1));
+    [copy[index], copy[randomIndex]] = [copy[randomIndex], copy[index]];
+  }
+
+  return copy;
+}
+
+function prepareAssessmentQuestions(assessment: Assessment) {
+  return shuffle(
+    assessmentQuestions(assessment).map((question) => ({
+      ...question,
+      options: shuffle(question.options || []),
+    })),
+  );
+}
+
 /* =========================================================
    CONTENT NORMALIZER
 ========================================================= */
@@ -735,6 +755,9 @@ export default function CourseDetailsPage({
   const [activeAssessment, setActiveAssessment] =
     useState<Assessment | null>(null);
 
+  const [activeQuestions, setActiveQuestions] =
+    useState<Question[]>([]);
+
   const [timeLeft, setTimeLeft] = useState(0);
 
   const [submitted, setSubmitted] =
@@ -984,6 +1007,7 @@ export default function CourseDetailsPage({
     setActiveLessonId(idString(lesson.id));
     setViewMode("lesson");
     setActiveAssessment(null);
+    setActiveQuestions([]);
     setSubmitted(false);
 
     window.scrollTo({
@@ -1010,6 +1034,7 @@ export default function CourseDetailsPage({
 
     setActiveModuleIndex(moduleIndex);
     setActiveAssessment(assessment);
+    setActiveQuestions([]);
     setSelectedAnswers({});
     setAssessmentScore(null);
     setSubmitted(false);
@@ -1031,6 +1056,9 @@ export default function CourseDetailsPage({
     setSelectedAnswers({});
     setAssessmentScore(null);
     setSubmitted(false);
+    setActiveQuestions(
+      prepareAssessmentQuestions(activeAssessment),
+    );
 
     setTimeLeft(
       assessmentDuration(activeAssessment) * 60,
@@ -1057,8 +1085,7 @@ export default function CourseDetailsPage({
   ) {
     if (!activeAssessment) return;
 
-    const questions =
-      assessmentQuestions(activeAssessment);
+    const questions = activeQuestions;
 
     if (!questions.length) {
       setAssessmentScore(0);
@@ -1186,7 +1213,7 @@ export default function CourseDetailsPage({
     return () => {
       window.clearInterval(timer);
     };
-  }, [viewMode, submitted, timeLeft]);
+  }, [viewMode, submitted]);
 
   useEffect(() => {
     if (
@@ -1310,6 +1337,7 @@ export default function CourseDetailsPage({
       allModulesPassed
     ) {
       setActiveAssessment(finalExam);
+      setActiveQuestions([]);
       setViewMode("exam-intro");
 
       window.scrollTo({
@@ -1336,6 +1364,7 @@ export default function CourseDetailsPage({
     if (!finalExam) return;
 
     setActiveAssessment(finalExam);
+    setActiveQuestions([]);
     setSelectedAnswers({});
     setAssessmentScore(null);
     setSubmitted(false);
@@ -1353,6 +1382,7 @@ export default function CourseDetailsPage({
 
   function resetAssessment() {
     setSelectedAnswers({});
+    setActiveQuestions([]);
     setAssessmentScore(null);
     setSubmitted(false);
 
@@ -1962,19 +1992,12 @@ export default function CourseDetailsPage({
                   </span>
 
                   <span>
-                    {
-                      assessmentQuestions(
-                        activeAssessment,
-                      ).length
-                    }{" "}
-                    questions
+                    {activeQuestions.length} questions
                   </span>
                 </div>
 
                 <div className="questions">
-                  {assessmentQuestions(
-                    activeAssessment,
-                  ).map(
+                  {activeQuestions.map(
                     (question, index) => (
                       <QuestionCard
                         key={idString(
@@ -2009,18 +2032,7 @@ export default function CourseDetailsPage({
 
                 <div className="assessmentSubmitBar">
                   <span>
-                    {
-                      Object.keys(
-                        selectedAnswers,
-                      ).length
-                    }{" "}
-                    of{" "}
-                    {
-                      assessmentQuestions(
-                        activeAssessment,
-                      ).length
-                    }{" "}
-                    answered
+                    {Object.keys(selectedAnswers).length} of {activeQuestions.length} answered
                   </span>
 
                   <button
@@ -2175,7 +2187,14 @@ export default function CourseDetailsPage({
           {viewMode === "exam-result" && (
             <section className="assessmentResult finalResult">
               <div className="resultIcon">
-                <Trophy size={54} />
+                {assessmentScore !== null &&
+                activeAssessment &&
+                assessmentScore >=
+                  assessmentPassingScore(activeAssessment) ? (
+                  <Trophy size={54} />
+                ) : (
+                  <XCircle size={54} />
+                )}
               </div>
 
               <span className="resultLabel">
@@ -2183,7 +2202,12 @@ export default function CourseDetailsPage({
               </span>
 
               <h1>
-                Final exam completed
+                {assessmentScore !== null &&
+                activeAssessment &&
+                assessmentScore >=
+                  assessmentPassingScore(activeAssessment)
+                  ? "Final exam passed"
+                  : "Final exam completed"}
               </h1>
 
               <div className="resultScore">
@@ -2194,8 +2218,20 @@ export default function CourseDetailsPage({
               </div>
 
               <p>
-                Your final exam score has been
-                saved to your course progress.
+                Pass mark:{" "}
+                {activeAssessment
+                  ? assessmentPassingScore(activeAssessment)
+                  : 50}
+                %
+              </p>
+
+              <p>
+                {assessmentScore !== null &&
+                activeAssessment &&
+                assessmentScore >=
+                  assessmentPassingScore(activeAssessment)
+                  ? "You passed the cumulative course examination."
+                  : "Review the course lessons and use the available practice resources before trying again."}
               </p>
 
               <Link
