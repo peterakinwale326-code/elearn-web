@@ -523,7 +523,7 @@
 ========================================================= */
 
 .lessonContent {
-  padding: 24px 30px;
+  padding: 22px 28px;
   border: 1px solid #e5e7eb;
   border-radius: 18px;
   background: #ffffff;
@@ -542,7 +542,7 @@
 }
 
 .lessonContent h3 {
-  margin: 20px 0 9px;
+  margin: 16px 0 7px;
   color: #1d2939;
   font-size: 21px;
   line-height: 1.4;
@@ -555,7 +555,7 @@
 }
 
 .lessonContent p {
-  margin: 0 0 10px;
+  margin: 0 0 9px;
   color: #475467;
   font-size: 15px;
   line-height: 1.72;
@@ -610,8 +610,8 @@
 }
 
 .lessonModuleHeading {
-  margin: 22px 0;
-  padding: 13px 15px;
+  margin: 12px 0;
+  padding: 10px 13px;
   border-radius: 10px;
   background: #f8fafc;
   color: #344054;
