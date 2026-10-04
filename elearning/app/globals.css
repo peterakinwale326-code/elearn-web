@@ -1182,3 +1182,24 @@ button:focus-visible, a:focus-visible, input:focus-visible { outline: 3px solid 
     flex-direction: column;
   }
 }
+
+/* Prevent narrow-screen horizontal overflow across dashboard, catalog and lesson views. */
+html,
+body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+img,
+video,
+canvas,
+svg {
+  max-width: 100%;
+}
+
+button,
+input,
+select,
+textarea {
+  max-width: 100%;
+}
