@@ -249,13 +249,27 @@ function normalizeLessonText(text: string) {
   /*
    * Clean excessive blank lines.
    */
-  result = result
-    .split("\n")
-    .map((line) => line.trim())
-    .filter(Boolean)
-    .join("\n");
+  const cleanedLines: string[] = [];
+  let insideCodeBlock = false;
 
-  return result.trim();
+  for (const line of result.split("\n")) {
+    const trimmed = line.trim();
+
+    if (trimmed.startsWith("\`\`\`")) {
+      insideCodeBlock = !insideCodeBlock;
+      cleanedLines.push(trimmed);
+      continue;
+    }
+
+    if (insideCodeBlock) {
+      cleanedLines.push(line.replace(/\\s+$/, ""));
+      continue;
+    }
+
+    if (trimmed) cleanedLines.push(trimmed);
+  }
+
+  return cleanedLines.join("\n").trim();
 }
 
 /**
