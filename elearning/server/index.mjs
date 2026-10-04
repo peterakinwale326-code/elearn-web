@@ -1204,12 +1204,26 @@ async function getCourseDetails(courseId) {
   }
 
   const assessments = [...assessmentById.values()];
+
+  // The curriculum JSON is the source of truth for lesson teaching material.
+  // Do not replace carefully authored lesson notes with the generic fallback
+  // generator. The generator is only used when an older/incomplete database
+  // row does not contain usable curriculum content.
+  const hasLessonContent = (value) => {
+    const text = String(value ?? "").trim();
+    return text.length >= 400 && /###|##|\n- |\n\d+\. /m.test(text);
+  };
+
   const lessons = lessonRows.map((lesson) => {
     const generated = buildLessonContent(
       courseRow.subject,
       lesson.title,
       courseRow.title,
     );
+
+    const storedContent = String(lesson.content ?? "").trim();
+    const storedObjective = String(lesson.objective ?? "").trim();
+    const storedSummary = String(lesson.summary ?? "").trim();
 
     return {
       id: Number(lesson.id),
@@ -1220,9 +1234,9 @@ async function getCourseDetails(courseId) {
       position: Number(lesson.position),
       title: lesson.title,
       durationMinutes: Number(lesson.duration_minutes ?? 0),
-      objective: generated.objective,
-      content: generated.content,
-      summary: lesson.summary || generated.objective,
+      objective: storedObjective || generated.objective,
+      content: hasLessonContent(storedContent) ? storedContent : generated.content,
+      summary: storedSummary || generated.objective,
       videoUrl: lesson.video_url,
       documentUrl: lesson.document_url,
       isFree: Boolean(lesson.is_free),
