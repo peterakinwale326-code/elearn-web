@@ -1,0 +1,13 @@
+cd elearning - to enter the folder or else you will run into error while running npm run dev 
+npm run dev - to start the server
+open your browser and navigate to localhost:3000
+node --env-file=.env.local server/index.mjs - to start the api course server 
+
+do not forget to 
+git add .
+git commit -m "message pull"
+git push origin main"or your branch name"
+
+
+Only run this if you made changes to the curriculum.json - That is the database for the elearning web containing the course 
+`node --env-file=.env.local scripts/seed-curriculum.mjs`  

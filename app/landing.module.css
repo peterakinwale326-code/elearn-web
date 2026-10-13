@@ -372,6 +372,69 @@
   padding-left: clamp(18px, 7vw, 105px);
 }
 
+.feedbackSection {
+  padding-top: 26px;
+  padding-bottom: 100px;
+}
+
+.feedbackGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 22px;
+}
+
+.feedbackCard {
+  display: grid;
+  gap: 18px;
+  padding: 24px 22px;
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 14px 32px rgba(33, 59, 46, 0.06);
+}
+
+.feedbackHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.feedbackHeader strong {
+  display: block;
+  color: var(--ink);
+  font-size: 17px;
+}
+
+.feedbackHeader span {
+  display: block;
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.feedbackStars {
+  display: flex;
+  gap: 3px;
+  font-size: 15px;
+}
+
+.starFilled {
+  color: #f0a63a;
+}
+
+.starEmpty {
+  color: #d9dfd9;
+}
+
+.feedbackCard p {
+  margin: 0;
+  color: #465b53;
+  font-size: 14px;
+  line-height: 1.8;
+}
+
 .coursesSection {
   padding-top: 82px;
   padding-bottom: 82px;

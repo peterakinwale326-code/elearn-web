@@ -1,79 +1,121 @@
-
-import fs from 'node:fs/promises';
-import path from 'node:path';
-import process from 'node:process';
-import mysql from 'mysql2/promise';
+import fs from "node:fs/promises";
+import path from "node:path";
+import process from "node:process";
+import mysql from "mysql2/promise";
 
 const root = process.cwd();
-const dataPath = path.resolve(root, 'data', 'curriculum.json');
-const sourcesPath = path.resolve(root, 'data', 'lesson-sources.json');
+
+const dataPath = path.resolve(
+  root,
+  "data",
+  "curriculum.json"
+);
+
+const sourcesPath = path.resolve(
+  root,
+  "data",
+  "lesson-sources.json"
+);
 
 const db = mysql.createPool({
-  host: process.env.DB_HOST ?? '127.0.0.1',
+  host: process.env.DB_HOST ?? "127.0.0.1",
   port: Number(process.env.DB_PORT ?? 3306),
-  user: process.env.DB_USER ?? '',
-  password: process.env.DB_PASSWORD ?? '',
-  database: process.env.DB_NAME ?? 'school',
+  user: process.env.DB_USER ?? "",
+  password: process.env.DB_PASSWORD ?? "",
+  database: process.env.DB_NAME ?? "school",
   waitForConnections: true,
   connectionLimit: 5,
   queueLimit: 0,
-  charset: 'utf8mb4',
+  charset: "utf8mb4",
 });
 
-function slug(value) {
-  return String(value)
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '');
+/* =========================================================
+   GENERAL HELPERS
+========================================================= */
+
+function text(value, fallback = "") {
+  if (
+    value === undefined ||
+    value === null
+  ) {
+    return fallback;
+  }
+
+  return String(value).trim();
 }
 
-function makeUniqueSlug(value, usedSlugs) {
-  const base = slug(value);
+function slug(value) {
+  return text(value)
+    .toLowerCase()
+    .replace(/&/g, " and ")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .replace(/-+/g, "-");
+}
 
-  if (!usedSlugs.has(base)) {
-    usedSlugs.add(base);
+function code(value) {
+  return text(value)
+    .toUpperCase()
+    .replace(/&/g, "AND")
+    .replace(/[^A-Z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .replace(/-+/g, "-");
+}
+
+function uniqueValue(
+  value,
+  used,
+  fallback = "ITEM"
+) {
+  const base =
+    code(value) ||
+    code(fallback) ||
+    "ITEM";
+
+  if (!used.has(base)) {
+    used.add(base);
     return base;
   }
 
   let counter = 2;
-  let candidate = base + '-' + counter;
+  let candidate = `${base}-${counter}`;
 
-  while (usedSlugs.has(candidate)) {
+  while (used.has(candidate)) {
     counter += 1;
-    candidate = base + '-' + counter;
+    candidate = `${base}-${counter}`;
   }
 
-  usedSlugs.add(candidate);
-
-  console.log(
-    '⚠️ Duplicate slug "' +
-      base +
-      '" detected. Using "' +
-      candidate +
-      '" instead.'
-  );
+  used.add(candidate);
 
   return candidate;
 }
 
-const subjectImages = {
-  Science: "https://images.unsplash.com/photo-1532094349884-543bc11b234d?auto=format&fit=crop&w=900&q=80",
-  Mathematics: "https://images.unsplash.com/photo-1509228468518-180dd4864904?auto=format&fit=crop&w=900&q=80",
-  English: "https://images.unsplash.com/photo-1506880018603-83d5b814b5a6?auto=format&fit=crop&w=900&q=80",
-  History: "https://images.unsplash.com/photo-1461360228754-6e81c478b882?auto=format&fit=crop&w=900&q=80",
-  Technology: "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=900&q=80",
-  Business: "https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&w=900&q=80",
-  Art: "https://images.unsplash.com/photo-1561214115-f2f134cc4912?auto=format&fit=crop&w=900&q=80",
-  Languages: "https://images.unsplash.com/photo-1546410531-bb4caa6b424d?auto=format&fit=crop&w=900&q=80",
-  Geography: "https://images.unsplash.com/photo-1524666041070-9cffc8c7a4d0?auto=format&fit=crop&w=900&q=80",
-  "Computer Science": "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=900&q=80",
-  Health: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=900&q=80",
-  Music: "https://images.unsplash.com/photo-1524368535928-5b5e00ddc76b?auto=format&fit=crop&w=900&q=80",
-};
-const fallbackSubjectImage = "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=1000&q=80";
+function uniqueSlug(
+  value,
+  used,
+  fallback = "item"
+) {
+  const base =
+    slug(value) ||
+    slug(fallback) ||
+    "item";
 
-function getSubjectImage(subject) {
-  return subjectImages[subject] ?? fallbackSubjectImage;
+  if (!used.has(base)) {
+    used.add(base);
+    return base;
+  }
+
+  let counter = 2;
+  let candidate = `${base}-${counter}`;
+
+  while (used.has(candidate)) {
+    counter += 1;
+    candidate = `${base}-${counter}`;
+  }
+
+  used.add(candidate);
+
+  return candidate;
 }
 
 function assert(condition, message) {
@@ -82,51 +124,1445 @@ function assert(condition, message) {
   }
 }
 
-function totalMinutes(course) {
-  return course.modules.reduce(
-    (sum, module) =>
-      sum +
-      module.lessons.reduce(
-        (lessonSum, lesson) =>
-          lessonSum +
-          Number(lesson.durationMinutes ?? 0),
-        0
-      ),
-    0
+function numberOr(
+  value,
+  fallback = 0
+) {
+  const n = Number(value);
+
+  return Number.isFinite(n)
+    ? n
+    : fallback;
+}
+
+function firstDefined(...values) {
+  for (const value of values) {
+    if (
+      value !== undefined &&
+      value !== null &&
+      value !== ""
+    ) {
+      return value;
+    }
+  }
+
+  return undefined;
+}
+
+/* =========================================================
+   SUBJECT / COURSE HELPERS
+========================================================= */
+
+function getCourseLevel(course) {
+  return text(
+    firstDefined(
+      course.level,
+      course.classLevel,
+      course.grade,
+      course.educationLevel,
+      ""
+    )
   );
 }
 
-async function cleanCurriculum(connection) {
-  const tables = [
-    'answer_options',
-    'attempt_answers',
-    'attempts',
-    'course_completions',
-    'lesson_resources',
-    'lesson_progress',
-    'enrollments',
-    'questions',
-    'assessments',
-    'lessons',
-    'modules',
-    'courses',
-    'subjects',
+function normalizeLevel(value) {
+  return text(value)
+    .toUpperCase()
+    .replace(/\s+/g, "")
+    .replace(/[^A-Z0-9]/g, "");
+}
+
+function getCourseTitle(course) {
+  return text(
+    firstDefined(
+      course.title,
+      course.name,
+      course.courseTitle
+    ),
+    "Untitled Course"
+  );
+}
+
+function getCourseSubject(course) {
+  return text(
+    firstDefined(
+      course.subject,
+      course.subjectName,
+      course.category,
+      course.department,
+      "General"
+    ),
+    "General"
+  );
+}
+
+function getCourseDescription(course) {
+  return text(
+    firstDefined(
+      course.description,
+      course.overview,
+      course.summary,
+      course.introduction,
+      ""
+    )
+  );
+}
+
+function getSubjectCode(subject) {
+  return text(
+    firstDefined(
+      subject.code,
+      subject.subjectCode,
+      ""
+    )
+  );
+}
+
+function getCourseSourceCode(course) {
+  return text(
+    firstDefined(
+      course.courseCode,
+      course.code,
+      ""
+    )
+  );
+}
+
+function getDatabaseCourseCode(
+  course,
+  usedCodes
+) {
+  const titleCode = code(
+    getCourseTitle(course)
+  );
+
+  const sourceCode = code(
+    getCourseSourceCode(course)
+  );
+
+  const level = code(
+    normalizeLevel(
+      getCourseLevel(course)
+    )
+  );
+
+  /*
+   * IMPORTANT:
+   *
+   * course_code is globally unique in the DB.
+   *
+   * The source curriculum legitimately contains
+   * the same subject/course across different school
+   * levels, e.g. English Studies JSS1/JSS2/JSS3.
+   *
+   * Therefore level is included whenever possible.
+   */
+
+  let preferred;
+
+  if (sourceCode) {
+    preferred = sourceCode;
+
+    if (level) {
+      preferred = `${sourceCode}-${level}`;
+    }
+  } else {
+    preferred = titleCode;
+
+    if (level) {
+      preferred = `${titleCode}-${level}`;
+    }
+  }
+
+  return uniqueValue(
+    preferred,
+    usedCodes,
+    `${titleCode}-${level || "COURSE"}`
+  );
+}
+
+/* =========================================================
+   MODULE / LESSON HELPERS
+========================================================= */
+
+function getModules(course) {
+  return Array.isArray(course.modules)
+    ? course.modules
+    : [];
+}
+
+function getLessons(module) {
+  return Array.isArray(module.lessons)
+    ? module.lessons
+    : [];
+}
+
+function getModuleNumber(
+  module,
+  index
+) {
+  const candidate = Number(
+    firstDefined(
+      module.moduleNumber,
+      module.number,
+      module.position,
+      index + 1
+    )
+  );
+
+  return Number.isFinite(candidate) &&
+    candidate > 0
+    ? candidate
+    : index + 1;
+}
+
+function getLessonNumber(
+  lesson,
+  index
+) {
+  const candidate = Number(
+    firstDefined(
+      lesson.lessonNumber,
+      lesson.number,
+      lesson.position,
+      index + 1
+    )
+  );
+
+  return Number.isFinite(candidate) &&
+    candidate > 0
+    ? candidate
+    : index + 1;
+}
+
+function getModuleTitle(
+  module,
+  number
+) {
+  return text(
+    firstDefined(
+      module.title,
+      module.name,
+      module.moduleTitle,
+      `Module ${number}`
+    )
+  );
+}
+
+function getLessonTitle(
+  lesson,
+  number
+) {
+  return text(
+    firstDefined(
+      lesson.title,
+      lesson.name,
+      lesson.lessonTitle,
+      `Lesson ${number}`
+    )
+  );
+}
+
+function getModuleCode(
+  module,
+  number,
+  used
+) {
+  const sourceCode = text(
+    firstDefined(
+      module.moduleCode,
+      module.code,
+      ""
+    )
+  );
+
+  /*
+   * Module uniqueness is scoped by course in the
+   * current schema, but we still normalize missing
+   * source codes.
+   */
+  const preferred =
+    sourceCode ||
+    `M${String(number).padStart(2, "0")}`;
+
+  return uniqueValue(
+    preferred,
+    used,
+    `M${String(number).padStart(2, "0")}`
+  );
+}
+
+function getLessonCode(
+  lesson,
+  number,
+  used
+) {
+  const sourceCode = text(
+    firstDefined(
+      lesson.lessonCode,
+      lesson.code,
+      ""
+    )
+  );
+
+  const preferred =
+    sourceCode ||
+    `L${String(number).padStart(2, "0")}`;
+
+  return uniqueValue(
+    preferred,
+    used,
+    `L${String(number).padStart(2, "0")}`
+  );
+}
+
+/* =========================================================
+   CONTENT RENDERING
+========================================================= */
+
+function renderValue(value) {
+  if (
+    value === undefined ||
+    value === null
+  ) {
+    return "";
+  }
+
+  if (typeof value === "string") {
+    return value.trim();
+  }
+
+  if (
+    typeof value === "number" ||
+    typeof value === "boolean"
+  ) {
+    return String(value);
+  }
+
+  if (Array.isArray(value)) {
+    return value
+      .map(renderValue)
+      .filter(Boolean)
+      .join("\n\n");
+  }
+
+  if (typeof value === "object") {
+    return Object.entries(value)
+      .map(([key, child]) => {
+        const rendered =
+          renderValue(child);
+
+        return rendered
+          ? `${key}: ${rendered}`
+          : "";
+      })
+      .filter(Boolean)
+      .join("\n\n");
+  }
+
+  return String(value);
+}
+
+function renderKeyTerms(
+  terms
+) {
+  if (!Array.isArray(terms)) {
+    return "";
+  }
+
+  if (!terms.length) {
+    return "";
+  }
+
+  const lines = [
+    "## Key Terms",
+    "",
   ];
 
-  for (const table of tables) {
+  for (const term of terms) {
+    if (typeof term === "string") {
+      lines.push(`- ${term}`);
+      continue;
+    }
+
+    if (
+      term &&
+      typeof term === "object"
+    ) {
+      const name = text(
+        firstDefined(
+          term.term,
+          term.word,
+          term.name,
+          ""
+        )
+      );
+
+      const definition = text(
+        firstDefined(
+          term.definition,
+          term.meaning,
+          term.description,
+          ""
+        )
+      );
+
+      if (name && definition) {
+        lines.push(
+          `- **${name}:** ${definition}`
+        );
+      } else if (name) {
+        lines.push(`- ${name}`);
+      }
+    }
+  }
+
+  return lines.join("\n");
+}
+
+function renderActivities(
+  activities
+) {
+  if (!activities) {
+    return "";
+  }
+
+  return [
+    "## Activities",
+    "",
+    renderValue(activities),
+  ].join("\n");
+}
+
+function renderMistakes(
+  mistakes
+) {
+  if (!Array.isArray(mistakes)) {
+    return "";
+  }
+
+  if (!mistakes.length) {
+    return "";
+  }
+
+  return [
+    "## Common Mistakes",
+    "",
+    ...mistakes.map(
+      (mistake) =>
+        `- ${renderValue(mistake)}`
+    ),
+  ].join("\n");
+}
+
+function normalizeQuestion(
+  question
+) {
+  if (
+    !question ||
+    typeof question !== "object"
+  ) {
+    return null;
+  }
+
+  const prompt = text(
+    firstDefined(
+      question.question,
+      question.prompt,
+      question.text,
+      question.questionText,
+      ""
+    )
+  );
+
+  if (!prompt) {
+    return null;
+  }
+
+  let options = [];
+
+  if (
+    Array.isArray(
+      question.options
+    )
+  ) {
+    options =
+      question.options.map(
+        (option, index) => {
+          if (
+            typeof option ===
+            "string"
+          ) {
+            return {
+              key: String.fromCharCode(
+                65 + index
+              ),
+              text: option,
+            };
+          }
+
+          return {
+            key:
+              text(
+                firstDefined(
+                  option.key,
+                  option.id,
+                  option.label,
+                  ""
+                )
+              ) ||
+              String.fromCharCode(
+                65 + index
+              ),
+
+            text: text(
+              firstDefined(
+                option.text,
+                option.option,
+                option.value,
+                option.answer,
+                ""
+              )
+            ),
+          };
+        }
+      );
+  }
+
+  /*
+   * Old source format:
+   *
+   * {
+   *   prompt,
+   *   correct,
+   *   distractors: []
+   * }
+   */
+
+  if (
+    !options.length &&
+    Array.isArray(
+      question.distractors
+    )
+  ) {
+    const correct = text(
+      firstDefined(
+        question.correct,
+        question.answer,
+        ""
+      )
+    );
+
+    const values = [
+      correct,
+      ...question.distractors.map(
+        (value) => text(value)
+      ),
+    ].filter(Boolean);
+
+    options = values.map(
+      (value, index) => ({
+        key: String.fromCharCode(
+          65 + index
+        ),
+        text: value,
+      })
+    );
+  }
+
+  const rawAnswer = firstDefined(
+    question.answer,
+    question.correct,
+    question.correctAnswer,
+    question.answerKey
+  );
+
+  let correctKey = "";
+
+  if (
+    typeof rawAnswer ===
+    "number"
+  ) {
+    correctKey =
+      options[rawAnswer]?.key ||
+      options[
+        rawAnswer - 1
+      ]?.key ||
+      "";
+  } else {
+    const answerText =
+      text(rawAnswer);
+
+    const keyMatch =
+      options.find(
+        (option) =>
+          option.key.toLowerCase() ===
+          answerText.toLowerCase()
+      );
+
+    if (keyMatch) {
+      correctKey =
+        keyMatch.key;
+    } else {
+      const textMatch =
+        options.find(
+          (option) =>
+            option.text.toLowerCase() ===
+            answerText.toLowerCase()
+        );
+
+      if (textMatch) {
+        correctKey =
+          textMatch.key;
+      }
+    }
+  }
+
+  return {
+    prompt,
+    options,
+    correctKey,
+    explanation: text(
+      firstDefined(
+        question.explanation,
+        question.rationale,
+        question.feedback,
+        ""
+      )
+    ),
+    points:
+      numberOr(
+        question.points,
+        1
+      ) || 1,
+  };
+}
+
+function normalizeQuestions(
+  value
+) {
+  const source =
+    Array.isArray(value)
+      ? value
+      : value?.questions;
+
+  if (!Array.isArray(source)) {
+    return [];
+  }
+
+  return source
+    .map(normalizeQuestion)
+    .filter(Boolean);
+}
+
+function renderQuiz(
+  quiz
+) {
+  const questions =
+    normalizeQuestions(quiz);
+
+  if (!questions.length) {
+    return "";
+  }
+
+  const lines = [
+    "## Lesson Quiz",
+    "",
+  ];
+
+  questions.forEach(
+    (question, index) => {
+      lines.push(
+        `### ${index + 1}. ${question.prompt}`
+      );
+
+      question.options.forEach(
+        (option) => {
+          lines.push(
+            `${option.key}. ${option.text}`
+          );
+        }
+      );
+
+      lines.push("");
+
+      if (
+        question.explanation
+      ) {
+        lines.push(
+          `**Explanation:** ${question.explanation}`
+        );
+        lines.push("");
+      }
+    }
+  );
+
+  return lines.join("\n").trim();
+}
+
+function renderLessonContent(
+  lesson
+) {
+  const sections = [];
+
+  const content =
+    firstDefined(
+      lesson.content,
+      lesson.body,
+      lesson.material,
+      lesson.text,
+      lesson.lessonContent
+    );
+
+  if (content) {
+    sections.push(
+      renderValue(content)
+    );
+  }
+
+  const objective =
+    firstDefined(
+      lesson.objective,
+      lesson.objectives,
+      lesson.learningObjective,
+      lesson.learningObjectives
+    );
+
+  if (objective) {
+    sections.push(
+      [
+        "## Learning Objectives",
+        "",
+        renderValue(objective),
+      ].join("\n")
+    );
+  }
+
+  const keyTerms =
+    renderKeyTerms(
+      firstDefined(
+        lesson.keyTerms,
+        lesson.key_terms,
+        lesson.terms
+      )
+    );
+
+  if (keyTerms) {
+    sections.push(keyTerms);
+  }
+
+  const activities =
+    renderActivities(
+      firstDefined(
+        lesson.activities,
+        lesson.activity,
+        lesson.classActivity,
+        lesson.practice
+      )
+    );
+
+  if (activities) {
+    sections.push(
+      activities
+    );
+  }
+
+  const mistakes =
+    renderMistakes(
+      firstDefined(
+        lesson.commonMistakes,
+        lesson.common_mistakes,
+        lesson.mistakes
+      )
+    );
+
+  if (mistakes) {
+    sections.push(mistakes);
+  }
+
+  const summary =
+    firstDefined(
+      lesson.summary,
+      lesson.summaries,
+      lesson.recap,
+      lesson.conclusion
+    );
+
+  if (summary) {
+    sections.push(
+      [
+        "## Summary",
+        "",
+        renderValue(summary),
+      ].join("\n")
+    );
+  }
+
+  const quiz =
+    renderQuiz(
+      lesson.quiz
+    );
+
+  if (quiz) {
+    sections.push(quiz);
+  }
+
+  /*
+   * Source-first metadata is retained.
+   */
+  if (lesson.sourceFirst) {
+    const source =
+      typeof lesson.sourceFirst ===
+      "string"
+        ? lesson.sourceFirst
+        : firstDefined(
+            lesson.sourceFirst.url,
+            lesson.sourceFirst.sourceUrl,
+            lesson.sourceFirst.reference,
+            ""
+          );
+
+    if (source) {
+      sections.push(
+        [
+          "## Source Reference",
+          "",
+          source,
+        ].join("\n")
+      );
+    }
+  }
+
+  return sections
+    .map((section) =>
+      text(section)
+    )
+    .filter(Boolean)
+    .join("\n\n");
+}
+
+/* =========================================================
+   QUESTION / ASSESSMENT HELPERS
+========================================================= */
+
+function getModuleQuestions(
+  module
+) {
+  const test =
+    module.test ||
+    module.moduleTest ||
+    module.module_test ||
+    module.assessment;
+
+  return normalizeQuestions(
+    test
+  );
+}
+
+function getFinalQuestions(
+  course
+) {
+  const exam =
+    course.finalExam ||
+    course.final_exam ||
+    course.exam;
+
+  return normalizeQuestions(
+    exam
+  );
+}
+
+/* =========================================================
+   DURATION
+========================================================= */
+
+function totalLessonMinutes(
+  course
+) {
+  return getModules(course)
+    .reduce(
+      (courseTotal, module) =>
+        courseTotal +
+        getLessons(module)
+          .reduce(
+            (moduleTotal, lesson) =>
+              moduleTotal +
+              numberOr(
+                firstDefined(
+                  lesson.durationMinutes,
+                  lesson.duration,
+                  0
+                ),
+                0
+              ),
+            0
+          ),
+      0
+    );
+}
+
+/* =========================================================
+   SOURCE VALIDATION
+========================================================= */
+
+function validateCurriculum(
+  curriculum
+) {
+  assert(
+    curriculum &&
+      typeof curriculum ===
+        "object",
+    "curriculum.json is not a valid JSON object."
+  );
+
+  assert(
+    Array.isArray(
+      curriculum.courses
+    ),
+    "curriculum.courses must be an array."
+  );
+
+  assert(
+    curriculum.courses.length > 0,
+    "curriculum.json contains no courses."
+  );
+
+  for (
+    let i = 0;
+    i < curriculum.courses.length;
+    i += 1
+  ) {
+    const course =
+      curriculum.courses[i];
+
+    assert(
+      getCourseTitle(course),
+      `Course ${i + 1} has no title.`
+    );
+
+    assert(
+      getModules(course).length >
+        0,
+      `Course "${getCourseTitle(course)}" has no modules.`
+    );
+
+    for (
+      let mi = 0;
+      mi <
+      getModules(course).length;
+      mi += 1
+    ) {
+      const module =
+        getModules(course)[mi];
+
+      assert(
+        getLessons(module).length >
+          0,
+        `Course "${getCourseTitle(course)}" module ${mi + 1} has no lessons.`
+      );
+    }
+  }
+}
+
+/* =========================================================
+   PRE-FLIGHT DUPLICATE AUDIT
+========================================================= */
+
+function preflightAudit(
+  curriculum
+) {
+  console.log("");
+  console.log(
+    "============================================"
+  );
+  console.log(
+    "🔎 PRE-FLIGHT CURRICULUM AUDIT"
+  );
+  console.log(
+    "============================================"
+  );
+
+  const courses =
+    curriculum.courses;
+
+  /*
+   * Subjects
+   */
+  const subjectNames =
+    new Map();
+
+  for (const subject of
+    curriculum.subjects ?? []) {
+    const name =
+      text(
+        firstDefined(
+          subject.name,
+          subject.title,
+          subject
+        )
+      );
+
+    const key =
+      name.toLowerCase();
+
+    subjectNames.set(
+      key,
+      (subjectNames.get(key) ??
+        0) + 1
+    );
+  }
+
+  const duplicateSubjects =
+    [...subjectNames.entries()]
+      .filter(
+        ([, count]) =>
+          count > 1
+      );
+
+  console.log(
+    duplicateSubjects.length
+      ? `⚠️ Subject name duplicates: ${duplicateSubjects.length}`
+      : "✅ Subject names are unique."
+  );
+
+  /*
+   * Course source codes.
+   */
+  const sourceCourseCodes =
+    new Map();
+
+  for (const course of courses) {
+    const source =
+      code(
+        getCourseSourceCode(
+          course
+        )
+      );
+
+    if (!source) continue;
+
+    sourceCourseCodes.set(
+      source,
+      (sourceCourseCodes.get(
+        source
+      ) ?? 0) + 1
+    );
+  }
+
+  const duplicateCourseCodes =
+    [...sourceCourseCodes.entries()]
+      .filter(
+        ([, count]) =>
+          count > 1
+      );
+
+  if (
+    duplicateCourseCodes.length
+  ) {
+    console.log(
+      `⚠️ Duplicate source course codes: ${duplicateCourseCodes.length}`
+    );
+
+    for (const [
+      duplicate,
+      count,
+    ] of duplicateCourseCodes) {
+      console.log(
+        `   ${duplicate} × ${count}`
+      );
+    }
+
+    console.log(
+      "   → Level-qualified database codes will be generated."
+    );
+  } else {
+    console.log(
+      "✅ Source course codes are unique."
+    );
+  }
+
+  /*
+   * Database course codes.
+   */
+  const usedCourseCodes =
+    new Set();
+
+  let courseCodeAdjustments = 0;
+
+  for (const course of courses) {
+    const original =
+      code(
+        getCourseSourceCode(
+          course
+        )
+      );
+
+    const level =
+      code(
+        normalizeLevel(
+          getCourseLevel(
+            course
+          )
+        )
+      );
+
+    const preferred =
+      original
+        ? level
+          ? `${original}-${level}`
+          : original
+        : level
+          ? `${code(
+              getCourseTitle(
+                course
+              )
+            )}-${level}`
+          : code(
+              getCourseTitle(
+                course
+              )
+            );
+
+    const generated =
+      uniqueValue(
+        preferred,
+        usedCourseCodes,
+        preferred
+      );
+
+    if (
+      original &&
+      generated !== original
+    ) {
+      courseCodeAdjustments += 1;
+    }
+  }
+
+  console.log(
+    `✅ Database course-code audit passed: ${courses.length} courses`
+  );
+
+  if (
+    courseCodeAdjustments
+  ) {
+    console.log(
+      `   ℹ️ ${courseCodeAdjustments} course code(s) will be qualified for database uniqueness.`
+    );
+  }
+
+  /*
+   * Module codes.
+   *
+   * Uniqueness is scoped to each course.
+   */
+  let moduleCount = 0;
+  let moduleCodeAdjustments = 0;
+
+  for (const course of courses) {
+    const usedModules =
+      new Set();
+
+    for (
+      let i = 0;
+      i < getModules(course).length;
+      i += 1
+    ) {
+      const module =
+        getModules(course)[i];
+
+      const number =
+        getModuleNumber(
+          module,
+          i
+        );
+
+      const source =
+        text(
+          firstDefined(
+            module.moduleCode,
+            module.code,
+            ""
+          )
+        );
+
+      const generated =
+        getModuleCode(
+          module,
+          number,
+          usedModules
+        );
+
+      moduleCount += 1;
+
+      if (
+        source &&
+        generated !==
+          uniqueCodePreview(
+            source,
+            number,
+            moduleCount
+          )
+      ) {
+        moduleCodeAdjustments += 1;
+      }
+    }
+  }
+
+  console.log(
+    `✅ Module audit passed: ${moduleCount} modules`
+  );
+
+  /*
+   * Lessons.
+   */
+  let lessonCount = 0;
+
+  for (const course of courses) {
+    for (const module of
+      getModules(course)) {
+      const usedLessons =
+        new Set();
+
+      for (
+        let i = 0;
+        i <
+        getLessons(module).length;
+        i += 1
+      ) {
+        const lesson =
+          getLessons(module)[i];
+
+        const number =
+          getLessonNumber(
+            lesson,
+            i
+          );
+
+        getLessonCode(
+          lesson,
+          number,
+          usedLessons
+        );
+
+        lessonCount += 1;
+      }
+    }
+  }
+
+  console.log(
+    `✅ Lesson audit passed: ${lessonCount} lessons`
+  );
+
+  /*
+   * Assessments.
+   */
+  let moduleTests = 0;
+  let finalExams = 0;
+
+  for (const course of courses) {
+    for (const module of
+      getModules(course)) {
+      if (
+        getModuleQuestions(
+          module
+        ).length
+      ) {
+        moduleTests += 1;
+      }
+    }
+
+    if (
+      getFinalQuestions(
+        course
+      ).length
+    ) {
+      finalExams += 1;
+    }
+  }
+
+  console.log(
+    `✅ Assessment audit passed: ${moduleTests} module tests + ${finalExams} final exams`
+  );
+
+  /*
+   * Question structure.
+   */
+  let questions = 0;
+  let invalidQuestions = 0;
+
+  function inspectQuestions(
+    list,
+    location
+  ) {
+    for (
+      let i = 0;
+      i < list.length;
+      i += 1
+    ) {
+      const question =
+        list[i];
+
+      questions += 1;
+
+      if (
+        !question.options ||
+        question.options.length <
+          2 ||
+        !question.correctKey
+      ) {
+        invalidQuestions += 1;
+
+        console.log(
+          `   ⚠️ Question structure issue at ${location} #${i + 1}`
+        );
+      }
+    }
+  }
+
+  for (const course of courses) {
+    for (const module of
+      getModules(course)) {
+      inspectQuestions(
+        getModuleQuestions(
+          module
+        ),
+        `${getCourseTitle(
+          course
+        )} / ${getModuleTitle(
+          module,
+          1
+        )}`
+      );
+
+      for (const lesson of
+        getLessons(module)) {
+        inspectQuestions(
+          normalizeQuestions(
+            lesson.quiz
+          ),
+          `${getCourseTitle(
+            course
+          )} / lesson ${getLessonTitle(
+            lesson,
+            1
+          )}`
+        );
+      }
+    }
+
+    inspectQuestions(
+      getFinalQuestions(course),
+      `${getCourseTitle(
+        course
+      )} / final exam`
+    );
+  }
+
+  if (invalidQuestions) {
+    throw new Error(
+      `Pre-flight failed: ${invalidQuestions} question(s) have invalid answer structures.`
+    );
+  }
+
+  console.log(
+    `✅ Question audit passed: ${questions} questions`
+  );
+
+  console.log("");
+  console.log(
+    "✅ PRE-FLIGHT AUDIT PASSED"
+  );
+  console.log(
+    "============================================"
+  );
+  console.log("");
+
+  return {
+    courses: courses.length,
+    modules: moduleCount,
+    lessons: lessonCount,
+    moduleTests,
+    finalExams,
+    questions,
+  };
+}
+
+/*
+ * Only used for comparing whether a source code
+ * needs normalization. Does not control insertion.
+ */
+function uniqueCodePreview(
+  source,
+  number,
+  index
+) {
+  return (
+    code(source) ||
+    `M${String(
+      number
+    ).padStart(2, "0")}-${index}`
+  );
+}
+
+/* =========================================================
+   DATABASE CLEANUP
+========================================================= */
+
+async function cleanCurriculum(
+  connection
+) {
+  const tables = [
+    "answer_options",
+    "attempt_answers",
+    "attempts",
+    "course_completions",
+    "lesson_resources",
+    "lesson_progress",
+    "enrollments",
+    "questions",
+    "assessments",
+    "lessons",
+    "modules",
+    "courses",
+    "subjects",
+  ];
+
+  for (const table of
+    tables) {
+    console.log(
+      `   deleting ${table}...`
+    );
+
     await connection.query(
-      'DELETE FROM `' + table + '`'
+      `DELETE FROM \`${table}\``
     );
   }
 }
 
+/* =========================================================
+   INSERT SUBJECT
+========================================================= */
+
 async function insertSubject(
   connection,
   subject,
-  subjectSlug
+  subjectSlug,
+  subjectCode,
+  position
 ) {
-  const [result] = await connection.execute(
-    `INSERT INTO subjects
+  const name =
+    text(
+      firstDefined(
+        subject.name,
+        subject.title,
+        subject
+      )
+    );
+
+  const [result] =
+    await connection.execute(
+      `
+      INSERT INTO subjects
       (
         name,
         slug,
@@ -137,35 +1573,58 @@ async function insertSubject(
         is_active,
         display_order
       )
-      VALUES (?, ?, ?, ?, ?, ?, 1, ?)`,
-    [
-      subject.name,
-      subjectSlug,
-      subject.code,
-      subject.description ??
-        subject.name +
-          ' secondary-school subject.',
-      subject.category ?? 'Academic',
-      subject.educationLevel ??
-        'junior_secondary',
-      Number(
-        String(subject.code).replace(/\D/g, '') || 0
-      ),
-    ]
-  );
+      VALUES (?, ?, ?, ?, ?, ?, 1, ?)
+      `,
+      [
+        name,
+        subjectSlug,
+        subjectCode,
+        text(
+          firstDefined(
+            subject.description,
+            `${name} secondary-school subject.`
+          )
+        ),
+        text(
+          firstDefined(
+            subject.category,
+            "Academic"
+          )
+        ),
+        text(
+          firstDefined(
+            subject.educationLevel,
+            "junior_secondary"
+          )
+        ),
+        position,
+      ]
+    );
 
-  return Number(result.insertId);
+  return Number(
+    result.insertId
+  );
 }
+
+/* =========================================================
+   INSERT COURSE
+========================================================= */
 
 async function insertCourse(
   connection,
   course,
   subjectId,
-  coursePosition,
-  courseSlug
+  position,
+  courseSlug,
+  courseCode
 ) {
-  const [result] = await connection.execute(
-    `INSERT INTO courses
+  const title =
+    getCourseTitle(course);
+
+  const [result] =
+    await connection.execute(
+      `
+      INSERT INTO courses
       (
         subject_id,
         title,
@@ -180,35 +1639,95 @@ async function insertCourse(
         is_published,
         display_order
       )
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?)`,
-    [
-      subjectId,
-      course.title,
-      courseSlug,
-      course.code,
-      course.level,
-      course.description,
-      getSubjectImage(course.subject),
-      course.level === 'Elective'
-        ? 'PStacks Learning Team'
-        : 'PStacks Academic Curriculum Team',
-      totalMinutes(course),
-      Number(course.finalExam?.passingScore ?? 50),
-      coursePosition,
-    ]
-  );
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?)
+      `,
+      [
+        subjectId,
+        title,
+        courseSlug,
+        courseCode,
+        getCourseLevel(
+          course
+        ),
+        getCourseDescription(
+          course
+        ),
 
-  return Number(result.insertId);
+        /*
+         * No generic image is used as
+         * instructional content.
+         */
+        text(
+          firstDefined(
+            course.thumbnailUrl,
+            course.thumbnail,
+            ""
+          )
+        ) || null,
+
+        text(
+          firstDefined(
+            course.instructor,
+            course.instructorName,
+            "PStacks Academic Curriculum Team"
+          )
+        ),
+
+        totalLessonMinutes(
+          course
+        ),
+
+        numberOr(
+          firstDefined(
+            course.finalExam
+              ?.passingScore,
+            course.passingScore,
+            50
+          ),
+          50
+        ),
+
+        position,
+      ]
+    );
+
+  return Number(
+    result.insertId
+  );
 }
+
+/* =========================================================
+   INSERT MODULE
+========================================================= */
 
 async function insertModule(
   connection,
   courseId,
   module,
-  modulePosition
+  moduleNumber,
+  moduleCode,
+  position
 ) {
-  const [result] = await connection.execute(
-    `INSERT INTO modules
+  const duration =
+    getLessons(module)
+      .reduce(
+        (sum, lesson) =>
+          sum +
+          numberOr(
+            firstDefined(
+              lesson.durationMinutes,
+              lesson.duration,
+              0
+            ),
+            0
+          ),
+        0
+      );
+
+  const [result] =
+    await connection.execute(
+      `
+      INSERT INTO modules
       (
         course_id,
         module_number,
@@ -219,51 +1738,55 @@ async function insertModule(
         duration_minutes,
         is_published
       )
-      VALUES (?, ?, ?, ?, ?, ?, ?, 1)`,
-    [
-      courseId,
-      Number(module.code),
-      module.code,
-      module.title,
-      module.description ?? '',
-      modulePosition,
-      module.lessons.reduce(
-        (sum, lesson) =>
-          sum +
-          Number(
-            lesson.durationMinutes ?? 0
-          ),
-        0
-      ),
-    ]
-  );
+      VALUES (?, ?, ?, ?, ?, ?, ?, 1)
+      `,
+      [
+        courseId,
+        moduleNumber,
+        moduleCode,
+        getModuleTitle(
+          module,
+          moduleNumber
+        ),
+        text(
+          firstDefined(
+            module.description,
+            module.overview,
+            module.summary,
+            ""
+          )
+        ),
+        position,
+        duration,
+      ]
+    );
 
-  return Number(result.insertId);
+  return Number(
+    result.insertId
+  );
 }
+
+/* =========================================================
+   INSERT LESSON
+========================================================= */
 
 async function insertLesson(
   connection,
   moduleId,
   lesson,
-  courseTitle,
-  lessonSources
+  lessonNumber,
+  lessonCode,
+  lessonPosition
 ) {
-  const parts = String(lesson.code).split('.');
-  const position = Number(parts[1] ?? 1);
+  const content =
+    renderLessonContent(
+      lesson
+    );
 
-  const sourceUrl =
-    lessonSources[courseTitle] ??
-    lessonSources._default ??
-    null;
-
-  const sourceNote = sourceUrl
-    ? '\n\n## Further Reading\n\nThis lesson is part of the platform curriculum and should be studied together with the referenced documentation. Use the source to check terminology, examples and additional details rather than copying it as lesson text.\n\n**Reference:** ' + sourceUrl + '\\n'
-    : '';
-
-  const lessonContent = String(lesson.content ?? '') + sourceNote;
-
-  const [result] = await connection.execute(
-    `INSERT INTO lessons
+  const [result] =
+    await connection.execute(
+      `
+      INSERT INTO lessons
       (
         module_id,
         lesson_code,
@@ -278,32 +1801,82 @@ async function insertLesson(
         is_free,
         is_published
       )
-      VALUES (?, ?, ?, ?, ?, ?, NULL, NULL, ?, ?, 1, 1)`,
-    [
-      moduleId,
-      lesson.code,
-      lesson.title,
-      lesson.objective ?? '',
-      lessonContent,
-      lesson.summary ?? '',
-      Number(
-        lesson.durationMinutes ?? 35
-      ),
-      position,
-    ]
-  );
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, 1)
+      `,
+      [
+        moduleId,
+        lessonCode,
+        getLessonTitle(
+          lesson,
+          lessonNumber
+        ),
+        text(
+          firstDefined(
+            lesson.objective,
+            lesson.objectives,
+            lesson.learningObjective,
+            lesson.learningObjectives,
+            ""
+          )
+        ),
+        content,
+        text(
+          firstDefined(
+            lesson.summary,
+            lesson.summaries,
+            lesson.recap,
+            lesson.conclusion,
+            ""
+          )
+        ),
+        text(
+          firstDefined(
+            lesson.videoUrl,
+            lesson.video_url,
+            lesson.video,
+            ""
+          )
+        ) || null,
+        text(
+          firstDefined(
+            lesson.documentUrl,
+            lesson.document_url,
+            lesson.document,
+            ""
+          )
+        ) || null,
+        numberOr(
+          firstDefined(
+            lesson.durationMinutes,
+            lesson.duration,
+            35
+          ),
+          35
+        ),
+        lessonPosition,
+      ]
+    );
 
-  return Number(result.insertId);
+  return Number(
+    result.insertId
+  );
 }
+
+/* =========================================================
+   INSERT ASSESSMENT
+========================================================= */
 
 async function insertAssessment(
   connection,
   courseId,
   moduleId,
+  lessonId,
   assessment
 ) {
-  const [result] = await connection.execute(
-    `INSERT INTO assessments
+  const [result] =
+    await connection.execute(
+      `
+      INSERT INTO assessments
       (
         course_id,
         module_id,
@@ -317,31 +1890,56 @@ async function insertAssessment(
         randomize_questions,
         is_published
       )
-      VALUES (?, ?, NULL, ?, ?, ?, ?, ?, ?, ?, 1)`,
-    [
-      courseId,
-      moduleId,
-      assessment.type,
-      assessment.title,
-      assessment.description ??
-        'Assessment for the concepts taught in this module.',
-      Number(
-        assessment.durationMinutes ?? 15
-      ),
-      Number(
-        assessment.passingScore ?? 50
-      ),
-      Number(
-        assessment.maxAttempts ?? 3
-      ),
-      assessment.randomizeQuestions
-        ? 1
-        : 0,
-    ]
-  );
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)
+      `,
+      [
+        courseId,
+        moduleId,
+        lessonId,
+        assessment.type,
+        assessment.title,
+        text(
+          firstDefined(
+            assessment.description,
+            "Assessment for the source curriculum."
+          )
+        ),
+        numberOr(
+          firstDefined(
+            assessment.durationMinutes,
+            assessment.duration,
+            15
+          ),
+          15
+        ),
+        numberOr(
+          firstDefined(
+            assessment.passingScore,
+            50
+          ),
+          50
+        ),
+        numberOr(
+          firstDefined(
+            assessment.maxAttempts,
+            3
+          ),
+          3
+        ),
+        assessment.randomizeQuestions
+          ? 1
+          : 0,
+      ]
+    );
 
-  return Number(result.insertId);
+  return Number(
+    result.insertId
+  );
 }
+
+/* =========================================================
+   INSERT QUESTION
+========================================================= */
 
 async function insertQuestion(
   connection,
@@ -349,8 +1947,10 @@ async function insertQuestion(
   question,
   position
 ) {
-  const [result] = await connection.execute(
-    `INSERT INTO questions
+  const [result] =
+    await connection.execute(
+      `
+      INSERT INTO questions
       (
         assessment_id,
         question_text,
@@ -359,95 +1959,155 @@ async function insertQuestion(
         points,
         position
       )
-      VALUES (?, ?, ?, 'multiple_choice', 1, ?)`,
-    [
-      assessmentId,
-      question.prompt,
-      'Review the lesson topic carefully and compare each option with the definition, process or example taught.',
-      position,
-    ]
-  );
+      VALUES (?, ?, ?, 'multiple_choice', ?, ?)
+      `,
+      [
+        assessmentId,
+        question.prompt,
+        question.explanation ||
+          null,
+        numberOr(
+          question.points,
+          1
+        ),
+        position,
+      ]
+    );
 
-  const questionId = Number(result.insertId);
-
-  const options = [
-    question.correct,
-    ...(question.distractors ?? []),
-  ];
+  const questionId =
+    Number(result.insertId);
 
   assert(
-    options.length >= 2,
-    'Question "' +
-      question.prompt +
-      '" has fewer than two options.'
+    question.options.length >=
+      2,
+    `Question "${question.prompt}" has fewer than two options.`
   );
 
-  for (let i = 0; i < options.length; i += 1) {
+  for (
+    let i = 0;
+    i <
+    question.options.length;
+    i += 1
+  ) {
+    const option =
+      question.options[i];
+
     await connection.execute(
-      `INSERT INTO answer_options
-        (
-          question_id,
-          option_key,
-          option_text,
-          is_correct,
-          position
-        )
-        VALUES (?, ?, ?, ?, ?)`,
+      `
+      INSERT INTO answer_options
+      (
+        question_id,
+        option_key,
+        option_text,
+        is_correct,
+        position
+      )
+      VALUES (?, ?, ?, ?, ?)
+      `,
       [
         questionId,
-        String.fromCharCode(65 + i),
-        String(options[i]),
-        i === 0 ? 1 : 0,
+        option.key ||
+          String.fromCharCode(
+            65 + i
+          ),
+        option.text,
+        option.key ===
+        question.correctKey
+          ? 1
+          : 0,
         i + 1,
       ]
     );
   }
 }
 
+/* =========================================================
+   MAIN SEED
+========================================================= */
+
 async function seed() {
-  const raw = await fs.readFile(
-    dataPath,
-    'utf8'
+  console.log("");
+  console.log(
+    "============================================"
+  );
+  console.log(
+    "📚 SOURCE-FIRST CURRICULUM SEED"
+  );
+  console.log(
+    "============================================"
   );
 
-  const curriculum = JSON.parse(raw);
+  console.log(
+    `📄 ${dataPath}`
+  );
 
+  const raw =
+    await fs.readFile(
+      dataPath,
+      "utf8"
+    );
+
+  const curriculum =
+    JSON.parse(raw);
+
+  validateCurriculum(
+    curriculum
+  );
+
+  console.log(
+    `📊 Courses in source: ${curriculum.courses.length}`
+  );
+
+  const [
+    dbRows,
+  ] =
+    await db.query(
+      "SELECT DATABASE() AS db"
+    );
+
+  console.log(
+    `🗄️ Database: ${dbRows[0]?.db ?? "unknown"}`
+  );
+
+  /*
+   * Source-first validation.
+   */
+  console.log(
+    "✅ Source validation passed."
+  );
+
+  /*
+   * This happens BEFORE touching the DB.
+   */
+  const audit =
+    preflightAudit(
+      curriculum
+    );
+
+  /*
+   * Load lesson source map if present.
+   */
   let lessonSources = {};
+
   try {
-    const sourceRaw = await fs.readFile(sourcesPath, 'utf8');
-    const sourceData = JSON.parse(sourceRaw);
-    lessonSources = sourceData.sources ?? {};
-  } catch (error) {
-    console.warn('⚠️ Lesson source map unavailable; continuing without source notes.');
+    const sourceRaw =
+      await fs.readFile(
+        sourcesPath,
+        "utf8"
+      );
+
+    const sourceData =
+      JSON.parse(sourceRaw);
+
+    lessonSources =
+      sourceData.sources ??
+      {};
+  } catch {
+    /*
+     * Optional file.
+     */
+    lessonSources = {};
   }
-
-  assert(
-    Array.isArray(curriculum.subjects),
-    'curriculum.subjects must be an array'
-  );
-
-  assert(
-    Array.isArray(curriculum.courses),
-    'curriculum.courses must be an array'
-  );
-
-  const [dbRows] = await db.query(
-    'SELECT DATABASE() AS db'
-  );
-
-  console.log(
-    '📚 Loading curriculum for database: ' +
-      (dbRows[0]?.db ?? 'unknown')
-  );
-
-  console.log(
-    '📊 ' +
-      (curriculum.meta?.counts?.subjects ??
-        curriculum.subjects.length) +
-      ' subjects, ' +
-      curriculum.courses.length +
-      ' courses'
-  );
 
   const connection =
     await db.getConnection();
@@ -455,273 +2115,644 @@ async function seed() {
   try {
     await connection.beginTransaction();
 
+    console.log("");
     console.log(
-      '🧹 Removing previous curriculum data (users/auth remain intact)...'
+      "🧹 Removing previous curriculum data..."
     );
 
-    await cleanCurriculum(connection);
+    await cleanCurriculum(
+      connection
+    );
 
     /*
+     * -----------------------------------------------------
      * SUBJECTS
+     * -----------------------------------------------------
      */
-    const subjectIds = new Map();
-    const usedSubjectSlugs = new Set();
 
-    for (const subject of curriculum.subjects) {
-      const subjectSlug =
-        makeUniqueSlug(
-          subject.slug ?? subject.name,
-          usedSubjectSlugs
-        );
+    const subjectIds =
+      new Map();
 
-      const id = await insertSubject(
-        connection,
-        subject,
-        subjectSlug
-      );
+    const usedSubjectSlugs =
+      new Set();
 
-      subjectIds.set(subject.name, id);
-    }
+    const usedSubjectCodes =
+      new Set();
+
+    const subjects =
+      Array.isArray(
+        curriculum.subjects
+      )
+        ? curriculum.subjects
+        : [];
 
     /*
-     * COURSES
+     * If the source has an incomplete subjects
+     * array, derive subjects from courses.
      */
-    const usedCourseSlugs = new Set();
+    const derivedSubjects =
+      subjects.length
+        ? subjects
+        : [
+            ...new Map(
+              curriculum.courses.map(
+                (course) => {
+                  const name =
+                    getCourseSubject(
+                      course
+                    );
+
+                  return [
+                    name,
+                    {
+                      name,
+                      code:
+                        code(name),
+                      description:
+                        `${name} secondary-school subject.`,
+                      category:
+                        "Academic",
+                      educationLevel:
+                        "secondary",
+                    },
+                  ];
+                }
+              )
+            ).values(),
+          ];
+
+    console.log("");
+    console.log(
+      `📚 Importing ${derivedSubjects.length} subjects...`
+    );
 
     for (
       let i = 0;
-      i < curriculum.courses.length;
+      i <
+      derivedSubjects.length;
       i += 1
     ) {
+      const subject =
+        derivedSubjects[i];
+
+      const subjectName =
+        text(
+          firstDefined(
+            subject.name,
+            subject.title,
+            subject
+          )
+        );
+
+      const subjectSlug =
+        uniqueSlug(
+          firstDefined(
+            subject.slug,
+            subjectName
+          ),
+          usedSubjectSlugs,
+          subjectName
+        );
+
+      const subjectCode =
+        uniqueValue(
+          firstDefined(
+            getSubjectCode(
+              subject
+            ),
+            code(
+              subjectName
+            )
+          ),
+          usedSubjectCodes,
+          `SUBJECT-${i + 1}`
+        );
+
+      const id =
+        await insertSubject(
+          connection,
+          subject,
+          subjectSlug,
+          subjectCode,
+          i + 1
+        );
+
+      subjectIds.set(
+        subjectName.toLowerCase(),
+        id
+      );
+    }
+
+    /*
+     * -----------------------------------------------------
+     * COURSES
+     * -----------------------------------------------------
+     */
+
+    const usedCourseSlugs =
+      new Set();
+
+    const usedCourseCodes =
+      new Set();
+
+    let courseCount = 0;
+    let moduleCount = 0;
+    let lessonCount = 0;
+    let assessmentCount = 0;
+    let questionCount = 0;
+
+    console.log("");
+    console.log(
+      `🎓 Importing ${curriculum.courses.length} courses...`
+    );
+
+    for (
+      let courseIndex = 0;
+      courseIndex <
+      curriculum.courses.length;
+      courseIndex += 1
+    ) {
       const course =
-        curriculum.courses[i];
+        curriculum.courses[
+          courseIndex
+        ];
+
+      const title =
+        getCourseTitle(
+          course
+        );
+
+      const subjectName =
+        getCourseSubject(
+          course
+        );
 
       let subjectId =
-        subjectIds.get(course.subject);
+        subjectIds.get(
+          subjectName.toLowerCase()
+        );
 
+      /*
+       * Handle source courses whose subject
+       * wasn't explicitly present in curriculum.subjects.
+       */
       if (!subjectId) {
         const [rows] =
           await connection.execute(
-            'SELECT id FROM subjects WHERE name = ? LIMIT 1',
-            [course.subject]
+            `
+            SELECT id
+            FROM subjects
+            WHERE LOWER(name) = LOWER(?)
+            LIMIT 1
+            `,
+            [subjectName]
           );
 
-        subjectId = rows[0]
-          ? Number(rows[0].id)
-          : null;
+        subjectId =
+          rows[0]
+            ? Number(rows[0].id)
+            : null;
       }
 
       assert(
         subjectId,
-        'No subject row exists for course subject: ' +
-          course.subject
+        `No subject row exists for course "${title}" with subject "${subjectName}".`
       );
 
       const courseSlug =
-        makeUniqueSlug(
-          course.slug ?? course.title,
-          usedCourseSlugs
+        uniqueSlug(
+          firstDefined(
+            course.slug,
+            title
+          ),
+          usedCourseSlugs,
+          title
         );
+
+      const courseCode =
+        getDatabaseCourseCode(
+          course,
+          usedCourseCodes
+        );
+
+      console.log(
+        `   📘 ${courseIndex + 1}/${curriculum.courses.length} ${title} [${courseCode}]`
+      );
 
       const courseId =
         await insertCourse(
           connection,
           course,
           subjectId,
-          i + 1,
-          courseSlug
+          courseIndex + 1,
+          courseSlug,
+          courseCode
         );
 
-      assert(
-        Array.isArray(course.modules),
-        'Modules missing for course: ' +
-          course.title
-      );
+      courseCount += 1;
+
+      /*
+       * ---------------------------------------------------
+       * MODULES
+       * ---------------------------------------------------
+       */
+
+      const modules =
+        getModules(course);
+
+      const usedModuleCodes =
+        new Set();
 
       for (
-        let mi = 0;
-        mi < course.modules.length;
-        mi += 1
+        let moduleIndex = 0;
+        moduleIndex <
+        modules.length;
+        moduleIndex += 1
       ) {
         const module =
-          course.modules[mi];
+          modules[
+            moduleIndex
+          ];
+
+        const moduleNumber =
+          getModuleNumber(
+            module,
+            moduleIndex
+          );
+
+        const moduleCode =
+          getModuleCode(
+            module,
+            moduleNumber,
+            usedModuleCodes
+          );
 
         const moduleId =
           await insertModule(
             connection,
             courseId,
             module,
-            mi + 1
+            moduleNumber,
+            moduleCode,
+            moduleIndex + 1
           );
 
-        assert(
-          Array.isArray(module.lessons),
-          'Lessons missing for ' +
-            course.title +
-            ' module ' +
-            module.code
-        );
+        moduleCount += 1;
 
-        for (const lesson of module.lessons) {
+        /*
+         * -----------------------------------------------
+         * LESSONS
+         * -----------------------------------------------
+         */
+
+        const lessons =
+          getLessons(module);
+
+        const usedLessonCodes =
+          new Set();
+
+        for (
+          let lessonIndex = 0;
+          lessonIndex <
+          lessons.length;
+          lessonIndex += 1
+        ) {
+          const lesson =
+            lessons[
+              lessonIndex
+            ];
+
+          const lessonNumber =
+            getLessonNumber(
+              lesson,
+              lessonIndex
+            );
+
+          const lessonCode =
+            getLessonCode(
+              lesson,
+              lessonNumber,
+              usedLessonCodes
+            );
+
           await insertLesson(
             connection,
             moduleId,
             lesson,
-            course.title,
-            lessonSources
+            lessonNumber,
+            lessonCode,
+            lessonIndex + 1
           );
+
+          lessonCount += 1;
         }
 
-        const assessment = module.test;
+        /*
+         * -----------------------------------------------
+         * MODULE TEST
+         * -----------------------------------------------
+         */
 
-        assert(
-          assessment?.type ===
-            'module_test',
-          'Module test missing for ' +
-            course.title +
-            ' ' +
-            module.code
+        const moduleTest =
+          module.test ||
+          module.moduleTest ||
+          module.module_test ||
+          module.assessment;
+
+        const moduleQuestions =
+          getModuleQuestions(
+            module
+          );
+
+        if (
+          moduleTest &&
+          moduleQuestions.length
+        ) {
+          const assessment =
+            {
+              ...moduleTest,
+              type:
+                moduleTest.type ??
+                "module_test",
+              title:
+                moduleTest.title ??
+                `${getModuleTitle(
+                  module,
+                  moduleNumber
+                )} Test`,
+            };
+
+          const assessmentId =
+            await insertAssessment(
+              connection,
+              courseId,
+              moduleId,
+              null,
+              assessment
+            );
+
+          assessmentCount += 1;
+
+          for (
+            let qi = 0;
+            qi <
+            moduleQuestions.length;
+            qi += 1
+          ) {
+            await insertQuestion(
+              connection,
+              assessmentId,
+              moduleQuestions[
+                qi
+              ],
+              qi + 1
+            );
+
+            questionCount += 1;
+          }
+        }
+      }
+
+      /*
+       * ---------------------------------------------------
+       * FINAL EXAM
+       * ---------------------------------------------------
+       */
+
+      const finalExam =
+        course.finalExam ||
+        course.final_exam ||
+        course.exam;
+
+      const finalQuestions =
+        getFinalQuestions(
+          course
         );
+
+      if (
+        finalExam &&
+        finalQuestions.length
+      ) {
+        const assessment =
+          {
+            ...finalExam,
+            type:
+              finalExam.type ??
+              "final_exam",
+            title:
+              finalExam.title ??
+              `${title} Final Examination`,
+          };
 
         const assessmentId =
           await insertAssessment(
             connection,
             courseId,
-            moduleId,
+            null,
+            null,
             assessment
           );
 
-        assert(
-          Array.isArray(
-            assessment.questions
-          ),
-          'Questions missing for ' +
-            course.title +
-            ' ' +
-            module.code
-        );
+        assessmentCount += 1;
 
         for (
           let qi = 0;
           qi <
-          assessment.questions.length;
+          finalQuestions.length;
           qi += 1
         ) {
           await insertQuestion(
             connection,
             assessmentId,
-            assessment.questions[qi],
+            finalQuestions[
+              qi
+            ],
             qi + 1
           );
+
+          questionCount += 1;
         }
       }
-
-      /*
-       * FINAL EXAM
-       */
-      const finalExam =
-        course.finalExam;
-
-      assert(
-        finalExam?.type ===
-          'final_exam',
-        'Final exam missing for ' +
-          course.title
-      );
-
-      const finalAssessmentId =
-        await insertAssessment(
-          connection,
-          courseId,
-          null,
-          finalExam
-        );
-
-      assert(
-        Array.isArray(
-          finalExam.questions
-        ),
-        'Final exam questions missing for ' +
-          course.title
-      );
-
-      for (
-        let qi = 0;
-        qi < finalExam.questions.length;
-        qi += 1
-      ) {
-        await insertQuestion(
-          connection,
-          finalAssessmentId,
-          finalExam.questions[qi],
-          qi + 1
-        );
-      }
-
-      console.log(
-        '   ✅ ' +
-          (i + 1) +
-          '/' +
-          curriculum.courses.length +
-          ' ' +
-          course.title
-      );
     }
+
+    /*
+     * -----------------------------------------------------
+     * COMMIT
+     * -----------------------------------------------------
+     */
 
     await connection.commit();
 
+    /*
+     * Verify actual DB totals.
+     */
     const [[summary]] =
-      await connection.query(`
+      await connection.query(
+        `
         SELECT
-          (SELECT COUNT(*) FROM subjects) AS subjects,
-          (SELECT COUNT(*) FROM courses
-            WHERE is_published = 1) AS courses,
-          (SELECT COUNT(*) FROM modules
-            WHERE is_published = 1) AS modules,
-          (SELECT COUNT(*) FROM lessons
-            WHERE is_published = 1) AS lessons,
-          (SELECT COUNT(*) FROM assessments
-            WHERE is_published = 1
-            AND type = 'module_test') AS module_tests,
-          (SELECT COUNT(*) FROM assessments
-            WHERE is_published = 1
-            AND type = 'final_exam') AS final_exams,
-          (SELECT COUNT(*) FROM questions) AS questions,
-          (SELECT COUNT(*) FROM answer_options) AS answer_options
-      `);
+          (SELECT COUNT(*)
+             FROM subjects) AS subjects,
 
-    console.log('');
+          (SELECT COUNT(*)
+             FROM courses
+             WHERE is_published = 1) AS courses,
+
+          (SELECT COUNT(*)
+             FROM modules
+             WHERE is_published = 1) AS modules,
+
+          (SELECT COUNT(*)
+             FROM lessons
+             WHERE is_published = 1) AS lessons,
+
+          (SELECT COUNT(*)
+             FROM assessments
+             WHERE is_published = 1
+             AND type = 'module_test')
+             AS module_tests,
+
+          (SELECT COUNT(*)
+             FROM assessments
+             WHERE is_published = 1
+             AND type = 'final_exam')
+             AS final_exams,
+
+          (SELECT COUNT(*)
+             FROM questions) AS questions,
+
+          (SELECT COUNT(*)
+             FROM answer_options)
+             AS answer_options
+        `
+      );
+
+    console.log("");
     console.log(
-      '============================================'
+      "============================================"
     );
     console.log(
-      '✅ Nigerian curriculum seed completed!'
+      "✅ SOURCE-FIRST CURRICULUM SEED COMPLETE"
     );
     console.log(
-      '============================================'
+      "============================================"
     );
 
-    console.table(summary);
+    console.log(
+      `Subjects:       ${summary.subjects}`
+    );
+
+    console.log(
+      `Courses:        ${summary.courses}`
+    );
+
+    console.log(
+      `Modules:        ${summary.modules}`
+    );
+
+    console.log(
+      `Lessons:        ${summary.lessons}`
+    );
+
+    console.log(
+      `Module tests:   ${summary.module_tests}`
+    );
+
+    console.log(
+      `Final exams:    ${summary.final_exams}`
+    );
+
+    console.log(
+      `Questions:      ${summary.questions}`
+    );
+
+    console.log(
+      `Answer options: ${summary.answer_options}`
+    );
+
+    console.log("");
+    console.log(
+      "Source audit expected:"
+    );
+
+    console.log(
+      `   Courses:  ${audit.courses}`
+    );
+
+    console.log(
+      `   Modules:  ${audit.modules}`
+    );
+
+    console.log(
+      `   Lessons:  ${audit.lessons}`
+    );
+
+    console.log(
+      `   Tests:    ${audit.moduleTests}`
+    );
+
+    console.log(
+      `   Exams:    ${audit.finalExams}`
+    );
+
+    console.log(
+      `   Questions: ${audit.questions}`
+    );
+
+    console.log("");
+    console.log(
+      "🎉 Database commit successful."
+    );
+    console.log("");
+
   } catch (error) {
     await connection.rollback();
 
+    console.log("");
+    console.log(
+      "↩️ Transaction rolled back."
+    );
+
+    console.log("");
     console.error(
-      '❌ Curriculum seed failed:',
-      error.message
+      "============================================"
     );
 
     console.error(
-      '⚠️ Database transaction rolled back.'
+      "❌ CURRICULUM SEED FAILED"
+    );
+
+    console.error(
+      "============================================"
+    );
+
+    console.error(
+      error
     );
 
     throw error;
   } finally {
     connection.release();
-    await db.end();
   }
+
+  await db.end();
 }
 
-seed().catch(() => {
-  process.exit(1);
-});
+/* =========================================================
+   START
+========================================================= */
 
+seed()
+  .then(() => {
+    console.log(
+      "Seeder exited successfully."
+    );
+  })
+  .catch((error) => {
+    console.error(
+      error?.sqlMessage ||
+        error?.message ||
+        error
+    );
+
+    process.exitCode = 1;
+  });

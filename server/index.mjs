@@ -1,9 +1,12 @@
-import { createHash, createHmac, randomBytes, randomInt, timingSafeEqual } from "node:crypto";
+import { createHash, createHmac, randomBytes, randomInt, randomUUID, timingSafeEqual } from "node:crypto";
+import { mkdir, unlink } from "node:fs/promises";
+import path from "node:path";
 import { createPool } from "mysql2/promise";
 import express from "express";
 import rateLimit from "express-rate-limit";
 import helmet from "helmet";
 import bcrypt from "bcryptjs";
+import multer from "multer";
 import nodemailer from "nodemailer";
 
 /*
@@ -48,6 +51,27 @@ const pool = createPool({
 });
 
 const app = express();
+const ALLOWED_ADMIN_FILE_TYPES = {
+  PDF: [".pdf"],
+  Video: [".mp4", ".webm"],
+  Quiz: [".json", ".csv", ".pdf"],
+};
+const adminUpload = multer({
+  storage: multer.diskStorage({
+    destination: (_request, _file, callback) => {
+      const uploadDir = path.join(process.cwd(), "public", "uploads");
+      mkdir(uploadDir, { recursive: true })
+        .then(() => callback(null, uploadDir))
+        .catch(callback);
+    },
+    filename: (_request, file, callback) => {
+      const ext = path.extname(file.originalname).toLowerCase();
+      callback(null, `${randomUUID()}${ext}`);
+    },
+  }),
+  limits: { fileSize: 25 * 1024 * 1024 },
+});
+
 app.disable("x-powered-by");
 app.set("trust proxy", 1);
 app.use(helmet());
@@ -137,8 +161,13 @@ async function verifyMailConnection() {
     throw new Error("SMTP is not configured. Check SMTP_USER, SMTP_PASSWORD and SMTP_FROM.");
   }
 
-  await transporter.verify();
-  console.log("✅ Gmail SMTP connection successful");
+  try {
+    await transporter.verify();
+    console.log("✅ Gmail SMTP connection successful");
+  } catch (error) {
+    console.warn("⚠️ SMTP verification failed. The API will still start, but email sign-in may not work until credentials are fixed.");
+    console.warn(error?.message ?? error);
+  }
 }
 
 async function initializeDatabase() {
@@ -275,6 +304,55 @@ function readSessionToken(token) {
     return payload;
   } catch {
     return null;
+  }
+}
+
+async function requireAdmin(request, response, next) {
+  try {
+    const session = readSessionToken(
+      getCookie(request, sessionCookie)
+    );
+
+    if (!session) {
+      return response.status(401).json({
+        message: "Not authenticated",
+      });
+    }
+
+    const [rows] = await pool.execute(
+      `SELECT id, full_name, email, role, is_active
+       FROM users
+       WHERE id = ?
+       LIMIT 1`,
+      [Number(session.sub)]
+    );
+
+    const user = rows[0];
+
+    if (!user || Number(user.is_active) !== 1) {
+      clearSessionCookie(response);
+
+      return response.status(401).json({
+        message: "Your session is invalid or your account is inactive.",
+      });
+    }
+
+    if (user.role !== "admin") {
+      return response.status(403).json({
+        message: "Administrator access required.",
+      });
+    }
+
+    request.authUser = {
+      id: Number(user.id),
+      name: user.full_name,
+      email: user.email,
+      role: user.role,
+    };
+
+    return next();
+  } catch (error) {
+    return next(error);
   }
 }
 
@@ -1395,6 +1473,11 @@ app.post("/auth/login", authLimiter, async (request, response, next) => {
     if (!user || !validPassword) {
       return response.status(401).json({ message: "Email or password is incorrect." });
     }
+    if (Number(user.is_active) !== 1) {
+  return response.status(403).json({
+    message: "This account is inactive. Contact an administrator.",
+  });
+}
 
     const userId = Number(user.id);
     if (await countRecentCodes(userId) >= maxCodesPerHour) {
@@ -1477,6 +1560,8 @@ app.post("/auth/verify-2fa", authLimiter, async (request, response, next) => {
          (c.expires_at > UTC_TIMESTAMP()) AS is_active,
          u.full_name,
          u.email
+         u.role, 
+         u.is_active
        FROM email_2fa_challenges c
        JOIN users u ON u.id = c.user_id
        WHERE c.token_hash = ?
@@ -1516,10 +1601,11 @@ app.post("/auth/verify-2fa", authLimiter, async (request, response, next) => {
     await connection.commit();
 
     const user = {
-      id: Number(challenge.user_id),
-      name: challenge.full_name,
-      email: challenge.email,
-    };
+  id: Number(challenge.user_id),
+  name: challenge.full_name,
+  email: challenge.email,
+  role: challenge.role,
+};
 
     if (!setSessionCookie(response, user)) {
       return response.status(503).json({ message: "Session signing is not configured." });
@@ -1665,16 +1751,283 @@ app.post("/auth/resend-2fa", authLimiter, async (request, response, next) => {
   }
 });
 
-app.get("/auth/me", (request, response) => {
-  const session = readSessionToken(getCookie(request, sessionCookie));
-  if (!session) return response.status(401).json({ message: "Not authenticated" });
-  return response.json({
-    user: {
-      id: Number(session.sub),
-      name: session.name,
-      email: session.email,
-    },
-  });
+
+app.get("/auth/me", async (request, response, next) => {
+  try {
+    const session = readSessionToken(
+      getCookie(request, sessionCookie)
+    );
+
+    if (!session) {
+      return response.status(401).json({
+        message: "Not authenticated",
+      });
+    }
+
+    const [rows] = await pool.execute(
+      `SELECT id, full_name, email, role, is_active
+       FROM users
+       WHERE id = ?
+       LIMIT 1`,
+      [Number(session.sub)]
+    );
+
+    const user = rows[0];
+
+    if (!user || Number(user.is_active) !== 1) {
+      clearSessionCookie(response);
+
+      return response.status(401).json({
+        message: "Your session is invalid or your account is inactive.",
+      });
+    }
+
+    return response.json({
+      user: {
+        id: Number(user.id),
+        name: user.full_name,
+        email: user.email,
+        role: user.role,
+      },
+    });
+  } catch (error) {
+    return next(error);
+  }
+});
+
+
+app.get("/api/admin/stats", async (request, response, next) => {
+  try {
+    await requireAdmin(request, response, async () => {
+      const [[students]] = await pool.query("SELECT COUNT(*) AS n FROM users WHERE role = 'student'");
+      const [[courses]] = await pool.query("SELECT COUNT(*) AS n FROM courses");
+      const [[pending]] = await pool.query("SELECT COUNT(*) AS n FROM feedback WHERE status = 'pending'");
+
+      return response.json({
+        totalStudents: students.n,
+        activeCourses: courses.n,
+        pendingFeedback: pending.n,
+      });
+    });
+  } catch (error) {
+    return next(error);
+  }
+});
+
+app.get("/api/admin/courses", async (request, response, next) => {
+  try {
+    await requireAdmin(request, response, async () => {
+      const [rows] = await pool.query("SELECT id, title FROM courses ORDER BY title");
+      return response.json(rows);
+    });
+  } catch (error) {
+    return next(error);
+  }
+});
+
+app.get("/api/admin/content", async (request, response, next) => {
+  try {
+    await requireAdmin(request, response, async () => {
+      const q = typeof request.query.q === "string" ? request.query.q.trim() : "";
+      const type = typeof request.query.type === "string" ? request.query.type : "";
+      const course = typeof request.query.course === "string" ? request.query.course : "";
+
+      const where = ["1=1"];
+      const params = [];
+      if (q) {
+        where.push("ci.title LIKE ?");
+        params.push(`%${q}%`);
+      }
+      if (ALLOWED_ADMIN_FILE_TYPES[type]) {
+        where.push("ci.type = ?");
+        params.push(type);
+      }
+      if (course) {
+        where.push("ci.course_id = ?");
+        params.push(course);
+      }
+
+      const [rows] = await pool.query(
+        `SELECT ci.id, ci.title, ci.type, ci.status, ci.file_path, ci.created_at, c.title AS course
+           FROM content_items ci
+           LEFT JOIN courses c ON c.id = ci.course_id
+          WHERE ${where.join(" AND ")}
+          ORDER BY ci.created_at DESC
+          LIMIT 100`,
+        params
+      );
+
+      return response.json(rows);
+    });
+  } catch (error) {
+    return next(error);
+  }
+});
+
+app.post("/api/admin/content", adminUpload.single("file"), async (request, response, next) => {
+  try {
+    await requireAdmin(request, response, async () => {
+      const title = typeof request.body?.title === "string" ? request.body.title.trim() : "";
+      const description = typeof request.body?.description === "string" ? request.body.description.trim() : "";
+      const type = typeof request.body?.type === "string" ? request.body.type : "";
+      const courseId = request.body?.course_id ? Number(request.body.course_id) : null;
+      const uploadedFile = request.file;
+
+      if (!title) return response.status(400).json({ error: "Title is required" });
+      if (!ALLOWED_ADMIN_FILE_TYPES[type]) return response.status(400).json({ error: "Choose PDF, Video or Quiz" });
+      if (!uploadedFile) return response.status(400).json({ error: "Attach a file" });
+
+      const ext = path.extname(uploadedFile.originalname).toLowerCase();
+      if (!ALLOWED_ADMIN_FILE_TYPES[type].includes(ext)) {
+        await unlink(uploadedFile.path).catch(() => {});
+        return response.status(400).json({ error: `A ${type} must be ${ALLOWED_ADMIN_FILE_TYPES[type].join(", ")}` });
+      }
+
+      const [result] = await pool.execute(
+        "INSERT INTO content_items (course_id, title, description, type, file_path) VALUES (?, ?, ?, ?, ?)",
+        [courseId || null, title, description || null, type, `/uploads/${uploadedFile.filename}`]
+      );
+
+      return response.status(201).json({ ok: true, id: result.insertId });
+    });
+  } catch (error) {
+    return next(error);
+  }
+});
+
+app.delete("/api/admin/content/:id", async (request, response, next) => {
+  try {
+    await requireAdmin(request, response, async () => {
+      const itemId = Number(request.params.id);
+      if (!Number.isFinite(itemId)) {
+        return response.status(400).json({ error: "Invalid content id" });
+      }
+
+      const [rows] = await pool.execute(
+        "SELECT file_path FROM content_items WHERE id = ? LIMIT 1",
+        [itemId]
+      );
+      const filePath = rows[0]?.file_path;
+
+      await pool.execute("DELETE FROM content_items WHERE id = ?", [itemId]);
+      if (filePath) {
+        const localPath = path.join(process.cwd(), "public", filePath.replace(/^\//, ""));
+        await unlink(localPath).catch(() => {});
+      }
+
+      return response.json({ ok: true });
+    });
+  } catch (error) {
+    return next(error);
+  }
+});
+
+app.get("/api/admin/students", async (request, response, next) => {
+  try {
+    await requireAdmin(request, response, async () => {
+      const q = typeof request.query.q === "string" ? request.query.q.trim() : "";
+      const status = typeof request.query.status === "string" ? request.query.status : "";
+
+      const where = ["u.role = 'student'"];
+      const params = [];
+      if (q) {
+        where.push("(u.name LIKE ? OR u.email LIKE ?)");
+        params.push(`%${q}%`, `%${q}%`);
+      }
+      if (["active", "suspended"].includes(status)) {
+        where.push("u.status = ?");
+        params.push(status);
+      }
+
+      const [rows] = await pool.query(
+        `SELECT u.id, u.name, u.email, u.status, u.created_at,
+                (SELECT COUNT(*) FROM enrollments e WHERE e.user_id = u.id) AS courses_enrolled
+           FROM users u
+          WHERE ${where.join(" AND ")}
+          ORDER BY u.created_at DESC
+          LIMIT 100`,
+        params
+      );
+
+      return response.json(rows);
+    });
+  } catch (error) {
+    return next(error);
+  }
+});
+
+app.patch("/api/admin/students/:id", async (request, response, next) => {
+  try {
+    await requireAdmin(request, response, async () => {
+      const userId = Number(request.params.id);
+      const nextStatus = typeof request.body?.status === "string" ? request.body.status : "";
+
+      if (!Number.isFinite(userId) || !["active", "suspended"].includes(nextStatus)) {
+        return response.status(400).json({ error: "Invalid student status" });
+      }
+
+      const [result] = await pool.execute("UPDATE users SET status = ? WHERE id = ?", [nextStatus, userId]);
+      if (result.affectedRows === 0) {
+        return response.status(404).json({ error: "Student not found" });
+      }
+
+      return response.json({ ok: true });
+    });
+  } catch (error) {
+    return next(error);
+  }
+});
+
+app.get("/api/admin/feedback", async (request, response, next) => {
+  try {
+    await requireAdmin(request, response, async () => {
+      const [[sum]] = await pool.query(
+        `SELECT SUM(status = 'pending') AS pending,
+                SUM(status = 'reviewed') AS reviewed,
+                ROUND(AVG(rating), 1) AS avgRating
+           FROM feedback`
+      );
+      const [items] = await pool.query(
+        `SELECT f.id, f.category, f.rating, f.message, f.status, f.created_at, u.name, u.email
+           FROM feedback f
+           JOIN users u ON u.id = f.user_id
+          ORDER BY f.status = 'pending' DESC, f.created_at DESC
+          LIMIT 200`
+      );
+
+      return response.json({
+        pending: Number(sum.pending || 0),
+        reviewed: Number(sum.reviewed || 0),
+        avgRating: sum.avgRating,
+        items,
+      });
+    });
+  } catch (error) {
+    return next(error);
+  }
+});
+
+app.patch("/api/admin/feedback/:id", async (request, response, next) => {
+  try {
+    await requireAdmin(request, response, async () => {
+      const feedbackId = Number(request.params.id);
+      if (!Number.isFinite(feedbackId)) {
+        return response.status(400).json({ error: "Invalid feedback id" });
+      }
+
+      const [result] = await pool.execute(
+        "UPDATE feedback SET status = 'reviewed' WHERE id = ?",
+        [feedbackId]
+      );
+      if (result.affectedRows === 0) {
+        return response.status(404).json({ error: "Feedback not found" });
+      }
+
+      return response.json({ ok: true });
+    });
+  } catch (error) {
+    return next(error);
+  }
 });
 
 app.post("/auth/logout", (_request, response) => {

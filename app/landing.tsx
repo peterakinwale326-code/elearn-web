@@ -114,6 +114,30 @@ export default function LandingPage() {
     new Set(courses.map((course) => course.subject)),
   ).slice(0, 6);
 
+  const studentFeedback = [
+    {
+      name: "Amina",
+      subject: "Science",
+      quote:
+        "The lessons are clear, structured, and motivating. I understand difficult ideas much faster than before.",
+      rating: 5,
+    },
+    {
+      name: "Daniel",
+      subject: "Technology",
+      quote:
+        "The project-based learning made every topic practical. It felt like learning with a coach rather than reading notes.",
+      rating: 5,
+    },
+    {
+      name: "Nia",
+      subject: "English",
+      quote:
+        "I loved the step-by-step feedback and the quick quiz checks. It kept me consistent and confident throughout the term.",
+      rating: 4,
+    },
+  ];
+
   return (
     <div className={styles.site}>
       <header className={styles.header}>
@@ -314,6 +338,37 @@ export default function LandingPage() {
             </div>
           </section>
         )}
+
+        <section className={styles.feedbackSection} aria-label="Student feedback">
+          <div className={styles.sectionHeader}>
+            <div>
+              <span className={styles.sectionEyebrow}>STUDENT FEEDBACK</span>
+              <h2>What learners are saying.</h2>
+            </div>
+          </div>
+
+          <div className={styles.feedbackGrid}>
+            {studentFeedback.map((entry) => (
+              <article key={entry.name} className={styles.feedbackCard}>
+                <div className={styles.feedbackHeader}>
+                  <div>
+                    <strong>{entry.name}</strong>
+                    <span>{entry.subject}</span>
+                  </div>
+                  <div className={styles.feedbackStars} aria-label={`${entry.rating} out of 5 stars`}>
+                    {Array.from({ length: 5 }).map((_, index) => (
+                      <span key={`${entry.name}-${index}`} className={index < entry.rating ? styles.starFilled : styles.starEmpty}>
+                        ★
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                <p>“{entry.quote}”</p>
+              </article>
+            ))}
+          </div>
+        </section>
 
         <section className={styles.method} id="how-it-works">
           <div className={styles.methodIntro}>
