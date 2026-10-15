@@ -404,11 +404,11 @@ function mapCourseSummary(row) {
   return {
     id: Number(row.id),
     title: row.title,
-    subject: row.subject,
+    subject: getCourseSubject(row.title, row.subject),
     subjectId: row.subject_id === null ? null : Number(row.subject_id),
     level: row.level,
     description: row.description,
-    thumbnailUrl: row.thumbnail_url || getSubjectImage(row.subject),
+    thumbnailUrl: row.thumbnail_url || getCourseImage(row),
     instructorName: row.instructor_name,
     durationMinutes: Number(row.duration_minutes ?? 0),
     lessonCount: Number(row.lesson_count ?? 0),
@@ -427,7 +427,7 @@ const subjectImages = {
   Business: "https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&w=900&q=80",
   Art: "https://images.unsplash.com/photo-1561214115-f2f134cc4912?auto=format&fit=crop&w=900&q=80",
   Languages: "https://images.unsplash.com/photo-1546410531-bb4caa6b424d?auto=format&fit=crop&w=900&q=80",
-  Geography: "https://images.unsplash.com/photo-1524666041070-9cffc8c7a4d0?auto=format&fit=crop&w=900&q=80",
+  Geography: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=900&q=80",
   "Computer Science": "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=900&q=80",
   Health: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=900&q=80",
   Music: "https://images.unsplash.com/photo-1524368535928-5b5e00ddc76b?auto=format&fit=crop&w=900&q=80",
@@ -437,6 +437,58 @@ const fallbackSubjectImage =
 
 function getSubjectImage(subject) {
   return subjectImages[subject] ?? fallbackSubjectImage;
+}
+
+const courseBannerImages = [
+  "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1200&q=85",
+  "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1200&q=85",
+  "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=85",
+  "https://images.unsplash.com/photo-1532094349884-543bc11b234d?auto=format&fit=crop&w=1200&q=85",
+  "https://images.unsplash.com/photo-1509228468518-180dd4864904?auto=format&fit=crop&w=1200&q=85",
+  "https://images.unsplash.com/photo-1461360228754-6e81c478b882?auto=format&fit=crop&w=1200&q=85",
+  "https://images.unsplash.com/photo-1506880018603-83d5b814b5a6?auto=format&fit=crop&w=1200&q=85",
+  "https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&w=1200&q=85",
+  "https://images.unsplash.com/photo-1561214115-f2f134cc4912?auto=format&fit=crop&w=1200&q=85",
+  "https://images.unsplash.com/photo-1546410531-bb4caa6b424d?auto=format&fit=crop&w=1200&q=85",
+  "https://images.unsplash.com/photo-1524666041070-9cffc8c7a4d0?auto=format&fit=crop&w=1200&q=85",
+  "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=1200&q=85",
+  "https://images.unsplash.com/photo-1524368535928-5b5e00ddc76b?auto=format&fit=crop&w=1200&q=85",
+  "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1200&q=85",
+  "https://images.unsplash.com/photo-1576086213369-97a306d36557?auto=format&fit=crop&w=1200&q=85",
+  "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?auto=format&fit=crop&w=1200&q=85",
+  "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=1200&q=85",
+  "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=1200&q=85",
+];
+
+function getCourseImage(course) {
+  const title = String(course.title ?? "").toLowerCase();
+  const imageIndex = /agricultural science/.test(title) ? 13
+    : /basic science|biology/.test(title) ? 14
+      : /chemistry/.test(title) ? 3
+        : /physics/.test(title) ? 15
+          : /mathematics/.test(title) ? 4
+            : /accounting|business studies|economics/.test(title) ? 7
+              : /civic education|government|social studies/.test(title) ? 5
+                : /english studies|literature in english/.test(title) ? 6
+                  : /physical and health education|physical education/.test(title) ? 16
+                    : /basic technology/.test(title) ? 17
+                      : /computer studies|^(c\+\+|c#|cobol|css|dart|html|java|javascript|php|python|ruby|typescript)$/.test(title) ? 1
+                        : -1;
+  return imageIndex >= 0 ? courseBannerImages[imageIndex] : getSubjectImage(course.subject);
+}
+
+function getCourseSubject(title, subject) {
+  const name = String(title ?? "").toLowerCase();
+  if (/agricultural science/.test(name)) return "Agriculture";
+  if (/basic science|biology|chemistry|physics/.test(name)) return "Science";
+  if (/mathematics/.test(name)) return "Mathematics";
+  if (/accounting|business studies|economics/.test(name)) return "Business";
+  if (/civic education|government|social studies/.test(name)) return "Social Studies";
+  if (/english studies|literature in english/.test(name)) return "English";
+  if (/physical and health education|physical education/.test(name)) return "Health & PE";
+  if (/basic technology/.test(name)) return "Technology";
+  if (/computer studies|^(c\+\+|c#|cobol|css|dart|html|java|javascript|php|python|ruby|typescript)$/.test(name)) return "Computer Science";
+  return subject;
 }
 
 function cleanLessonTitle(title) {
@@ -1289,7 +1341,8 @@ async function getCourseDetails(courseId) {
   // row does not contain usable curriculum content.
   const hasLessonContent = (value) => {
     const text = String(value ?? "").trim();
-    return text.length >= 400 && /###|##|\n- |\n\d+\. /m.test(text);
+    const paragraphs = text.split(/\n{2,}/).filter((paragraph) => paragraph.trim().length > 40);
+    return text.length >= 240 && paragraphs.length >= 2;
   };
 
   const lessons = lessonRows.map((lesson) => {
@@ -1790,6 +1843,52 @@ app.get("/auth/me", async (request, response, next) => {
         role: user.role,
       },
     });
+  } catch (error) {
+    return next(error);
+  }
+});
+
+
+app.post("/api/feedback", async (request, response, next) => {
+  try {
+    const session = readSessionToken(getCookie(request, sessionCookie));
+    if (!session) {
+      return response.status(401).json({ message: "Sign in to submit feedback." });
+    }
+
+    const [users] = await pool.execute(
+      "SELECT id, role, is_active FROM users WHERE id = ? LIMIT 1",
+      [Number(session.sub)],
+    );
+    const user = users[0];
+    if (!user || Number(user.is_active) !== 1) {
+      clearSessionCookie(response);
+      return response.status(401).json({ message: "Your session is invalid or your account is inactive." });
+    }
+    if (user.role !== "student") {
+      return response.status(403).json({ message: "Student accounts can submit feedback." });
+    }
+
+    const category = String(request.body?.category ?? "").trim();
+    const rating = Number(request.body?.rating);
+    const message = String(request.body?.message ?? "").trim();
+    const categories = new Set(["Course content", "Platform usability", "Technical issue", "Other"]);
+
+    if (!categories.has(category)) {
+      return response.status(400).json({ message: "Choose a feedback category." });
+    }
+    if (!Number.isInteger(rating) || rating < 1 || rating > 5) {
+      return response.status(400).json({ message: "Choose a rating from 1 to 5 stars." });
+    }
+    if (message.length < 10 || message.length > 1000) {
+      return response.status(400).json({ message: "Feedback must be between 10 and 1,000 characters." });
+    }
+
+    const [result] = await pool.execute(
+      "INSERT INTO feedback (user_id, category, rating, message) VALUES (?, ?, ?, ?)",
+      [Number(user.id), category, rating, message],
+    );
+    return response.status(201).json({ id: Number(result.insertId), message: "Thank you. Your feedback was sent for review." });
   } catch (error) {
     return next(error);
   }

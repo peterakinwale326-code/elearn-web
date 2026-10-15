@@ -10,6 +10,9 @@
     "db:check": "node --env-file=.env.local scripts/check-db.cjs",
     "db:migrate-auth": "node --env-file=.env.local scripts/migrate-auth.mjs",
     "db:seed": "node --env-file=.env.local scripts/seed-curriculum.mjs",
+    "curriculum:sync": "node --env-file=.env.local scripts/sync-curriculum-content.mjs",
+    "media:download": "node scripts/download-course-images.mjs",
+    "lesson-art:generate": "node scripts/generate-lesson-diagrams.mjs",
     "generate-data": "node scripts/generate-data.mjs"
   },
   "dependencies": {

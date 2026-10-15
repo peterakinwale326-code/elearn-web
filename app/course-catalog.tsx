@@ -23,7 +23,7 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import type { CourseSummary } from "@/lib/course-types";
-import SubjectArtwork from "@/components/subject-artwork";
+import { getCourseImage, getCourseSubject } from "@/lib/course-images";
 import styles from "./course-catalog.module.css";
 
 type CatalogState = "loading" | "ready" | "error";
@@ -59,6 +59,10 @@ const subjectTones: Record<string, string> = {
   Music: "plum",
 };
 
+function getCourseBanner(course: CourseSummary) {
+  return getCourseImage(course.title, course.subject, course.thumbnailUrl);
+}
+
 export default function CourseCatalog() {
   const [courses, setCourses] = useState<CourseSummary[]>([]);
   const [state, setState] = useState<CatalogState>("loading");
@@ -78,7 +82,10 @@ export default function CourseCatalog() {
         return (await response.json()) as CourseSummary[];
       })
       .then((data) => {
-        setCourses(data);
+        setCourses(data.map((course) => ({
+          ...course,
+          subject: getCourseSubject(course.title, course.subject),
+        })));
         setState("ready");
       })
       .catch((error: unknown) => {
@@ -121,6 +128,7 @@ export default function CourseCatalog() {
         </Link>
         <nav className={styles.headerNav} aria-label="Primary navigation">
           <span className={styles.currentNav}><BookOpen size={16} strokeWidth={2} /> Course library</span>
+          <Link href="/feedback">Feedback</Link>
           <Link href="/courses">All courses <ArrowRight size={14} strokeWidth={2} /></Link>
         </nav>
         <span className={styles.headerNote}>LEARNING SPACE</span>
@@ -241,7 +249,12 @@ export default function CourseCatalog() {
             return (
               <article className={styles.courseCard} key={course.id}>
                 <div className={styles.courseArtwork}>
-                  <SubjectArtwork subject={course.subject} />
+                  <img
+                    src={getCourseBanner(course)}
+                    alt=""
+                    loading={index > 5 ? "lazy" : "eager"}
+                  />
+                  <span>{course.subject}</span>
                 </div>
                 <div className={styles.cardTop}>
                   <span className={`${styles.subjectIcon} ${styles[tone]}`}><CourseIcon size={20} strokeWidth={1.8} /></span>

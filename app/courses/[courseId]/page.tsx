@@ -4,6 +4,7 @@
 import Link from "next/link";
 import { use, useEffect, useMemo, useState } from "react";
 import type { ReactNode } from "react";
+import { getLessonImage } from "@/lib/course-images";
 import {
   ArrowLeft,
   ArrowRight,
@@ -63,6 +64,7 @@ type Lesson = {
   content?: string;
   description?: string;
   objective?: string;
+  videoUrl?: string | null;
 };
 
 type Module = {
@@ -83,6 +85,7 @@ type Course = {
   name?: string;
   description?: string;
   subject?: string;
+  thumbnailUrl?: string | null;
   level?: string;
   grade?: string;
   duration?: number;
@@ -159,6 +162,38 @@ function passingScore(assessment: Assessment) {
 
 function durationMinutes(assessment: Assessment) {
   return assessment.timeLimit ?? assessment.duration ?? 30;
+}
+
+function getVideoEmbedUrl(value: string) {
+  try {
+    const url = new URL(value);
+    const host = url.hostname.replace(/^www\./, "");
+
+    if (host === "youtu.be") {
+      return `https://www.youtube-nocookie.com/embed/${url.pathname.slice(1)}`;
+    }
+
+    if (host === "youtube.com" || host === "m.youtube.com") {
+      const videoId = url.searchParams.get("v");
+      if (videoId) return `https://www.youtube-nocookie.com/embed/${videoId}`;
+      const pathVideoId = url.pathname.match(/^\/(?:embed|shorts|live)\/([^/]+)/)?.[1];
+      if (pathVideoId) return `https://www.youtube-nocookie.com/embed/${pathVideoId}`;
+    }
+
+    if (host === "youtube-nocookie.com") {
+      const videoId = url.pathname.match(/^\/embed\/([^/]+)/)?.[1];
+      if (videoId) return `https://www.youtube-nocookie.com/embed/${videoId}`;
+    }
+
+    if (host === "vimeo.com" || host === "player.vimeo.com") {
+      const videoId = url.pathname.match(/^\/(?:video\/)?(\d+)/)?.[1];
+      if (videoId) return `https://player.vimeo.com/video/${videoId}`;
+    }
+  } catch {
+    return null;
+  }
+
+  return null;
 }
 
 function isFinalExam(assessment?: Assessment | null) {
@@ -1137,6 +1172,7 @@ export default function CourseDetailsPage({
           <Link href="/courses" className="backLink">
             <ArrowLeft size={18} /> Back to courses
           </Link>
+          <Link href="/feedback" className="backLink">Feedback</Link>
           <span className="courseSubject badge text-bg-primary">
             {course.subject || course.level || course.grade || "Course"}
           </span>
@@ -1314,6 +1350,49 @@ export default function CourseDetailsPage({
                   {activeLesson.objective ||
                     "Explain the lesson topic and apply it in a practical example."}
                 </p>
+              </div>
+
+              <div className="lessonMedia">
+                <figure className="lessonImage">
+                  <img
+                    src={getLessonImage(
+                      course.title || course.name || "",
+                      course.level || course.grade || "",
+                      activeModule?.title || activeModule?.name || "",
+                      activeLesson.title || activeLesson.name || "",
+                    )}
+                    alt={`${lessonTitle(activeLesson)} topic illustration`}
+                  />
+                  <figcaption>{lessonTitle(activeLesson)}</figcaption>
+                </figure>
+                <div className="lessonVideo">
+                  <h2>Lesson video</h2>
+                  {activeLesson.videoUrl ? (
+                    getVideoEmbedUrl(activeLesson.videoUrl) ? (
+                      <iframe
+                        src={getVideoEmbedUrl(activeLesson.videoUrl)!}
+                        title={`${activeLesson.title || activeLesson.name || "Lesson"} video`}
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowFullScreen
+                      />
+                    ) : (
+                      <>
+                        <video controls preload="metadata" src={activeLesson.videoUrl}>
+                          Your browser does not support embedded video.
+                        </video>
+                        {activeLesson.videoUrl.startsWith("/") && (
+                          <a href={activeLesson.videoUrl} download>
+                            Save video for offline study
+                          </a>
+                        )}
+                      </>
+                    )
+                  ) : (
+                    <p className="lessonVideoUnavailable">
+                      No video is attached to this lesson yet. When a direct or embeddable video is added, it will play here.
+                    </p>
+                  )}
+                </div>
               </div>
 
               {renderLessonContent(activeLesson.content || activeLesson.description || "")}
