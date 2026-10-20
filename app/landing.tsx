@@ -8,7 +8,6 @@ import {
   BookOpen,
   BriefcaseBusiness,
   Calculator,
-  CheckCircle2,
   Code2,
   Compass,
   GraduationCap,
@@ -18,8 +17,6 @@ import {
   Music2,
   Palette,
   RefreshCw,
-  Sparkles,
-  Play,
   type LucideIcon,
 } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -44,9 +41,6 @@ const subjectIcons: Record<string, LucideIcon> = {
   Health: HeartPulse,
   Music: Music2,
 };
-
-const fallbackImage =
-  "/media/course-images/photo-1503676260728-1c00da094a0b.jpg";
 
 function getCourseImage(title: string, subject: string, thumbnailUrl?: string | null) {
   return resolveCourseImage(title, subject, thumbnailUrl);
@@ -96,33 +90,8 @@ export default function LandingPage() {
     (total, course) => total + course.lessonCount,
     0,
   );
-  const subjects = Array.from(
-    new Set(courses.map((course) => course.subject)),
-  ).slice(0, 6);
-
-  const studentFeedback = [
-    {
-      name: "Amina",
-      subject: "Science",
-      quote:
-        "The lessons are clear, structured, and motivating. I understand difficult ideas much faster than before.",
-      rating: 5,
-    },
-    {
-      name: "Daniel",
-      subject: "Technology",
-      quote:
-        "The project-based learning made every topic practical. It felt like learning with a coach rather than reading notes.",
-      rating: 5,
-    },
-    {
-      name: "Nia",
-      subject: "English",
-      quote:
-        "I loved the step-by-step feedback and the quick quiz checks. It kept me consistent and confident throughout the term.",
-      rating: 4,
-    },
-  ];
+  const allSubjects = Array.from(new Set(courses.map((course) => course.subject)));
+  const subjects = allSubjects.slice(0, 6);
 
   return (
     <div className={styles.site}>
@@ -136,12 +105,12 @@ export default function LandingPage() {
 
         <nav className={styles.navigation} aria-label="Main navigation">
           <Link href="/courses">Courses</Link>
-          <Link href="/feedback">Feedback</Link>
           <a href="#subjects">Subjects</a>
-          <a href="#how-it-works">How it works</a>
+          <Link href="/feedback">Feedback</Link>
+          <Link href="/admin">Teaching hub</Link>
           <Link href="/login" className={styles.loginLink}>Log in</Link>
           <Link href="/signup" className={styles.navCta}>
-            Get started <ArrowRight size={15} />
+            Sign up <ArrowRight size={15} />
           </Link>
         </nav>
       </header>
@@ -150,30 +119,22 @@ export default function LandingPage() {
         <section className={styles.hero}>
           <div className={styles.heroContent}>
             <div className={styles.heroCopy}>
-              <div className={styles.trustBadge}>
-                <span><Sparkles size={13} /></span>
-                Learning made clearer
-              </div>
-
               <h1>
-                Learn today.
+                Secondary school
                 <br />
-                <em>Grow tomorrow.</em>
+                <em>courses and lessons.</em>
               </h1>
 
               <p>
-                Explore engaging courses, learn at your own pace, practice
-                what you know, and track your progress from one simple
-                learning space.
+                Browse courses by subject and level. Open a course to work through its lessons, quizzes, and exam.
               </p>
 
               <div className={styles.heroActions}>
                 <Link href="/courses" className={styles.primaryButton}>
-                  Explore courses <ArrowRight size={17} />
+                  Browse courses <ArrowRight size={17} />
                 </Link>
                 <Link href="/signup" className={styles.watchButton}>
-                  <span><Play size={14} fill="currentColor" /></span>
-                  Start learning
+                  Create student account
                 </Link>
               </div>
 
@@ -187,52 +148,53 @@ export default function LandingPage() {
                   <span>Lessons</span>
                 </div>
                 <div>
-                  <strong>100%</strong>
-                  <span>Learn at your pace</span>
+                  <strong>{loadState === "ready" ? allSubjects.length : "—"}</strong>
+                  <span>Subjects</span>
                 </div>
               </div>
             </div>
 
             <div className={styles.heroVisual}>
-              <div className={styles.heroImage}>
-                <img src={fallbackImage} alt="Students learning together" />
-                <div className={styles.imageOverlay} />
-              </div>
-
-              <div className={styles.floatingProgress}>
-                <div className={styles.progressIcon}><CheckCircle2 size={18} /></div>
-                <div>
-                  <strong>Keep learning</strong>
-                  <span>Small progress adds up.</span>
+              <div className={styles.libraryPreview}>
+                <div className={styles.previewHeader}>
+                  <div>
+                    <span>COURSE LIBRARY</span>
+                    <strong>{loadState === "ready" ? `${courses.length} courses` : "Courses"}</strong>
+                  </div>
+                  <Link href="/courses" aria-label="Open all courses"><ArrowRight size={18} /></Link>
                 </div>
-              </div>
-
-              <div className={styles.floatingCard}>
-                <GraduationCap size={18} />
-                <strong>Learn smarter</strong>
+                {featuredCourses.length > 0 ? (
+                  <div className={styles.previewCourses}>
+                    {featuredCourses.slice(0, 3).map((course, index) => (
+                      <Link href={`/courses/${course.id}`} className={styles.previewCourse} key={course.id}>
+                        <span className={styles.previewIndex}>0{index + 1}</span>
+                        <span className={styles.previewCourseTitle}>
+                          <strong>{course.title}</strong>
+                          <small>{course.subject} · {course.level}</small>
+                        </span>
+                        <ArrowRight size={15} />
+                      </Link>
+                    ))}
+                  </div>
+                ) : (
+                  <p className={styles.previewEmpty}>
+                    {loadState === "loading" ? "Loading courses…" : loadState === "error" ? "Course list unavailable." : "No courses published."}
+                  </p>
+                )}
               </div>
             </div>
           </div>
         </section>
 
-        <section className={styles.trustedStrip}>
-          <span>LEARN ACROSS</span><i />
-          <strong>SCIENCE</strong><i />
-          <strong>MATHEMATICS</strong><i />
-          <strong>TECHNOLOGY</strong><i />
-          <strong>ARTS</strong><i />
-          <strong>LANGUAGES</strong>
-        </section>
-
         <section className={styles.coursesSection}>
           <div className={styles.sectionHeader}>
             <div>
-              <span className={styles.sectionEyebrow}>COURSE LIBRARY</span>
-              <h2>Learn something new.</h2>
-              <p>Find a course that matches your interests and start building useful knowledge.</p>
+              <span className={styles.sectionEyebrow}>COURSES</span>
+              <h2>Browse the latest courses.</h2>
+              <p>Each course includes its available lessons, quizzes, and assessment details.</p>
             </div>
             <Link href="/courses" className={styles.viewAll}>
-              View all courses <ArrowRight size={16} />
+              All courses <ArrowRight size={16} />
             </Link>
           </div>
 
@@ -256,10 +218,9 @@ export default function LandingPage() {
           {loadState === "ready" && featuredCourses.length === 0 && (
             <div className={styles.stateCard}>
               <div className={styles.stateIcon}><BookOpen size={24} /></div>
-              <h3>No courses available yet</h3>
-              <p>The course library is being prepared. Check back soon for new learning opportunities.</p>
+              <h3>No published courses</h3>
               <Link href="/courses" className={styles.retryButton}>
-                Explore library <ArrowRight size={15} />
+                Open course library <ArrowRight size={15} />
               </Link>
             </div>
           )}
@@ -284,7 +245,7 @@ export default function LandingPage() {
                         <span>{course.quizCount} quizzes</span>
                       </div>
                       <div className={styles.courseFooter}>
-                        <span>Start learning</span>
+                        <span>Open course</span>
                         <span className={styles.courseArrow}><ArrowRight size={16} /></span>
                       </div>
                     </div>
@@ -299,9 +260,9 @@ export default function LandingPage() {
           <section className={styles.subjectSection} id="subjects">
             <div className={styles.sectionHeader}>
               <div>
-                <span className={styles.sectionEyebrow}>EXPLORE</span>
-                <h2>Find your subject.</h2>
-                <p>Jump into the area you want to understand better.</p>
+                <span className={styles.sectionEyebrow}>SUBJECTS</span>
+                <h2>Browse by subject.</h2>
+                <p>Select a subject to filter the course library.</p>
               </div>
             </div>
 
@@ -326,79 +287,6 @@ export default function LandingPage() {
           </section>
         )}
 
-        <section className={styles.feedbackSection} aria-label="Student feedback">
-          <div className={styles.sectionHeader}>
-            <div>
-              <span className={styles.sectionEyebrow}>STUDENT FEEDBACK</span>
-              <h2>What learners are saying.</h2>
-            </div>
-          </div>
-
-          <div className={styles.feedbackGrid}>
-            {studentFeedback.map((entry) => (
-              <article key={entry.name} className={styles.feedbackCard}>
-                <div className={styles.feedbackHeader}>
-                  <div>
-                    <strong>{entry.name}</strong>
-                    <span>{entry.subject}</span>
-                  </div>
-                  <div className={styles.feedbackStars} aria-label={`${entry.rating} out of 5 stars`}>
-                    {Array.from({ length: 5 }).map((_, index) => (
-                      <span key={`${entry.name}-${index}`} className={index < entry.rating ? styles.starFilled : styles.starEmpty}>
-                        ★
-                      </span>
-                    ))}
-                  </div>
-                </div>
-
-                <p>“{entry.quote}”</p>
-              </article>
-            ))}
-          </div>
-        </section>
-
-        <section className={styles.method} id="how-it-works">
-          <div className={styles.methodIntro}>
-            <span className={styles.sectionEyebrow}>HOW IT WORKS</span>
-            <h2>A simpler way to learn.</h2>
-            <p>Everything you need to move from understanding a concept to confidently applying it.</p>
-          </div>
-
-          <div className={styles.methodSteps}>
-            <article>
-              <span className={styles.stepNumber}>01</span>
-              <div className={styles.stepIcon}><BookOpen size={21} /></div>
-              <h3>Choose</h3>
-              <p>Find a course that matches what you want to learn.</p>
-            </article>
-            <article>
-              <span className={styles.stepNumber}>02</span>
-              <div className={styles.stepIcon}><Compass size={21} /></div>
-              <h3>Learn</h3>
-              <p>Work through structured lessons and practical examples.</p>
-            </article>
-            <article>
-              <span className={styles.stepNumber}>03</span>
-              <div className={styles.stepIcon}><GraduationCap size={21} /></div>
-              <h3>Practice</h3>
-              <p>Use quizzes and assessments to check your understanding.</p>
-            </article>
-          </div>
-        </section>
-
-        <section className={styles.joinBand}>
-          <div>
-            <span className={styles.sectionEyebrow}>READY TO START?</span>
-            <h2>Your next lesson is waiting.</h2>
-            <p>Build knowledge one lesson at a time.</p>
-          </div>
-          <div className={styles.joinActions}>
-            <Link href="/signup" className={styles.primaryButton}>
-              Create account <ArrowRight size={17} />
-            </Link>
-            <Link href="/courses" className={styles.joinSecondary}>Browse courses</Link>
-          </div>
-        </section>
       </main>
 
       <footer className={styles.footer}>
@@ -406,11 +294,11 @@ export default function LandingPage() {
           <span className={styles.brandMark} aria-hidden="true"><i /><i /><i /><i /></span>
           Fieldnote
         </Link>
-        <span>A simple learning space for curious minds.</span>
         <div>
           <Link href="/courses">Courses</Link>
           <Link href="/login">Log in</Link>
           <Link href="/signup">Sign up</Link>
+          <Link href="/admin">Teaching hub</Link>
         </div>
       </footer>
     </div>

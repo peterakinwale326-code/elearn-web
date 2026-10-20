@@ -27,8 +27,8 @@ const port = getPositiveInt(process.env.API_PORT, 4000);
 const host = process.env.API_HOST?.trim() || "127.0.0.1";
 const sessionCookie = "fieldnote_session";
 const sessionLifetimeSeconds = 60 * 60 * 24 * 7;
-const loginCodeLifetimeMinutes = 10;
-const maxLoginCodeAttempts = 5;
+const verificationCodeLifetimeMinutes = 10;
+const maxVerificationCodeAttempts = 5;
 const maxCodesPerHour = 5;
 const clientOrigin = process.env.CLIENT_ORIGIN?.trim() || "http://localhost:3000";
 
@@ -175,14 +175,14 @@ async function initializeDatabase() {
   try {
     await connection.query("SELECT 1 AS ok");
 
-    // The original auth server expects this table. Creating it here prevents
-    // login/OTP from failing just because the table was omitted from an import.
+    // Keep signup verification available when the auth table is not imported.
     await connection.query(`
       CREATE TABLE IF NOT EXISTS email_2fa_challenges (
         id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
         user_id BIGINT UNSIGNED NOT NULL,
         token_hash CHAR(64) NOT NULL,
         code_hash CHAR(64) NOT NULL,
+        purpose ENUM('login', 'signup') NOT NULL DEFAULT 'login',
         expires_at DATETIME NOT NULL,
         sent_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
         attempts INT NOT NULL DEFAULT 0,
@@ -360,20 +360,20 @@ function hashChallengeToken(token) {
   return createHash("sha256").update(token).digest("hex");
 }
 
-function hashLoginCode(token, code) {
+function hashVerificationCode(token, code) {
   return createHmac("sha256", requireSessionSecret())
     .update(`${token}:${code}`)
     .digest("hex");
 }
 
-function loginCodeMatches(token, code, expectedHash) {
+function verificationCodeMatches(token, code, expectedHash) {
   if (typeof expectedHash !== "string" || !/^[a-f0-9]{64}$/i.test(expectedHash)) return false;
-  const candidate = Buffer.from(hashLoginCode(token, code), "hex");
+  const candidate = Buffer.from(hashVerificationCode(token, code), "hex");
   const expected = Buffer.from(expectedHash, "hex");
   return candidate.length === expected.length && timingSafeEqual(candidate, expected);
 }
 
-async function sendLoginCode(email, code) {
+async function sendVerificationCode(email, code) {
   const transporter = getMailTransporter();
   if (!transporter) throw new Error("SMTP_NOT_CONFIGURED");
 
@@ -383,21 +383,10 @@ async function sendLoginCode(email, code) {
   await transporter.sendMail({
     from,
     to: email,
-    subject: "Your Fieldnote sign-in code",
-    text: `Your Fieldnote sign-in code is ${code}. It expires in ${loginCodeLifetimeMinutes} minutes. If you did not request this code, you can ignore this email.`,
-    html: `<p>Your Fieldnote sign-in code is:</p><p style="font-size:28px;font-weight:700;letter-spacing:8px">${code}</p><p>It expires in ${loginCodeLifetimeMinutes} minutes. If you did not request this code, you can ignore this email.</p>`,
+    subject: "Verify your Fieldnote account",
+    text: `Your Fieldnote account verification code is ${code}. It expires in ${verificationCodeLifetimeMinutes} minutes. If you did not request this code, you can ignore this email.`,
+    html: `<p>Your Fieldnote account verification code is:</p><p style="font-size:28px;font-weight:700;letter-spacing:8px">${code}</p><p>It expires in ${verificationCodeLifetimeMinutes} minutes. If you did not request this code, you can ignore this email.</p>`,
   });
-}
-
-async function countRecentCodes(userId) {
-  const [rows] = await pool.execute(
-    `SELECT COUNT(*) AS total
-     FROM email_2fa_challenges
-     WHERE user_id = ?
-       AND sent_at >= DATE_SUB(UTC_TIMESTAMP(), INTERVAL 1 HOUR)`,
-    [userId]
-  );
-  return Number(rows[0]?.total ?? 0);
 }
 
 function mapCourseSummary(row) {
@@ -1457,29 +1446,77 @@ app.post("/auth/signup", authLimiter, async (request, response, next) => {
       return response.status(400).json({ message: "Check the highlighted fields and password requirements." });
     }
 
-    let secret;
     try {
-      secret = requireSessionSecret();
+      requireSessionSecret();
     } catch {
       return response.status(503).json({ message: "Session signing is not configured." });
     }
-    void secret;
-
-    const passwordHash = await bcrypt.hash(password, 12);
-    const [result] = await pool.execute(
-      `INSERT INTO users (full_name, email, password_hash)
-       VALUES (?, ?, ?)`,
-      [name, email, passwordHash]
-    );
-
-    const user = { id: Number(result.insertId), name, email };
-    if (!setSessionCookie(response, user)) {
-      return response.status(503).json({ message: "Session signing is not configured." });
+    if (!getMailTransporter()) {
+      return response.status(503).json({ message: "Email verification is not configured." });
     }
 
-    return response.status(201).json({
-      message: "Your account was created.",
-      user: { id: user.id, name: user.name, email: user.email },
+    const passwordHash = await bcrypt.hash(password, 12);
+    const connection = await pool.getConnection();
+    let userId;
+    let challengeId;
+    const challengeToken = randomBytes(32).toString("base64url");
+    const code = randomInt(0, 1_000_000).toString().padStart(6, "0");
+
+    try {
+      await connection.beginTransaction();
+      const [userResult] = await connection.execute(
+        `INSERT INTO users (full_name, email, password_hash, email_verified_at)
+         VALUES (?, ?, ?, NULL)`,
+        [name, email, passwordHash]
+      );
+      userId = Number(userResult.insertId);
+      const [challengeResult] = await connection.execute(
+        `INSERT INTO email_2fa_challenges
+           (user_id, token_hash, code_hash, purpose, expires_at, sent_at)
+         VALUES
+           (?, ?, ?, 'signup', DATE_ADD(UTC_TIMESTAMP(), INTERVAL ${verificationCodeLifetimeMinutes} MINUTE), UTC_TIMESTAMP())`,
+        [userId, hashChallengeToken(challengeToken), hashVerificationCode(challengeToken, code)]
+      );
+      challengeId = Number(challengeResult.insertId);
+      await connection.commit();
+    } catch (error) {
+      try {
+        await connection.rollback();
+      } catch {
+        // Ignore rollback failure.
+      }
+      throw error;
+    } finally {
+      connection.release();
+    }
+
+    try {
+      await sendVerificationCode(email, code);
+    } catch (error) {
+      try {
+        await pool.execute(
+          `UPDATE email_2fa_challenges
+           SET used_at = UTC_TIMESTAMP()
+           WHERE id = ?`,
+          [challengeId]
+        );
+        await pool.execute(
+          `DELETE FROM users
+           WHERE id = ? AND email_verified_at IS NULL`,
+          [userId]
+        );
+      } catch (cleanupError) {
+        console.error("Failed to clean up an unverified signup:", cleanupError?.code ?? cleanupError?.message ?? "SIGNUP_CLEANUP_ERROR");
+      }
+      console.error("Signup verification email delivery failed:", error?.code ?? error?.message ?? "SMTP_ERROR");
+      return response.status(503).json({
+        message: "Could not send an account verification code. Check the email service settings.",
+      });
+    }
+
+    return response.status(202).json({
+      challengeToken,
+      message: "A verification code was sent to your email. It expires in 10 minutes.",
     });
   } catch (error) {
     if (error?.code === "ER_DUP_ENTRY") {
@@ -1506,12 +1543,8 @@ app.post("/auth/login", authLimiter, async (request, response, next) => {
       return response.status(503).json({ message: "Session signing is not configured." });
     }
 
-    if (!getMailTransporter()) {
-      return response.status(503).json({ message: "Email verification is not configured." });
-    }
-
     const [rows] = await pool.execute(
-      `SELECT id, full_name, email, password_hash
+      `SELECT id, full_name, email, password_hash, email_verified_at, is_active, role
        FROM users
        WHERE email = ?
        LIMIT 1`,
@@ -1527,54 +1560,30 @@ app.post("/auth/login", authLimiter, async (request, response, next) => {
       return response.status(401).json({ message: "Email or password is incorrect." });
     }
     if (Number(user.is_active) !== 1) {
-  return response.status(403).json({
-    message: "This account is inactive. Contact an administrator.",
-  });
-}
-
-    const userId = Number(user.id);
-    if (await countRecentCodes(userId) >= maxCodesPerHour) {
-      return response.status(429).json({ message: "Too many sign-in codes requested. Try again later." });
-    }
-
-    const challengeToken = randomBytes(32).toString("base64url");
-    const code = randomInt(0, 1_000_000).toString().padStart(6, "0");
-    const tokenHash = hashChallengeToken(challengeToken);
-    const codeHash = hashLoginCode(challengeToken, code);
-
-    await pool.execute(
-      `UPDATE email_2fa_challenges
-       SET used_at = UTC_TIMESTAMP()
-       WHERE user_id = ? AND used_at IS NULL`,
-      [userId]
-    );
-
-    const [challengeResult] = await pool.execute(
-      `INSERT INTO email_2fa_challenges
-         (user_id, token_hash, code_hash, expires_at, sent_at)
-       VALUES
-         (?, ?, ?, DATE_ADD(UTC_TIMESTAMP(), INTERVAL 10 MINUTE), UTC_TIMESTAMP())`,
-      [userId, tokenHash, codeHash]
-    );
-
-    try {
-      await sendLoginCode(user.email, code);
-    } catch (error) {
-      await pool.execute(
-        `UPDATE email_2fa_challenges
-         SET used_at = UTC_TIMESTAMP()
-         WHERE id = ?`,
-        [challengeResult.insertId]
-      );
-      console.error("2FA email delivery failed:", error?.code ?? error?.message ?? "SMTP_ERROR");
-      return response.status(503).json({
-        message: "Could not send a sign-in code. Check the email service settings.",
+      return response.status(403).json({
+        message: "This account is inactive. Contact an administrator.",
       });
     }
 
-    return response.status(202).json({
-      challengeToken,
-      message: "A sign-in code was sent to your email. It expires in 10 minutes.",
+    if (!user.email_verified_at) {
+      return response.status(403).json({
+        message: "Verify your email address before logging in.",
+      });
+    }
+
+    const sessionUser = {
+      id: Number(user.id),
+      name: user.full_name,
+      email: user.email,
+      role: user.role,
+    };
+    if (!setSessionCookie(response, sessionUser)) {
+      return response.status(503).json({ message: "Session signing is not configured." });
+    }
+
+    return response.json({
+      message: "You are logged in.",
+      user: { id: sessionUser.id, name: sessionUser.name, email: sessionUser.email },
     });
   } catch (error) {
     return next(error);
@@ -1608,13 +1617,15 @@ app.post("/auth/verify-2fa", authLimiter, async (request, response, next) => {
          c.id,
          c.user_id,
          c.code_hash,
+         c.purpose,
          c.attempts,
          c.used_at,
          (c.expires_at > UTC_TIMESTAMP()) AS is_active,
          u.full_name,
-         u.email
-         u.role, 
-         u.is_active
+         u.email,
+         u.role,
+         u.is_active AS user_is_active,
+         u.email_verified_at
        FROM email_2fa_challenges c
        JOIN users u ON u.id = c.user_id
        WHERE c.token_hash = ?
@@ -1626,15 +1637,18 @@ app.post("/auth/verify-2fa", authLimiter, async (request, response, next) => {
     const challenge = rows[0];
     if (
       !challenge ||
+      challenge.purpose !== "signup" ||
       challenge.used_at ||
       !Number(challenge.is_active) ||
-      Number(challenge.attempts) >= maxLoginCodeAttempts
+      Number(challenge.attempts) >= maxVerificationCodeAttempts ||
+      challenge.email_verified_at ||
+      Number(challenge.user_is_active) !== 1
     ) {
       await connection.rollback();
-      return response.status(400).json({ message: "This sign-in code is invalid or expired. Start again." });
+      return response.status(400).json({ message: "This verification code is invalid or expired. Request a new code." });
     }
 
-    if (!loginCodeMatches(challengeToken, code, challenge.code_hash)) {
+    if (!verificationCodeMatches(challengeToken, code, challenge.code_hash)) {
       await connection.execute(
         `UPDATE email_2fa_challenges
          SET attempts = attempts + 1
@@ -1651,6 +1665,12 @@ app.post("/auth/verify-2fa", authLimiter, async (request, response, next) => {
        WHERE id = ?`,
       [challenge.id]
     );
+    await connection.execute(
+      `UPDATE users
+       SET email_verified_at = COALESCE(email_verified_at, UTC_TIMESTAMP())
+       WHERE id = ?`,
+      [challenge.user_id]
+    );
     await connection.commit();
 
     const user = {
@@ -1664,7 +1684,7 @@ app.post("/auth/verify-2fa", authLimiter, async (request, response, next) => {
       return response.status(503).json({ message: "Session signing is not configured." });
     }
 
-    return response.json({ message: "You are logged in." });
+    return response.json({ message: "Your email is verified and your account is ready." });
   } catch (error) {
     try {
       await connection.rollback();
@@ -1683,7 +1703,7 @@ app.post("/auth/resend-2fa", authLimiter, async (request, response, next) => {
     : "";
 
   if (!challengeToken || challengeToken.length > 200) {
-    return response.status(400).json({ message: "Start sign-in again to request a new code." });
+    return response.status(400).json({ message: "Start account verification again to request a new code." });
   }
 
   if (!getMailTransporter()) {
@@ -1700,6 +1720,7 @@ app.post("/auth/resend-2fa", authLimiter, async (request, response, next) => {
   let newToken = null;
   let newCode = null;
   let newChallengeId = null;
+  let previousChallengeId = null;
   let userEmail = null;
 
   try {
@@ -1709,12 +1730,15 @@ app.post("/auth/resend-2fa", authLimiter, async (request, response, next) => {
       `SELECT
          c.id,
          c.user_id,
+         c.purpose,
          c.sent_at,
-         c.attempts,
          c.used_at,
+         c.attempts,
          (c.expires_at > UTC_TIMESTAMP()) AS is_active,
          TIMESTAMPDIFF(SECOND, c.sent_at, UTC_TIMESTAMP()) AS seconds_since_sent,
-         u.email
+         u.email,
+         u.email_verified_at,
+         u.is_active AS user_is_active
        FROM email_2fa_challenges c
        JOIN users u ON u.id = c.user_id
        WHERE c.token_hash = ?
@@ -1726,12 +1750,15 @@ app.post("/auth/resend-2fa", authLimiter, async (request, response, next) => {
     const previous = rows[0];
     if (
       !previous ||
+      previous.purpose !== "signup" ||
       previous.used_at ||
+      previous.email_verified_at ||
       !Number(previous.is_active) ||
-      Number(previous.attempts) >= maxLoginCodeAttempts
+      Number(previous.attempts) >= maxVerificationCodeAttempts ||
+      Number(previous.user_is_active) !== 1
     ) {
       await connection.rollback();
-      return response.status(400).json({ message: "This sign-in challenge is invalid or expired. Start again." });
+      return response.status(400).json({ message: "This verification challenge is invalid. Start account creation again." });
     }
 
     if (Number(previous.seconds_since_sent) < 60) {
@@ -1743,17 +1770,19 @@ app.post("/auth/resend-2fa", authLimiter, async (request, response, next) => {
       `SELECT COUNT(*) AS total
        FROM email_2fa_challenges
        WHERE user_id = ?
+         AND purpose = 'signup'
          AND sent_at >= DATE_SUB(UTC_TIMESTAMP(), INTERVAL 1 HOUR)`,
       [previous.user_id]
     );
 
     if (Number(sentRows[0]?.total ?? 0) >= maxCodesPerHour) {
       await connection.rollback();
-      return response.status(429).json({ message: "Too many sign-in codes requested. Try again later." });
+      return response.status(429).json({ message: "Too many verification codes requested. Try again later." });
     }
 
     newToken = randomBytes(32).toString("base64url");
     newCode = randomInt(0, 1_000_000).toString().padStart(6, "0");
+    previousChallengeId = Number(previous.id);
 
     await connection.execute(
       `UPDATE email_2fa_challenges
@@ -1764,10 +1793,10 @@ app.post("/auth/resend-2fa", authLimiter, async (request, response, next) => {
 
     const [insertResult] = await connection.execute(
       `INSERT INTO email_2fa_challenges
-         (user_id, token_hash, code_hash, expires_at, sent_at)
+         (user_id, token_hash, code_hash, purpose, expires_at, sent_at)
        VALUES
-         (?, ?, ?, DATE_ADD(UTC_TIMESTAMP(), INTERVAL 10 MINUTE), UTC_TIMESTAMP())`,
-      [previous.user_id, hashChallengeToken(newToken), hashLoginCode(newToken, newCode)]
+         (?, ?, ?, 'signup', DATE_ADD(UTC_TIMESTAMP(), INTERVAL ${verificationCodeLifetimeMinutes} MINUTE), UTC_TIMESTAMP())`,
+      [previous.user_id, hashChallengeToken(newToken), hashVerificationCode(newToken, newCode)]
     );
 
     newChallengeId = insertResult.insertId;
@@ -1785,21 +1814,31 @@ app.post("/auth/resend-2fa", authLimiter, async (request, response, next) => {
   }
 
   try {
-    await sendLoginCode(userEmail, newCode);
+    await sendVerificationCode(userEmail, newCode);
     return response.json({
       challengeToken: newToken,
-      message: "A new sign-in code was sent to your email.",
+      message: "A new verification code was sent to your email.",
     });
   } catch (error) {
-    await pool.execute(
-      `UPDATE email_2fa_challenges
-       SET used_at = UTC_TIMESTAMP()
-       WHERE id = ?`,
-      [newChallengeId]
-    );
-    console.error("2FA email delivery failed:", error?.code ?? error?.message ?? "SMTP_ERROR");
+    try {
+      await pool.execute(
+        `UPDATE email_2fa_challenges
+         SET used_at = UTC_TIMESTAMP()
+         WHERE id = ?`,
+        [newChallengeId]
+      );
+      await pool.execute(
+        `UPDATE email_2fa_challenges
+         SET used_at = NULL
+         WHERE id = ? AND purpose = 'signup'`,
+        [previousChallengeId]
+      );
+    } catch (cleanupError) {
+      console.error("Failed to restore a signup verification challenge:", cleanupError?.code ?? cleanupError?.message ?? "CHALLENGE_RESTORE_ERROR");
+    }
+    console.error("Signup verification email delivery failed:", error?.code ?? error?.message ?? "SMTP_ERROR");
     return response.status(503).json({
-      message: "Could not send a sign-in code. Check the email service settings.",
+      message: "Could not send a verification code. Check the email service settings.",
     });
   }
 });

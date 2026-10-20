@@ -38,7 +38,7 @@ function Dashboard() {
       <div className="panelHeader">
         <div>
           <span className="sectionEyebrow">OVERVIEW</span>
-          <h2>Learning performance</h2>
+          <h2>Platform overview</h2>
         </div>
       </div>
 
@@ -46,17 +46,17 @@ function Dashboard() {
         <div className="card accent">
           <span>Total Students</span>
           <b>{stats.totalStudents ?? "-"}</b>
-          <small>Active learners</small>
+          <small>Registered accounts</small>
         </div>
         <div className="card">
           <span>Active Courses</span>
           <b>{stats.activeCourses ?? "-"}</b>
-          <small>Current catalog</small>
+          <small>Published courses</small>
         </div>
         <div className="card warning">
           <span>Pending Feedback</span>
           <b>{stats.pendingFeedback ?? "-"}</b>
-          <small>Needs review</small>
+          <small>Awaiting review</small>
         </div>
       </div>
     </div>
@@ -108,9 +108,9 @@ function Content() {
   return (
     <>
       <form className="form" onSubmit={upload}>
-        <b>Add New Material</b>
-        <input name="title" placeholder="Material title" required />
-        <textarea name="description" placeholder="Description" rows={2} />
+        <b>Upload course material</b>
+        <input name="title" placeholder="Title" required />
+        <textarea name="description" placeholder="Description (optional)" rows={2} />
         <select name="type" required defaultValue="">
           <option value="" disabled>File type</option>
           <option>PDF</option>
@@ -263,7 +263,7 @@ function Feedback() {
       <div className="panelHeader">
         <div>
           <span className="sectionEyebrow">STUDENT VOICE</span>
-          <h2>Feedback and ratings</h2>
+          <h2>Student feedback</h2>
         </div>
       </div>
 
@@ -276,7 +276,7 @@ function Feedback() {
         <div className="card accent">
           <span>Reviewed</span>
           <b>{data.reviewed}</b>
-          <small>Settled</small>
+          <small>Reviewed submissions</small>
         </div>
         <div className="card">
           <span>Average rating</span>
@@ -327,14 +327,35 @@ export default function AdminPage() {
   const Active = TABS.find((item) => item[0] === tab)![2];
 
   return (
-    <div className="adm">
-      <aside>
-        {TABS.map(([key, label]) => (
-          <button key={key} className={tab === key ? "on" : ""} onClick={() => setTab(key)}>{label}</button>
-        ))}
+    <div className="adm shell">
+      <aside className="sidebar">
+        <div className="brandBlock">
+          <div className="brandMark" aria-hidden="true"><i /><i /><i /><i /></div>
+          <div>
+            <span className="brandLabel">Fieldnote</span>
+            <small>Teaching hub</small>
+          </div>
+        </div>
+
+        <nav className="sidebarNav">
+          {TABS.map(([key, label]) => (
+            <button key={key} className={tab === key ? "on" : ""} onClick={() => setTab(key)}>{label}</button>
+          ))}
+        </nav>
+
+        <div className="sidebarFooter">
+          <span>Workspace</span>
+          <strong>Courses · learners · feedback</strong>
+        </div>
       </aside>
-      <main>
-        <h1>{TABS.find((item) => item[0] === tab)![1]}</h1>
+      <main className="dashboardMain">
+        <header className="topBar">
+          <div>
+            <span className="eyebrow">Course administration</span>
+            <h1>{TABS.find((item) => item[0] === tab)![1]}</h1>
+          </div>
+          <a href="/courses" className="headerAction">View learner portal</a>
+        </header>
         <Active />
       </main>
     </div>

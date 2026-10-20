@@ -12,7 +12,7 @@ export async function POST(request: Request) {
       body: await request.text(),
     });
 
-    return new Response(await upstream.text(), {
+     return new Response(await upstream.text(), {
       status: upstream.status,
       headers: {
         "Content-Type": upstream.headers.get("content-type") ?? "application/json",

@@ -117,8 +117,6 @@ export default function CourseCatalog() {
   const lessonTotal = courses.reduce((total, course) => total + course.lessonCount, 0);
   const quizTotal = courses.reduce((total, course) => total + course.quizCount, 0);
   const examTotal = courses.filter((course) => course.examPassingScore !== null).length;
-  const Icon = subjectIcons[activeSubject] ?? GraduationCap;
-
   return (
     <main className={styles.page}>
       <header className={styles.header}>
@@ -131,14 +129,14 @@ export default function CourseCatalog() {
           <Link href="/feedback">Feedback</Link>
           <Link href="/courses">All courses <ArrowRight size={14} strokeWidth={2} /></Link>
         </nav>
-        <span className={styles.headerNote}>LEARNING SPACE</span>
+        <Link href="/admin" className={styles.headerNote}>Teaching hub</Link>
       </header>
 
       <section className={styles.intro} aria-labelledby="catalog-title">
         <div>
-          <p className={styles.kicker}>YOUR COURSE CATALOG</p>
-          <h1 id="catalog-title">Find your next subject.</h1>
-          <p className={styles.introText}>Distinct courses, lessons, and assessments from your learning database.</p>
+          <p className={styles.kicker}>FIELDNOTE COURSES</p>
+          <h1 id="catalog-title">Course library</h1>
+          <p className={styles.introText}>Browse courses by subject or level. Search titles, descriptions, and topics.</p>
         </div>
         <div className={styles.stats} aria-label="Catalog totals">
           <div><strong>{state === "ready" ? courses.length : "—"}</strong><span>courses</span></div>
@@ -197,7 +195,7 @@ export default function CourseCatalog() {
 
       <div className={styles.resultsLine} aria-live="polite">
         <h2>{state === "ready" ? "Available courses" : "Course library"}</h2>
-        {state === "ready" && courses.length > 0 ? <span>{filteredCourses.length} shown</span> : null}
+        {state === "ready" && courses.length > 0 ? <span>{filteredCourses.length} courses</span> : null}
       </div>
 
       {state === "loading" ? (
@@ -224,8 +222,8 @@ export default function CourseCatalog() {
       {state === "ready" && courses.length === 0 ? (
         <section className={styles.statePanel}>
           <div className={styles.stateIcon}><GraduationCap size={22} strokeWidth={1.8} /></div>
-          <h3>No courses in the library yet</h3>
-          <p>Once course records are added to the database, they’ll appear here.</p>
+          <h3>No published courses</h3>
+          <p>Published courses will appear here.</p>
           <Link href="/courses" className={styles.secondaryButton}>Open course library <ArrowRight size={15} strokeWidth={2} /></Link>
         </section>
       ) : null}
@@ -280,8 +278,8 @@ export default function CourseCatalog() {
       ) : null}
 
       <footer className={styles.footer}>
-        <span>Fieldnote learning catalog</span>
-        <span><Icon size={14} strokeWidth={1.8} /> {state === "ready" ? `${courses.length} courses from your database` : "Connected course content"}</span>
+        <span>Fieldnote course library</span>
+        {state === "ready" ? <span>{courses.length} courses · {lessonTotal.toLocaleString()} lessons</span> : null}
       </footer>
     </main>
   );

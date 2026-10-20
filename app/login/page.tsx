@@ -3,7 +3,7 @@ import AuthForm from "../auth-form";
 
 export const metadata: Metadata = {
   title: "Log in | Fieldnote",
-  description: "Log in to your Fieldnote learning account.",
+  description: "Sign in to access your Fieldnote courses and lessons.",
 };
 
 export default function LoginPage() {

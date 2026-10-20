@@ -51,23 +51,22 @@ export default function FeedbackPage() {
         <nav className={styles.nav} aria-label="Student navigation">
           <Link href="/courses">Course library</Link>
           <span aria-current="page">Feedback</span>
-          <span className={styles.avatar} aria-label="Student account">S</span>
         </nav>
       </header>
 
       <section className={styles.content}>
         <div className={styles.intro}>
-          <p className={styles.kicker}>WE’RE LISTENING</p>
-          <h1>Share your feedback.</h1>
-          <p>Tell us what is working and what could be better.</p>
+          <p className={styles.kicker}>FIELDNOTE</p>
+          <h1>Feedback</h1>
+          <p>Report a course issue or suggest a platform change.</p>
         </div>
 
         {status === "sent" ? (
           <div className={styles.success} role="status">
             <CheckCircle2 size={24} aria-hidden="true" />
             <div>
-              <h2>Thank you for your feedback.</h2>
-              <p>Your message has been sent to the learning team for review.</p>
+              <h2>Feedback submitted</h2>
+              <p>Your message was recorded.</p>
             </div>
             <button type="button" onClick={() => setStatus("idle")}>Send another</button>
           </div>
@@ -105,7 +104,7 @@ export default function FeedbackPage() {
               <textarea
                 value={message}
                 onChange={(event) => setMessage(event.target.value.slice(0, MAX_MESSAGE_LENGTH))}
-                placeholder="Share details that could help us improve your learning experience."
+                placeholder="Describe the issue or change you are requesting."
                 minLength={10}
                 maxLength={MAX_MESSAGE_LENGTH}
                 rows={5}

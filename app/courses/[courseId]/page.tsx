@@ -5,6 +5,7 @@ import Link from "next/link";
 import { use, useEffect, useMemo, useState } from "react";
 import type { ReactNode } from "react";
 import { getLessonImage } from "@/lib/course-images";
+import LearningAssistant from "@/components/learning-assistant";
 import {
   ArrowLeft,
   ArrowRight,
@@ -1549,6 +1550,12 @@ export default function CourseDetailsPage({
           )}
         </section>
       </div>
+      <LearningAssistant
+        courseId={courseId}
+        courseTitle={course.title || course.name || "Course"}
+        lessonTitle={activeLesson ? lessonTitle(activeLesson) : undefined}
+        lessonContent={activeLesson?.content || activeLesson?.description || ""}
+      />
     </main>
   );
 }

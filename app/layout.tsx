@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Fieldnote | Learning, one step at a time",
-  description: "A thoughtful learning space for secondary school students to explore subjects, practise, and track their progress.",
+  title: "Fieldnote | Secondary school courses",
+  description: "Browse secondary school courses, lessons, quizzes, and exams.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

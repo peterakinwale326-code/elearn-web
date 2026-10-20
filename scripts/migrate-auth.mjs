@@ -25,6 +25,18 @@ async function main() {
       console.log("users.password_hash already exists; no schema change needed.");
     }
 
+    const [verificationColumn] = await connection.query(
+      "SELECT COLUMN_NAME AS columnName FROM information_schema.columns WHERE table_schema = DATABASE() AND table_name = 'users' AND column_name = 'email_verified_at'"
+    );
+    if (verificationColumn.length === 0) {
+      await connection.query(
+        "ALTER TABLE users ADD COLUMN email_verified_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP AFTER password_hash"
+      );
+      console.log("Added users.email_verified_at; existing accounts are treated as verified.");
+    } else {
+      console.log("users.email_verified_at already exists; no schema change needed.");
+    }
+
     const [emailIndex] = await connection.query(
       "SELECT INDEX_NAME AS indexName FROM information_schema.statistics WHERE table_schema = DATABASE() AND table_name = 'users' AND column_name = 'email' AND non_unique = 0"
     );
@@ -39,6 +51,7 @@ async function main() {
         user_id BIGINT UNSIGNED NOT NULL,
         token_hash CHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
         code_hash CHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+        purpose ENUM('login', 'signup') NOT NULL DEFAULT 'login',
         expires_at DATETIME NOT NULL,
         attempts TINYINT UNSIGNED NOT NULL DEFAULT 0,
         sent_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -49,6 +62,14 @@ async function main() {
         CONSTRAINT fk_email_2fa_user FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
     `);
+    const [purposeColumn] = await connection.query(
+      "SELECT COLUMN_NAME AS columnName FROM information_schema.columns WHERE table_schema = DATABASE() AND table_name = 'email_2fa_challenges' AND column_name = 'purpose'"
+    );
+    if (purposeColumn.length === 0) {
+      await connection.query(
+        "ALTER TABLE email_2fa_challenges ADD COLUMN purpose ENUM('login', 'signup') NOT NULL DEFAULT 'login' AFTER code_hash"
+      );
+    }
     console.log("Verified email_2fa_challenges table.");
   } finally {
     connection.release();

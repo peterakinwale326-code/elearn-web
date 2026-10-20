@@ -103,13 +103,17 @@ export default function AuthForm({ mode }: AuthFormProps) {
       });
       const result = await response.json().catch(() => ({})) as ApiResult;
 
-      if (!isSignup && response.status === 202 && result.challengeToken) {
+      if (response.status === 202 && result.challengeToken) {
         setChallengeToken(result.challengeToken);
         setChallengeEmail(payload.email);
         setPassword("");
         setStage("verify");
         setFormState("success");
-        setMessage(result.message ?? "A sign-in code was sent to your email.");
+        setMessage(
+          result.message ?? (isSignup
+            ? "A verification code has been sent to your email. Enter it below to finish creating your account."
+            : "A verification code was sent to your email.")
+        );
         return;
       }
 
@@ -178,7 +182,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
       }
       if (result.challengeToken) setChallengeToken(result.challengeToken);
       setFormState("success");
-      setMessage(result.message ?? "A new sign-in code was sent.");
+      setMessage(result.message ?? "A new verification code was sent.");
     } catch {
       setFormState("error");
       setMessage("Could not reach the authentication service. Try again.");
@@ -207,17 +211,17 @@ export default function AuthForm({ mode }: AuthFormProps) {
 
       <section className={styles.authLayout} aria-labelledby="auth-title">
         <div className={styles.formPanel}>
-          <p className={styles.eyebrow}>{isSignup ? "START LEARNING" : "WELCOME BACK"}</p>
-          <h1 id="auth-title">{isSignup ? "Create your account." : stage === "verify" ? "Check your email." : "Log in to Fieldnote."}</h1>
+          <p className={styles.eyebrow}>{isSignup ? "STUDENT REGISTRATION" : "STUDENT SIGN IN"}</p>
+          <h1 id="auth-title">{stage === "verify" ? "Verify your email." : isSignup ? "Create your account." : "Log in to Fieldnote."}</h1>
           <p className={styles.intro}>
-            {isSignup
-              ? "Save your place and build a learning routine that works for you."
-              : stage === "verify"
-                ? `Enter the six-digit sign-in code sent to ${challengeEmail}. It expires in 10 minutes.`
-                : "Pick up where your learning left off."}
+            {stage === "verify"
+              ? `Enter the six-digit verification code sent to ${challengeEmail}. It expires in 10 minutes.`
+              : isSignup
+                ? "Create an account to access courses, lessons, and assessments."
+                : "Sign in to open your courses and lessons."}
           </p>
 
-          {isSignup && formState === "success" ? (
+          {isSignup && stage === "credentials" && formState === "success" ? (
             <div className={styles.signupSuccess}>
               <p className={styles.successMessage} role="status">{message || "Your account was created."}</p>
               <Link href="/login" className={styles.submitButton}>Go to log in <ArrowRight size={16} /></Link>
@@ -243,7 +247,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
                 <div className={styles.field}>
                   <label htmlFor="account-email">Email address</label>
                   <span className={styles.inputWrap}><Mail size={17} strokeWidth={1.8} /><input id="account-email" name="email" type="email" autoComplete="email" value={email} maxLength={254} placeholder="you@example.com" aria-invalid={showError("email") && Boolean(emailError)} aria-describedby="email-count email-error" onChange={(event) => { setEmail(event.target.value); clearMessageOnEdit(); }} onBlur={() => { setEmail((value) => value.trim().toLowerCase()); markTouched("email"); }} /></span>
-                  <span className={styles.fieldMeta}><span id="email-error" className={showError("email") && emailError ? styles.inlineError : ""}>{showError("email") && emailError ? emailError : "We’ll send sign-in codes to this address."}</span><span id="email-count">{email.length}/254</span></span>
+                  <span className={styles.fieldMeta}><span id="email-error" className={showError("email") && emailError ? styles.inlineError : ""}>{showError("email") && emailError ? emailError : isSignup ? "We’ll send an account verification code to this address." : "Use the email address on your learning account."}</span><span id="email-count">{email.length}/254</span></span>
                 </div>
                 <div className={styles.field}>
                   <label htmlFor="account-password">Password</label>
@@ -270,23 +274,23 @@ export default function AuthForm({ mode }: AuthFormProps) {
 
             {!message && formState !== "loading" && formState !== "resending" ? (
               <p className={formValid ? styles.formReady : styles.formHint} role="status">
-                {formValid ? "Everything looks good. You can continue." : stage === "verify" ? "Enter all 6 digits to verify your email." : "Complete the missing fields to continue."}
+                {formValid ? (stage === "verify" ? "Code is ready to verify." : "Required fields are complete.") : stage === "verify" ? "Enter all 6 digits to verify your email." : "Complete the required fields."}
               </p>
             ) : null}
 
-            <button className={styles.submitButton} type="submit" disabled={!formValid || busy || (isSignup && formState === "success")}>
+            <button className={styles.submitButton} type="submit" disabled={!formValid || busy || (isSignup && stage === "credentials" && formState === "success")}>
               {formState === "loading"
                 ? <><LoaderCircle size={17} /> {stage === "verify" ? "Verifying code…" : isSignup ? "Creating account…" : "Checking details…"}</>
                 : formState === "resending"
                   ? <><LoaderCircle size={17} /> Sending a new code…</>
-                : isSignup && formState === "success"
+                : isSignup && stage === "credentials" && formState === "success"
                   ? <>Account created <Check size={16} /></>
                 : <>{stage === "verify" ? "Verify code" : isSignup ? "Create account" : "Continue"} <ArrowRight size={16} /></>}
             </button>
             {busy ? <p className={styles.pendingState} role="status"><LoaderCircle size={15} /> Working securely…</p> : null}
           </form>
 
-          {!isSignup && stage === "verify" ? (
+          {stage === "verify" ? (
             <div className={styles.verifyActions}>
               <button type="button" onClick={handleResend} disabled={busy}><RefreshCw size={14} /> Resend code</button>
               <button type="button" onClick={useDifferentAccount}>Use a different email</button>
@@ -304,14 +308,14 @@ export default function AuthForm({ mode }: AuthFormProps) {
 
         <aside className={styles.sidePanel}>
           <span className={styles.panelIcon}><LockKeyhole size={20} strokeWidth={1.7} /></span>
-          <p className={styles.sideEyebrow}>YOUR LEARNING SPACE</p>
-          <h2>One step at a time adds up.</h2>
-          <p>Explore distinct courses, move through focused lessons, and check what you know with quizzes and exams.</p>
-          <Link href="/courses" className={styles.sideLink}>See the course library <ArrowRight size={15} /></Link>
+          <p className={styles.sideEyebrow}>FIELDNOTE COURSES</p>
+          <h2>Courses, lessons, and assessments.</h2>
+          <p>Browse the course library before or after signing in.</p>
+          <Link href="/courses" className={styles.sideLink}>Open course library <ArrowRight size={15} /></Link>
         </aside>
       </section>
 
-      <footer className={styles.footer}><span>Fieldnote</span><span>Learning, with room to make it yours.</span></footer>
+      <footer className={styles.footer}><span>Fieldnote</span><span>Course access</span></footer>
     </main>
   );
 }
