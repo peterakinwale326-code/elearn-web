@@ -126,6 +126,8 @@ export default function CourseCatalog() {
         </Link>
         <nav className={styles.headerNav} aria-label="Primary navigation">
           <span className={styles.currentNav}><BookOpen size={16} strokeWidth={2} /> Course library</span>
+          <Link href="/assistant">Study assistant</Link>
+          <Link href="/profile">My profile</Link>
           <Link href="/feedback">Feedback</Link>
           <Link href="/courses">All courses <ArrowRight size={14} strokeWidth={2} /></Link>
         </nav>

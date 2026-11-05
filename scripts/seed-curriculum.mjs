@@ -7,7 +7,6 @@ const root = process.cwd();
 
 const dataPath = path.resolve(
   root,
-  "data",
   "curriculum.json"
 );
 
@@ -16,6 +15,10 @@ const sourcesPath = path.resolve(
   "data",
   "lesson-sources.json"
 );
+
+const minimumLessonWords = 100;
+const genericFillerPattern =
+  /Detailed analytical breakdown|Step-by-step application in standardized exam problems|standard evaluation query|Correct analytical response option|Incorrect distractor option|Sample evaluation question|This unit covers key principles|Worked example: consider a familiar Nigerian school or community situation|Key points: define the main terms accurately|Practice: write a short explanation of the concept|Course distinction: In this .+ course/i;
 
 const db = mysql.createPool({
   host: process.env.DB_HOST ?? "127.0.0.1",
@@ -1060,6 +1063,22 @@ function validateCurriculum(
           0,
         `Course "${getCourseTitle(course)}" module ${mi + 1} has no lessons.`
       );
+
+      for (const lesson of getLessons(module)) {
+        const content = renderLessonContent(lesson);
+        const wordCount =
+          (content.match(/[\p{L}\p{N}]+(?:['’][\p{L}\p{N}]+)*/gu) ?? [])
+            .length;
+
+        assert(
+          wordCount >= minimumLessonWords,
+          `Lesson "${getLessonTitle(lesson, 1)}" in course "${getCourseTitle(course)}" has only ${wordCount} words; at least ${minimumLessonWords} are required.`
+        );
+        assert(
+          !genericFillerPattern.test(content),
+          `Lesson "${getLessonTitle(lesson, 1)}" in course "${getCourseTitle(course)}" contains a known generic filler pattern.`
+        );
+      }
     }
   }
 }

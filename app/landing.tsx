@@ -107,6 +107,8 @@ export default function LandingPage() {
           <Link href="/courses">Courses</Link>
           <a href="#subjects">Subjects</a>
           <Link href="/feedback">Feedback</Link>
+          <Link href="/assistant">Study assistant</Link>
+          <Link href="/profile">My profile</Link>
           <Link href="/admin">Teaching hub</Link>
           <Link href="/login" className={styles.loginLink}>Log in</Link>
           <Link href="/signup" className={styles.navCta}>

@@ -785,7 +785,8 @@
   }
 
   .navigation > a:nth-child(2),
-  .navigation > a:nth-child(3) {
+  .navigation > a:nth-child(3),
+  .navigation > a:nth-child(6) {
     display: none;
   }
 

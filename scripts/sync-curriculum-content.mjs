@@ -5,6 +5,9 @@ import mysql from "mysql2/promise";
 const curriculumPath = path.resolve(process.cwd(), "data", "curriculum.json");
 const curriculum = JSON.parse(await fs.readFile(curriculumPath, "utf8"));
 const applyChanges = process.argv.includes("--apply");
+const minimumLessonWords = 100;
+const genericFillerPattern =
+  /Worked example: consider a familiar Nigerian school or community situation|Key points: define the main terms accurately|Practice: write a short explanation of the concept|At this stage the emphasis is on clear definitions|The important result is not simply knowing what .+ is called|construct a realistic .+ situation in which .+ matters|create your own example of .+, annotate the important features|should be understood through people, institutions, rules and consequences|Case study: take a school, community or Nigerian public-life situation involving|Activity: investigate a local example related to .+; record two pieces of evidence|Course distinction: In this .+ course|is a core topic in .+; learners should understand its meaning, social effects, examples and practical use/i;
 
 const pool = mysql.createPool({
   host: process.env.DB_HOST ?? "127.0.0.1",
@@ -44,6 +47,8 @@ try {
   const misses = [];
   let matchedCourses = 0;
   let matchedModules = 0;
+  let matchedLessons = 0;
+  let skippedThinLessons = 0;
 
   for (const sourceCourse of curriculum.courses ?? []) {
     const sourceLevel = normalize(sourceCourse.level);
@@ -84,9 +89,23 @@ try {
           continue;
         }
 
+        matchedLessons += 1;
+        const content = contentText(sourceLesson.content);
+        const wordCount = (content.match(/[\p{L}\p{N}]+(?:['’][\p{L}\p{N}]+)*/gu) ?? []).length;
+        const paragraphs = content.split(/\n{2,}/).filter((paragraph) => paragraph.trim());
+        if (
+          wordCount < minimumLessonWords ||
+          content.length < 240 ||
+          paragraphs.length < 2 ||
+          genericFillerPattern.test(content)
+        ) {
+          skippedThinLessons += 1;
+          continue;
+        }
+
         updates.push({
           id: matchingLessons[0].id,
-          content: contentText(sourceLesson.content),
+          content,
           objective: String(
             sourceLesson.objective ?? sourceLesson.learningObjective ??
               `Explain ${sourceLesson.title} in ${sourceCourse.title}, identify its key ideas, and apply them to an accurate example.`,
@@ -112,12 +131,14 @@ try {
     sourceLessons: sourceLessonCount,
     matchedCourses,
     matchedModules,
-    matchedLessons: updates.length,
+    matchedLessons,
+    eligibleLessons: updates.length,
+    skippedThinLessons,
     unmatched: misses.length,
     examples: misses.slice(0, 12),
   }, null, 2));
 
-  if (updates.length !== sourceLessonCount || misses.length) {
+  if (matchedLessons !== sourceLessonCount || misses.length) {
     throw new Error("Refusing to update: every course, module, and lesson must have exactly one database match.");
   }
 
@@ -141,7 +162,10 @@ try {
         );
       }
       await connection.commit();
-      console.log(`Updated ${updates.length} lesson rows. No course, module, assessment, enrollment, or progress rows were changed.`);
+      console.log(
+        `Updated ${updates.length} lesson rows; left ${skippedThinLessons} short or generic lessons unchanged. ` +
+        "No course, module, assessment, enrollment, or progress rows were changed.",
+      );
     } catch (error) {
       await connection.rollback();
       throw error;

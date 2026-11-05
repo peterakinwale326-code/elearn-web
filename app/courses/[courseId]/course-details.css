@@ -5,9 +5,53 @@
 	--course-blue: #28648e;
 	--course-blue-dark: #1d5278;
 	min-height: 100vh;
-	padding: 22px clamp(14px, 3vw, 42px) !important;
+	padding: 22px clamp(14px, 3vw, 42px) calc(86px + env(safe-area-inset-bottom)) !important;
 	background: #f3f6f8;
 	color: var(--course-ink);
+}
+
+.courseFooter {
+	position: fixed;
+	z-index: 20;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	display: flex;
+	min-height: calc(62px + env(safe-area-inset-bottom));
+	justify-content: center;
+	padding: 0 16px env(safe-area-inset-bottom);
+	border-top: 1px solid #dce5eb;
+	background: rgb(255 255 255 / 96%);
+	box-shadow: 0 -4px 16px rgb(32 58 76 / 6%);
+	backdrop-filter: blur(10px);
+}
+
+.courseFooter nav {
+	display: flex;
+	width: min(100%, 1500px);
+	align-items: center;
+}
+
+.courseFooterTab {
+	display: inline-flex;
+	min-width: 76px;
+	min-height: 48px;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 3px;
+	border-radius: 7px;
+	color: #456174;
+	font-size: 10px;
+	font-weight: 650;
+	text-decoration: none;
+	transition: background-color 150ms ease, color 150ms ease;
+}
+
+.courseFooterTab:hover,
+.courseFooterTab:focus-visible {
+	background: #edf4f8;
+	color: var(--course-blue);
 }
 
 .courseHeader,
@@ -745,7 +789,9 @@
 }
 
 @media (max-width: 650px) {
-	.coursePage { padding: 10px !important; }
+	.coursePage { padding: 10px 10px calc(76px + env(safe-area-inset-bottom)) !important; }
+	.courseFooter { min-height: calc(58px + env(safe-area-inset-bottom)); }
+	.courseFooterTab { min-height: 44px; }
 	.courseHeader { margin-bottom: 12px; padding: 14px; }
 	.courseHeaderMain { gap: 12px !important; }
 	.courseHeaderMain h1 { font-size: 25px; }

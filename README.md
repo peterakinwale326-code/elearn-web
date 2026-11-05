@@ -31,17 +31,31 @@ SMTP_SECURE=false
 SMTP_USER=your_smtp_username
 SMTP_PASSWORD=your_smtp_password
 SMTP_FROM=Fieldnote <no-reply@example.com>
+GEMINI_API_KEY=your_gemini_api_key
+GEMINI_PRIMARY_MODEL=gemini-3.8-flash
+GEMINI_FALLBACK_MODEL=gemini-3.5-flash-lite
+HUGGINGFACE_API_KEY=
+OPENAI_API_KEY=
+OPENAI_MODEL=gpt-4o-mini
 ```
 
-Generate a session secret with `node -e "console.log(require('node:crypto').randomBytes(32).toString('hex'))"`. Check the connection and table list with `npm run db:check`. Seed the original course catalog with `npm run db:seed`. The seed adds 84 courses, 35 lessons per course, lesson quizzes, and final exams; it skips courses with a matching title and subject and does not delete or update existing rows.
+The study assistant uses Gemini first, then Hugging Face and OpenAI when their
+server-side keys are configured. Keep provider keys in `.env.local`; never add
+them to client-side code or commit them.
+
+Generate a session secret with `node -e "console.log(require('node:crypto').randomBytes(32).toString('hex'))"`. Check the connection and table list with `npm run db:check`. `npm run db:seed` reads the generated root `curriculum.json`, validates each lesson (at least 100 words and no recognized filler patterns), then replaces the existing curriculum data in a transaction. **This deletes existing subjects, courses, modules, lessons, assessments, questions, enrollments, lesson progress, course completions, attempts, and attempt answers. Back up the database first and use this only when that reset is intended.** The current generated file contains 3 courses, 12 modules, and 36 unique authored lessons across English Studies, Networking Fundamentals, and Basic Science.
+
+Run `npm run db:audit-curriculum` for a read-only check of stored lesson text for known filler patterns, empty lessons, and short content. `npm run curriculum:sync` dry-runs curriculum-to-database matching; add `-- --apply` only after reviewing the match report. The sync skips lessons with fewer than 100 words, fewer than two paragraphs, less than 240 characters, or known generic filler and leaves those database rows unchanged.
 
 Before enabling registration, run `npm run db:migrate-auth`. This idempotent migration adds `password_hash` and `email_verified_at` to `users` and creates or updates `email_2fa_challenges`. Existing accounts are treated as email-verified; new signups remain unverified until they submit the emailed code. The Node service hashes new passwords with bcrypt and uses the existing unique email index.
+
+Students can use `/profile` to view their enrolled courses, update their name and email, change their password, and upload a profile picture. The API adds `users.profile_image_url` automatically on startup when it is missing. Course and account navigation link to `/assistant`, a separate study space that does not receive lesson or assessment content; it is intended for explanations and practice rather than answers to active tests or exams.
 
 Lesson writing is original. Each course includes research references from NASA, OpenStax subject catalogs, Purdue OWL, the Library of Congress, NIST, the U.S. Small Business Administration, Smithsonian Learning Lab, British Council, USGS, Harvard CS50, MedlinePlus, or Open Music Theory, as appropriate to its subject.
 
 ## Node API
 
-The `/login` and `/signup` forms send same-origin requests to Next.js, which proxies them to Node. Node serves `GET /health`, `GET /api/courses`, `GET /api/courses/:courseId`, `POST /auth/login`, `POST /auth/signup`, `POST /auth/verify-2fa`, `POST /auth/resend-2fa`, `GET /auth/me`, and `POST /auth/logout`.
+The `/login` and `/signup` forms send same-origin requests to Next.js, which proxies them to Node. Node serves `GET /health`, `GET /api/courses`, `GET /api/courses/:courseId`, `GET /api/profile`, `PATCH /api/profile`, `POST /api/profile/avatar`, `POST /auth/login`, `POST /auth/signup`, `POST /auth/verify-2fa`, `POST /auth/resend-2fa`, `GET /auth/me`, and `POST /auth/logout`.
 
 Signup accepts `{ "name": "...", "email": "...", "password": "..." }`. Node emails a six-digit verification code and returns a short-lived challenge token; the form posts `{ "challengeToken": "...", "code": "..." }` to `/auth/verify-2fa` to verify the email and finish account creation. Codes expire after 10 minutes, allow five attempts, and are stored only as keyed hashes. The resend endpoint rotates signup challenges and applies per-user/IP limits. Login accepts `{ "email": "...", "password": "..." }` and creates a session after password and account status checks; unverified accounts must finish signup verification first. Configure SMTP values above for signup verification. Node sets a signed `HttpOnly`, `SameSite=Lax` session cookie; production cookies use `Secure`. The Node API is bound to loopback by default and is intended to be reached by Next.js, not directly by browser JavaScript.
 

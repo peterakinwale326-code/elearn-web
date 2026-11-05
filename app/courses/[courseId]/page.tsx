@@ -5,7 +5,6 @@ import Link from "next/link";
 import { use, useEffect, useMemo, useState } from "react";
 import type { ReactNode } from "react";
 import { getLessonImage } from "@/lib/course-images";
-import LearningAssistant from "@/components/learning-assistant";
 import {
   ArrowLeft,
   ArrowRight,
@@ -1173,6 +1172,7 @@ export default function CourseDetailsPage({
           <Link href="/courses" className="backLink">
             <ArrowLeft size={18} /> Back to courses
           </Link>
+          <Link href="/assistant" className="backLink">Study assistant</Link>
           <Link href="/feedback" className="backLink">Feedback</Link>
           <span className="courseSubject badge text-bg-primary">
             {course.subject || course.level || course.grade || "Course"}
@@ -1550,12 +1550,14 @@ export default function CourseDetailsPage({
           )}
         </section>
       </div>
-      <LearningAssistant
-        courseId={courseId}
-        courseTitle={course.title || course.name || "Course"}
-        lessonTitle={activeLesson ? lessonTitle(activeLesson) : undefined}
-        lessonContent={activeLesson?.content || activeLesson?.description || ""}
-      />
+      <footer className="courseFooter">
+        <nav aria-label="Student account">
+          <Link href="/profile" className="courseFooterTab">
+            <GraduationCap size={19} aria-hidden="true" />
+            <span>Profile</span>
+          </Link>
+        </nav>
+      </footer>
     </main>
   );
 }

@@ -1,5 +1,5 @@
 import { createHash, createHmac, randomBytes, randomInt, randomUUID, timingSafeEqual } from "node:crypto";
-import { mkdir, unlink } from "node:fs/promises";
+import { mkdir, unlink, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { createPool } from "mysql2/promise";
 import express from "express";
@@ -70,6 +70,21 @@ const adminUpload = multer({
     },
   }),
   limits: { fileSize: 25 * 1024 * 1024 },
+});
+const avatarExtensions = {
+  "image/jpeg": ".jpg",
+  "image/png": ".png",
+  "image/webp": ".webp",
+};
+const profileAvatarUpload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 5 * 1024 * 1024, files: 1 },
+  fileFilter: (_request, file, callback) => {
+    if (!avatarExtensions[file.mimetype]) {
+      return callback(new Error("Upload a PNG, JPG, or WebP image."));
+    }
+    return callback(null, true);
+  },
 });
 
 app.disable("x-powered-by");
@@ -197,6 +212,19 @@ async function initializeDatabase() {
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
     `);
 
+    const [profileColumns] = await connection.execute(
+      `SELECT COLUMN_NAME
+       FROM information_schema.columns
+       WHERE table_schema = DATABASE()
+         AND table_name = 'users'
+         AND column_name = 'profile_image_url'`,
+    );
+    if (profileColumns.length === 0) {
+      await connection.query(
+        "ALTER TABLE users ADD COLUMN profile_image_url VARCHAR(500) NULL AFTER email",
+      );
+    }
+
     console.log("✅ MySQL database connection successful");
     console.log("✅ 2FA table is ready");
   } finally {
@@ -305,6 +333,29 @@ function readSessionToken(token) {
   } catch {
     return null;
   }
+}
+
+async function getSessionUser(request) {
+  const session = readSessionToken(getCookie(request, sessionCookie));
+  if (!session) return null;
+
+  const [rows] = await pool.execute(
+    `SELECT id, full_name, email, role, is_active, profile_image_url
+     FROM users
+     WHERE id = ?
+     LIMIT 1`,
+    [Number(session.sub)],
+  );
+  const user = rows[0];
+  if (!user || Number(user.is_active) !== 1) return null;
+
+  return {
+    id: Number(user.id),
+    name: user.full_name,
+    email: user.email,
+    role: user.role,
+    profileImageUrl: user.profile_image_url || null,
+  };
 }
 
 async function requireAdmin(request, response, next) {
@@ -1846,45 +1897,186 @@ app.post("/auth/resend-2fa", authLimiter, async (request, response, next) => {
 
 app.get("/auth/me", async (request, response, next) => {
   try {
-    const session = readSessionToken(
-      getCookie(request, sessionCookie)
-    );
-
-    if (!session) {
+    const user = await getSessionUser(request);
+    if (!user) {
+      clearSessionCookie(response);
       return response.status(401).json({
         message: "Not authenticated",
       });
     }
 
-    const [rows] = await pool.execute(
-      `SELECT id, full_name, email, role, is_active
-       FROM users
-       WHERE id = ?
-       LIMIT 1`,
-      [Number(session.sub)]
-    );
-
-    const user = rows[0];
-
-    if (!user || Number(user.is_active) !== 1) {
-      clearSessionCookie(response);
-
-      return response.status(401).json({
-        message: "Your session is invalid or your account is inactive.",
-      });
-    }
-
     return response.json({
-      user: {
-        id: Number(user.id),
-        name: user.full_name,
-        email: user.email,
-        role: user.role,
-      },
+      user,
     });
   } catch (error) {
     return next(error);
   }
+});
+
+app.get("/api/profile", async (request, response, next) => {
+  try {
+    const user = await getSessionUser(request);
+    if (!user) {
+      clearSessionCookie(response);
+      return response.status(401).json({ message: "Sign in to view your profile." });
+    }
+
+    const [courses] = await pool.query(
+      `${courseSummaryQuery}
+       AND EXISTS (
+         SELECT 1
+         FROM enrollments e
+         WHERE e.course_id = c.id AND e.user_id = ?
+       )
+       ORDER BY s.name, c.title`,
+      [user.id],
+    );
+
+    return response.set("Cache-Control", "no-store").json({
+      user,
+      courses: courses.map(mapCourseSummary),
+    });
+  } catch (error) {
+    return next(error);
+  }
+});
+
+app.patch("/api/profile", authLimiter, async (request, response, next) => {
+  try {
+    const user = await getSessionUser(request);
+    if (!user) {
+      clearSessionCookie(response);
+      return response.status(401).json({ message: "Sign in to update your profile." });
+    }
+
+    const body = request.body && typeof request.body === "object" ? request.body : {};
+    const hasName = Object.prototype.hasOwnProperty.call(body, "name");
+    const hasEmail = Object.prototype.hasOwnProperty.call(body, "email");
+    const hasPassword = Object.prototype.hasOwnProperty.call(body, "newPassword");
+    const name = typeof body.name === "string" ? body.name.trim().replace(/\s+/g, " ") : "";
+    const email = typeof body.email === "string" ? body.email.trim().toLowerCase() : "";
+    const currentPassword = typeof body.currentPassword === "string" ? body.currentPassword : "";
+
+    if (hasName && (name.length < 2 || name.length > 120)) {
+      return response.status(400).json({ message: "Your name must be between 2 and 120 characters." });
+    }
+    if (hasEmail && (email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))) {
+      return response.status(400).json({ message: "Enter a valid email address." });
+    }
+
+    const emailChanged = hasEmail && email !== user.email;
+    let newPasswordHash = "";
+    if (hasPassword) {
+      const newPassword = typeof body.newPassword === "string" ? body.newPassword : "";
+      if (
+        newPassword.length < 8 || newPassword.length > 200 ||
+        !/[A-Z]/.test(newPassword) || !/[a-z]/.test(newPassword) || !/\d/.test(newPassword)
+      ) {
+        return response.status(400).json({
+          message: "Your new password must be 8–200 characters and include uppercase, lowercase, and a number.",
+        });
+      }
+      newPasswordHash = await bcrypt.hash(newPassword, 12);
+    }
+
+    if (emailChanged || hasPassword) {
+      const [rows] = await pool.execute(
+        "SELECT password_hash FROM users WHERE id = ? LIMIT 1",
+        [user.id],
+      );
+      const passwordHash = rows[0]?.password_hash;
+      if (!currentPassword || !passwordHash || !(await bcrypt.compare(currentPassword, passwordHash))) {
+        return response.status(400).json({ message: "Enter your current password to confirm this change." });
+      }
+    }
+
+    const updates = [];
+    const values = [];
+    if (hasName && name !== user.name) {
+      updates.push("full_name = ?");
+      values.push(name);
+    }
+    if (emailChanged) {
+      updates.push("email = ?");
+      values.push(email);
+    }
+    if (hasPassword) {
+      updates.push("password_hash = ?");
+      values.push(newPasswordHash);
+    }
+    if (updates.length === 0) {
+      return response.status(400).json({ message: "There are no profile changes to save." });
+    }
+
+    try {
+      await pool.execute(
+        `UPDATE users SET ${updates.join(", ")} WHERE id = ?`,
+        [...values, user.id],
+      );
+    } catch (error) {
+      if (error?.code === "ER_DUP_ENTRY") {
+        return response.status(409).json({ message: "An account with this email already exists." });
+      }
+      throw error;
+    }
+
+    const updatedUser = await getSessionUser(request);
+    return response.json({ user: updatedUser, message: "Your account settings were updated." });
+  } catch (error) {
+    return next(error);
+  }
+});
+
+app.post("/api/profile/avatar", async (request, response, next) => {
+  profileAvatarUpload.single("avatar")(request, response, async (uploadError) => {
+    if (uploadError) {
+      const isTooLarge = uploadError.code === "LIMIT_FILE_SIZE";
+      return response.status(isTooLarge ? 413 : 400).json({
+        message: isTooLarge
+          ? "Choose an image smaller than 5 MB."
+          : "Upload a PNG, JPG, or WebP image.",
+      });
+    }
+
+    try {
+      const user = await getSessionUser(request);
+      if (!user) {
+        clearSessionCookie(response);
+        return response.status(401).json({ message: "Sign in to update your profile picture." });
+      }
+
+      const file = request.file;
+      const extension = file && avatarExtensions[file.mimetype];
+      const validImage = file && (
+        (file.mimetype === "image/jpeg" && file.buffer[0] === 0xff && file.buffer[1] === 0xd8 && file.buffer[2] === 0xff) ||
+        (file.mimetype === "image/png" && file.buffer.subarray(0, 8).equals(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]))) ||
+        (file.mimetype === "image/webp" && file.buffer.toString("ascii", 0, 4) === "RIFF" && file.buffer.toString("ascii", 8, 12) === "WEBP")
+      );
+      if (!file || !extension || !validImage) {
+        return response.status(400).json({ message: "Choose a valid PNG, JPG, or WebP image." });
+      }
+
+      const filename = `${randomUUID()}${extension}`;
+      const uploadDirectory = path.join(process.cwd(), "public", "uploads", "avatars");
+      const imagePath = path.join(uploadDirectory, filename);
+      await mkdir(uploadDirectory, { recursive: true });
+      await writeFile(imagePath, file.buffer, { flag: "wx" });
+
+      try {
+        await pool.execute(
+          "UPDATE users SET profile_image_url = ? WHERE id = ?",
+          [`/uploads/avatars/${filename}`, user.id],
+        );
+      } catch (error) {
+        await unlink(imagePath).catch(() => {});
+        throw error;
+      }
+
+      return response.json({ profileImageUrl: `/uploads/avatars/${filename}` });
+    } catch (error) {
+      return next(error);
+    }
+  });
 });
 
 
@@ -1938,13 +2130,15 @@ app.get("/api/admin/stats", async (request, response, next) => {
   try {
     await requireAdmin(request, response, async () => {
       const [[students]] = await pool.query("SELECT COUNT(*) AS n FROM users WHERE role = 'student'");
-      const [[courses]] = await pool.query("SELECT COUNT(*) AS n FROM courses");
+      const [[courses]] = await pool.query("SELECT COUNT(*) AS n FROM courses WHERE is_published = 1");
       const [[pending]] = await pool.query("SELECT COUNT(*) AS n FROM feedback WHERE status = 'pending'");
+      const [[enrollments]] = await pool.query("SELECT COUNT(*) AS n FROM enrollments");
 
       return response.json({
-        totalStudents: students.n,
-        activeCourses: courses.n,
-        pendingFeedback: pending.n,
+        totalStudents: Number(students.n ?? 0),
+        activeCourses: Number(courses.n ?? 0),
+        pendingFeedback: Number(pending.n ?? 0),
+        totalEnrollments: Number(enrollments.n ?? 0),
       });
     });
   } catch (error) {
@@ -1955,8 +2149,44 @@ app.get("/api/admin/stats", async (request, response, next) => {
 app.get("/api/admin/courses", async (request, response, next) => {
   try {
     await requireAdmin(request, response, async () => {
-      const [rows] = await pool.query("SELECT id, title FROM courses ORDER BY title");
+      const [rows] = await pool.query(
+        `SELECT c.id, c.title, c.level, c.is_published,
+                s.name AS subject,
+                (SELECT COUNT(*) FROM modules m WHERE m.course_id = c.id) AS module_count,
+                (SELECT COUNT(*)
+                   FROM lessons l
+                   JOIN modules m ON m.id = l.module_id
+                  WHERE m.course_id = c.id) AS lesson_count
+           FROM courses c
+           JOIN subjects s ON s.id = c.subject_id
+          ORDER BY s.name, c.level, c.title`
+      );
       return response.json(rows);
+    });
+  } catch (error) {
+    return next(error);
+  }
+});
+
+app.patch("/api/admin/courses/:id", async (request, response, next) => {
+  try {
+    await requireAdmin(request, response, async () => {
+      const courseId = Number(request.params.id);
+      const published = request.body?.isPublished;
+
+      if (!Number.isSafeInteger(courseId) || courseId < 1 || typeof published !== "boolean") {
+        return response.status(400).json({ error: "Provide a valid course id and publication status." });
+      }
+
+      const [result] = await pool.execute(
+        "UPDATE courses SET is_published = ? WHERE id = ?",
+        [published ? 1 : 0, courseId]
+      );
+      if (result.affectedRows === 0) {
+        return response.status(404).json({ error: "Course not found." });
+      }
+
+      return response.json({ ok: true, isPublished: published });
     });
   } catch (error) {
     return next(error);
@@ -2069,16 +2299,18 @@ app.get("/api/admin/students", async (request, response, next) => {
       const where = ["u.role = 'student'"];
       const params = [];
       if (q) {
-        where.push("(u.name LIKE ? OR u.email LIKE ?)");
+        where.push("(u.full_name LIKE ? OR u.email LIKE ?)");
         params.push(`%${q}%`, `%${q}%`);
       }
       if (["active", "suspended"].includes(status)) {
-        where.push("u.status = ?");
-        params.push(status);
+        where.push("u.is_active = ?");
+        params.push(status === "active" ? 1 : 0);
       }
 
       const [rows] = await pool.query(
-        `SELECT u.id, u.name, u.email, u.status, u.created_at,
+        `SELECT u.id, u.full_name AS name, u.email,
+                IF(u.is_active = 1, 'active', 'suspended') AS status,
+                u.created_at,
                 (SELECT COUNT(*) FROM enrollments e WHERE e.user_id = u.id) AS courses_enrolled
            FROM users u
           WHERE ${where.join(" AND ")}
@@ -2104,7 +2336,10 @@ app.patch("/api/admin/students/:id", async (request, response, next) => {
         return response.status(400).json({ error: "Invalid student status" });
       }
 
-      const [result] = await pool.execute("UPDATE users SET status = ? WHERE id = ?", [nextStatus, userId]);
+      const [result] = await pool.execute(
+        "UPDATE users SET is_active = ? WHERE id = ? AND role = 'student'",
+        [nextStatus === "active" ? 1 : 0, userId]
+      );
       if (result.affectedRows === 0) {
         return response.status(404).json({ error: "Student not found" });
       }
@@ -2126,7 +2361,8 @@ app.get("/api/admin/feedback", async (request, response, next) => {
            FROM feedback`
       );
       const [items] = await pool.query(
-        `SELECT f.id, f.category, f.rating, f.message, f.status, f.created_at, u.name, u.email
+        `SELECT f.id, f.category, f.rating, f.message, f.status, f.created_at,
+                u.full_name AS name, u.email
            FROM feedback f
            JOIN users u ON u.id = f.user_id
           ORDER BY f.status = 'pending' DESC, f.created_at DESC
