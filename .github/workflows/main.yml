@@ -1,0 +1,50 @@
+name: E-Learning Web Platform Build
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  validate-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Clone the codebase onto the GitHub runner
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # Step 2: Set up Node.js environment
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          # Targets the package.json inside your specific subfolder for caching
+          cache-dependency-path: elearning/package-lock.json
+
+      # Step 3: Install dependencies inside the elearning folder
+      - name: Install Dependencies
+        working-directory: ./elearning
+        run: npm ci
+
+      # Step 4: Verify the build process compiles without issues
+      - name: Build Application
+        working-directory: ./elearning
+        run: npm run build
+        
+      # Step 5: Test the curriculum database script ONLY if curriculum.json was modified
+      - name: Check for curriculum.json changes
+        id: file-check
+        uses: jobsahr/file-changes-action@v1.0.1
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Run Curriculum Seed Script (Conditional Verification)
+        # This checks if curriculum.json is in the list of changed files
+        if: contains(steps:file-check.outputs.files, 'elearning/curriculum.json')
+        working-directory: ./elearning
+        run: |
+          touch .env.local
+          node --env-file=.env.local scripts/seed-curriculum.mjs
