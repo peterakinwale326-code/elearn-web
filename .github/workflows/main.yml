@@ -23,15 +23,19 @@ jobs:
         with:
           node-version: 20
 
-      # Step 3: Install dependencies directly at the root folder
+      # Step 3: Install primary project dependencies
       - name: Install Dependencies
         run: npm install
 
-      # Step 4: Verify the application compiles cleanly
+      # Step 4: Inject the missing dotenv module required by your build scripts
+      - name: Inject Missing Dependencies
+        run: npm install dotenv @types/dotenv --no-save
+
+      # Step 5: Verify the application compiles cleanly
       - name: Build Application
         run: npm run build
 
-      # Step 5: Conditionally execute seed script using native git checks
+      # Step 6: Conditionally execute seed script using native git checks
       - name: Run Curriculum Seed Script (If Modified)
         run: |
           # Check if the curriculum.json file was changed in the commit history
