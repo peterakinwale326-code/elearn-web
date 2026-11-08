@@ -17,28 +17,25 @@ jobs:
         with:
           fetch-depth: 0
 
-      # Step 2: Set up Node.js environment without strict lockfile cache paths
+      # Step 2: Set up Node.js environment
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
 
-      # Step 3: Install dependencies inside your elearning folder
+      # Step 3: Install dependencies directly at the root folder
       - name: Install Dependencies
-        working-directory: ./elearning
         run: npm install
 
       # Step 4: Verify the application compiles cleanly
       - name: Build Application
-        working-directory: ./elearning
         run: npm run build
 
       # Step 5: Conditionally execute seed script using native git checks
       - name: Run Curriculum Seed Script (If Modified)
-        working-directory: ./elearning
         run: |
           # Check if the curriculum.json file was changed in the commit history
-          if git diff --name-only HEAD~1 HEAD | grep -q "elearning/curriculum.json"; then
+          if git diff --name-only HEAD~1 HEAD | grep -q "curriculum.json"; then
             echo "🚀 curriculum.json change detected. Running seed script..."
             touch .env.local
             node --env-file=.env.local scripts/seed-curriculum.mjs
