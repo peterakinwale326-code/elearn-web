@@ -1,18 +1,50 @@
-name: GitHub Actions Demo
-run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
-on: [push]
+name: E-Learning Web Platform Build
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
 jobs:
-  Explore-GitHub-Actions:
+  validate-and-test:
     runs-on: ubuntu-latest
+
     steps:
-      - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
-      - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
-      - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
-      - name: Check out repository code
-        uses: actions/checkout@v6
-      - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
-      - run: echo "🖥️ The workflow is now ready to test your code on the runner."
-      - name: List files in the repository
+      # Step 1: Clone the codebase onto the GitHub runner
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # Step 2: Set up Node.js environment
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          # Targets the package.json inside your specific subfolder for caching
+          cache-dependency-path: elearning/package-lock.json
+
+      # Step 3: Install dependencies inside the elearning folder
+      - name: Install Dependencies
+        working-directory: ./elearning
+        run: npm ci
+
+      # Step 4: Verify the build process compiles without issues
+      - name: Build Application
+        working-directory: ./elearning
+        run: npm run build
+        
+      # Step 5: Test the curriculum database script ONLY if curriculum.json was modified
+      - name: Check for curriculum.json changes
+        id: file-check
+        uses: jobsahr/file-changes-action@v1.0.1
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Run Curriculum Seed Script (Conditional Verification)
+        # This checks if curriculum.json is in the list of changed files
+        if: contains(steps:file-check.outputs.files, 'elearning/curriculum.json')
+        working-directory: ./elearning
         run: |
-          ls ${{ github.workspace }}
-      - run: echo "🍏 This job's status is ${{ job.status }}."
+          touch .env.local
+          node --env-file=.env.local scripts/seed-curriculum.mjs
