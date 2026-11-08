@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Clone the codebase onto the GitHub runner
+      # Step 1: Clone the codebase using a valid stable action version
       - name: Checkout Code
         uses: actions/checkout@v4
 
@@ -21,29 +21,28 @@ jobs:
         with:
           node-version: 20
           cache: 'npm'
-          # Targets the package.json inside your specific subfolder for caching
           cache-dependency-path: elearning/package-lock.json
 
-      # Step 3: Install dependencies inside the elearning folder
+      # Step 3: Install dependencies inside your specific elearning folder
       - name: Install Dependencies
         working-directory: ./elearning
         run: npm ci
 
-      # Step 4: Verify the build process compiles without issues
+      # Step 4: Verify the application compilation process runs smoothly
       - name: Build Application
         working-directory: ./elearning
         run: npm run build
         
-      # Step 5: Test the curriculum database script ONLY if curriculum.json was modified
+      # Step 5: Detect changes to files to determine if curriculum database seed runs
       - name: Check for curriculum.json changes
         id: file-check
         uses: jobsahr/file-changes-action@v1.0.1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           
+      # Step 6: Execute the database seed script conditionally with an environment stub file
       - name: Run Curriculum Seed Script (Conditional Verification)
-        # This checks if curriculum.json is in the list of changed files
-        if: contains(steps:file-check.outputs.files, 'elearning/curriculum.json')
+        if: contains(steps.file-check.outputs.files, 'elearning/curriculum.json')
         working-directory: ./elearning
         run: |
           touch .env.local
