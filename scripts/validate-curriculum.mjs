@@ -12,6 +12,7 @@ const generatedFillerHeadings = /^## (?:Core explanation and worked application|
 const genericTeachingPattern = /A reader should be able to trace how the evidence supports|Worked reading method: state a claim in one sentence/i;
 const generatedLessonSectionPattern = /^## (?:Subject explanation and examples|Try it yourself)\b/im;
 const generatedCourseMetadataPattern = /^_Course:.*_$/m;
+const genericGeneratedLevelCloserPattern = /^(?:Start by drawing or defining the quantities involved, then work through the example with units\.|Explain why the stated relationship applies, and identify one condition that could change the result\.|In an examination response, show the reasoning as well as the final result and check the units or evidence\.|Use the example to explain the idea in your own words, then identify one real situation where it matters\.)$/im;
 const genericChemistryBlurbPattern = /Chemistry treats .+ as a relationship between particles, substances and measurable changes/i;
 const genericPhysicsBlurbPattern = /should be studied through measurable quantities and physical relationships|state a realistic situation involving .+ list the known quantities/i;
 const genericPhysicalEducationBlurbPattern = /Performance activity: practise or observe .+ use a simple checklist for preparation|generic physical education lesson/i;
@@ -74,22 +75,26 @@ for (const course of curriculum.courses ?? []) {
 				failures.push(`${course.title} / ${lesson.title}: generated lesson padding or metadata remains`);
 			}
 
+			if (genericGeneratedLevelCloserPattern.test(body)) {
+				failures.push(`${course.title} / ${lesson.title}: generic level-based closing prompt remains`);
+			}
+
 			if (course.title === "Chemistry" && (
-				lesson.contentVersion !== "textbook-2" ||
+				lesson.contentVersion !== "textbook-3" ||
 				genericChemistryBlurbPattern.test(body)
 			)) {
 				failures.push(`${course.title} / ${lesson.title}: generic Chemistry content remains`);
 			}
 
 			if (course.title === "Physics" && (
-				lesson.contentVersion !== "textbook-physics-1" ||
+				lesson.contentVersion !== "textbook-physics-2" ||
 				genericPhysicsBlurbPattern.test(body)
 			)) {
 				failures.push(`${course.title} / ${lesson.title}: generic Physics content remains`);
 			}
 
 			if (course.title === "Physical Education" && (
-				lesson.contentVersion !== "textbook-pe-1" ||
+				lesson.contentVersion !== "textbook-pe-2" ||
 				genericPhysicalEducationBlurbPattern.test(body)
 			)) {
 				failures.push(`${course.title} / ${lesson.title}: generic Physical Education content remains`);

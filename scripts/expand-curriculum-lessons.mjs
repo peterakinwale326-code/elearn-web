@@ -532,17 +532,16 @@ function sourceParagraphs(content) {
 }
 
 function authoredChapter(title, sections, course) {
-  const headings = ["## Explanation", "## Example and application", "## Check your understanding"];
+  const headings = course.title === "Chemistry"
+    ? [`## Chemical principles in ${title}`, "## Worked chemistry example", `## Apply ${title}`]
+    : course.title === "Physics"
+      ? [`## Physical model for ${title}`, "## Worked physics example", `## Explore ${title}`]
+      : course.title === "Physical Education"
+        ? [`## Movement concepts in ${title}`, "## Skill in context", `## Practise ${title}`]
+        : ["## Explanation", "## Example and application", `## Practice: ${title}`];
   const body = sections.map((section, index) => `${headings[index]}\n\n${section}`).join("\n\n");
-  const levelNote = course.level === "SS1"
-    ? "Start by drawing or defining the quantities involved, then work through the example with units."
-    : course.level === "SS2"
-      ? "Explain why the stated relationship applies, and identify one condition that could change the result."
-      : course.level === "SS3"
-        ? "In an examination response, show the reasoning as well as the final result and check the units or evidence."
-        : "Use the example to explain the idea in your own words, then identify one real situation where it matters.";
 
-  return `# ${title}\n\n${body}\n\n${levelNote}`;
+  return `# ${title}\n\n${body}`;
 }
 
 function updateTextbookMetadata(course, title, sections, lessonRecord) {
@@ -558,26 +557,26 @@ function updateTextbookMetadata(course, title, sections, lessonRecord) {
 }
 
 function cleanLesson(content, title, course, repeatedParagraphs, lessonRecord) {
-  if (course.title === "Chemistry" && lessonRecord.contentVersion !== "textbook-2") {
+  if (course.title === "Chemistry" && lessonRecord.contentVersion !== "textbook-3") {
     const lesson = chemistryLessons[title.toLowerCase()];
     if (!lesson) throw new Error(`Missing Chemistry lesson for "${title}".`);
-    lessonRecord.contentVersion = "textbook-2";
+    lessonRecord.contentVersion = "textbook-3";
     updateTextbookMetadata(course, title, lesson, lessonRecord);
     return authoredChapter(title, lesson, course);
   }
 
-  if (course.title === "Physics" && lessonRecord.contentVersion !== "textbook-physics-1") {
+  if (course.title === "Physics" && lessonRecord.contentVersion !== "textbook-physics-2") {
     const lesson = physicsLessons[title.toLowerCase()];
     if (!lesson) throw new Error(`Missing Physics lesson for "${title}".`);
-    lessonRecord.contentVersion = "textbook-physics-1";
+    lessonRecord.contentVersion = "textbook-physics-2";
     updateTextbookMetadata(course, title, lesson, lessonRecord);
     return authoredChapter(title, lesson, course);
   }
 
-  if (course.title === "Physical Education" && lessonRecord.contentVersion !== "textbook-pe-1") {
+  if (course.title === "Physical Education" && lessonRecord.contentVersion !== "textbook-pe-2") {
     const lesson = peLessons[title.toLowerCase()];
     if (!lesson) throw new Error(`Missing Physical Education lesson for "${title}".`);
-    lessonRecord.contentVersion = "textbook-pe-1";
+    lessonRecord.contentVersion = "textbook-pe-2";
     updateTextbookMetadata(course, title, lesson, lessonRecord);
     return authoredChapter(title, lesson, course);
   }
