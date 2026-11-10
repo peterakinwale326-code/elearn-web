@@ -102,10 +102,67 @@ const government = {
   "Government research project": `A research project on council meeting transparency could ask whether agendas and decisions are published on time. Collect meeting notices, official records and a small set of interviews with permission; record dates and gaps. Compare evidence with the applicable rule, protect private information and avoid claiming that a few interviews represent every resident. The conclusion should answer the question, acknowledge limitations and suggest a practical next step.`,
 };
 
+const civicExtensions = {
+  Citizenship: `In Nigeria, citizenship may be acquired through different routes set out in the Constitution, and the legal conditions matter. A classroom example should distinguish identity from documentary evidence of status. If a real case is uncertain, consult an authorised source instead of guessing from a person's background.`,
+  Elections: `Election procedures protect the credibility of results: polling, transparent collation and accessible complaint channels let concerns be tested. Separate verified events from allegations, identify the source of each claim and avoid treating one incident as proof about every polling unit.`,
+  "Political participation": `Participation is most effective when a request reaches the office with responsibility and includes enough detail to investigate. Keep a dated copy of a petition or response, and follow up through the same official channel. Peaceful participation should not expose another person's private information.`,
+  Constitution: `A constitution sets out public institutions, their powers and protections for people. When explaining a constitutional issue, identify the relevant provision and distinguish the written rule from a person's opinion about how it should apply.`,
+  Leadership: `A leader's mandate does not remove the need to consult people affected by a decision. Compare its purpose with the process used, then ask whether responsibilities, reasons and outcomes were communicated. These checks distinguish responsible influence from authority used without explanation.`,
+  Accountability: `Accountability involves both answerability and consequences: an office explains its actions, while an authorised body reviews records and may require correction. Citizens should preserve relevant evidence and use established procedures. Public criticism can prompt scrutiny, but a claim still needs verification.`,
+  "Unity in diversity": `A practical test is whether a group can make shared decisions without excluding members whose language, disability or belief differs from the majority. Fair participation requires accessible communication and consistent rules. Cooperation strengthens when differences are acknowledged accurately rather than hidden.`,
+  "Child rights": `A child's best interests should guide decisions that affect them, while their views are heard safely and in an age-appropriate way. Schools and caregivers should know how to refer a protection concern. A learner should never be asked to investigate abuse or confront a suspected offender.`,
+  "Human rights": `Rights apply to people regardless of status or popularity. Identify the right, the duty-bearer and the safe process for seeking help; do not promise a legal remedy without checking the relevant law and facts.`,
+  "Justice and equality": `When comparing cases, record the relevant facts and the rule applied to each person. A different outcome may be justified by a relevant difference, but not by favouritism or prejudice. An accessible review process lets someone explain their circumstances and seek a fair correction.`,
+  "Peace and conflict": `A written agreement can prevent a resolved dispute from returning: state the arrangement, who is responsible and when it will be reviewed. Check that each party can follow it safely. If violence is possible, do not arrange direct mediation; involve an appropriate adult or authority.`,
+  Tolerance: `Respectful disagreement focuses on reasons and evidence, gives others a chance to respond and avoids identity-based insults. A class can protect participation while allowing claims to be challenged. Tolerance supports open debate, but does not oblige anyone to accept intimidation or abuse.`,
+  "Corruption and its effects": `Prevention depends on systems as well as individual choices. Published fees, numbered receipts, clear procurement criteria and independent checks make improper demands easier to detect. Report suspected misconduct through a protected channel and share only supportable information.`,
+  "Public service": `A service standard gives the public a basis for a specific question, such as how long a complete application should take. Keep reference numbers and dates, ask for reasons through the official process and protect confidential records. The response can then be checked against the agency's stated duty.`,
+  "Environmental responsibility": `A response should match the source: household sorting will not replace a failed collection service, and a public clean-up will not prevent industrial discharge. Identify responsible actors, agree on a measurable change and revisit the site. This makes action more than a one-day event.`,
+  "Digital citizenship": `A reliable digital record includes context: note the original publisher and date, and do not edit an image in a way that changes its meaning. Report harmful content and seek adult support when safety is involved. Do not forward private messages to retaliate.`,
+  Patriotism: `Civic pride can include learning history accurately, caring for shared property and asking institutions to meet their responsibilities. Compare a patriotic claim with its effects on other citizens' rights. Loyalty to a country can coexist with criticism intended to improve public life.`,
+  "Civic action project": `A project report should include its question, method, findings, action taken and evidence of the response. State what the group could not measure and avoid claiming one activity solved a wider problem. A follow-up check helps decide whether to continue or revise the work.`,
+};
+
+const governmentExtensions = {
+  "Meaning and scope of government": `In an examination answer, connect each function to an institution and a limit on its authority. A public agency may deliver a service under law, while a court can review whether it acted lawfully. This is more precise than listing government activities.`,
+  "State and nation": `The concepts can overlap but should not be collapsed into one definition. A state has institutions and legal authority over territory; a nation is formed around shared identity, which can cross state boundaries. Use historical or cultural evidence carefully and recognise internal diversity.`,
+  "Power and authority": `Legitimacy is strengthened when officials explain the source of authority and follow a reviewable procedure. A decision can influence people without being lawful, and a lawful power can still be exercised unfairly. Analyse its source, purpose, limits and appeal route.`,
+  "Political socialization": `Study political socialisation by comparing messages over time, not by assuming one conversation determines a person's beliefs. Record each source, audience and context, then consider how education, experience and new evidence may change a view. This avoids stereotyping a group.`,
+  Constitution: `Constitutional analysis should cite the relevant provision and explain how it applies to the facts. Where wording is disputed, compare authoritative text with judicial interpretation and identify the institution empowered to decide. A political speech is not itself a legal ruling.`,
+  "Types of constitution": `A classification is useful only when its criterion is stated. “Written” concerns how rules are recorded, while “federal” concerns how powers are distributed. Compare multiple features and use examples carefully; a label alone does not explain institutional practice.`,
+  "Rule of law": `The principle is tested through access to courts, fair hearings and consistent enforcement, not merely by the existence of statutes. Identify the rule, evidence, decision-maker and available appeal. This also distinguishes lawful criticism of a law from ignoring it.`,
+  "Separation of powers": `Checks and balances are specific procedures, such as legislative scrutiny or judicial review, rather than a general promise that branches cooperate. Identify the legal mechanism and the decision it can affect. Cooperation must not erase constitutional boundaries or oversight.`,
+  Legislature: `The exact procedure varies by chamber and type of bill, so consult applicable standing orders and constitutional requirements. A committee may examine details before a vote, and an enacted law may require assent or publication. Distinguish a bill, an act and a policy announcement.`,
+  Executive: `Implementation can be evaluated against an approved budget, stated targets and service evidence. The executive may issue regulations only where legislation grants that power, and those regulations remain subject to legal limits. Separate policy responsibility from civil-service work when tracing a decision.`,
+  Judiciary: `Judicial independence protects decisions from improper pressure, while reasoned judgments and appeals make the process accountable. A court decides a case based on law and evidence under procedure; it does not automatically settle every political disagreement. Check jurisdiction before naming the court.`,
+  "Pressure groups": `Assess a pressure group's influence through membership, resources, methods and access to decision-makers. Compare its published position with evidence from affected communities, since no organisation automatically represents everyone. Lawful advocacy may inform policy, but officials remain responsible for weighing interests.`,
+  "Political parties": `A party platform is a set of proposals, not proof that each is feasible or will be implemented. Compare funding, constitutional authority and likely effects, then check performance against prior commitments. This is more informative than judging by a name or slogan.`,
+  Elections: `An electoral complaint is strongest when it identifies a specific location, event, rule and supporting record. The responsible body or tribunal assesses it through prescribed procedure. This protects both the right to challenge irregularities and others from unverified claims.`,
+  "Electoral systems": `Compare systems using the same vote totals and calculate how each rule allocates seats. Then discuss local representation, smaller groups and coalition-building. Outcomes depend on the details of the rules, not merely the system's broad label.`,
+  "Public opinion": `A poll describes the people sampled at a particular time, not every citizen. Check its sampling frame, response rate, question wording and sponsor. Compare it with other evidence and explain uncertainty before using it to support a policy conclusion.`,
+  "Local government": `Accountability requires knowing the council's legal functions, approved budget and public reporting process. Residents can compare a promised service with records or site observations and submit a documented request. When responsibility is shared, identify the coordination issue.`,
+  Federalism: `A federal arrangement needs constitutional allocation and practical coordination. A policy may involve separate powers, concurrent responsibilities or intergovernmental funding, so identify the relevant list and law. Disputes may require political negotiation or judicial interpretation.`,
+  "Nigeria’s political development": `Compare periods using the same questions: how authority was obtained, which institutions operated, what rights were protected and how power changed hands. Verify dates in reputable sources and distinguish documented events from later interpretations. This supports more than a list of leaders.`,
+  "Military rule": `Military administrations differed in duration, leadership and policy, so avoid treating every period as identical. Compare a specific decree, institution or transition using historical records. Explain effects on participation and legal review without conflating the military institution with a particular government.`,
+  "Democracy in Nigeria": `Assess electoral competition, participation, civil liberties and oversight separately. Use evidence from the period discussed and distinguish a constitutional guarantee from its implementation. Where evidence is mixed, explain progress and unresolved limitations rather than forcing a simple verdict.`,
+  "Public administration": `Follow a programme from policy approval through budget release, staffing, delivery and evaluation. At each stage, identify the responsible unit and a record that could confirm progress. This helps locate unclear authority, resource shortages or delivery problems.`,
+  "Civil service": `Impartiality does not mean civil servants set policy independently; elected leaders establish lawful priorities, and officials administer them professionally. Written records preserve continuity and allow review when administrations change. Separate political direction from administrative advice in a case study.`,
+  "Foreign policy": `Foreign policy involves international commitments and domestic institutions. Before describing an agreement as binding, check who signed it, whether ratification or legislation was required and what obligations it creates. Compare stated interests with evidence about costs and effects.`,
+  "International organizations": `An organisation's charter defines its mandate, decision rules and limits. Compare a public statement with the resolution or agreement, and check whether members must implement it. Outcomes depend on resources and cooperation; membership alone does not prove success.`,
+  "Citizenship and participation": `Legal eligibility and participation are related but distinct: not every civic action requires voting rights, and voting may depend on age and registration. Identify the applicable institution, requirement and channel before advising someone how to participate.`,
+  "Government research project": `Separate findings from recommendations and connect each recommendation to a responsible office. Include dates and sources, explain how interviewees were selected and describe limitations. A respectful presentation protects participants and makes evidence easier to verify.`,
+};
+
+const extensions = {
+  "Social Studies": { Leadership: `Compare a leader who consults group members with one who makes every decision alone. Ask whether the method suited the task, responsibilities were clear and progress was checked. Leadership can be shared, and a person may lead effectively without a formal title.` },
+  "Civic Education": civicExtensions,
+  Government: governmentExtensions,
+};
+
 const groups = [
-  { title: "Social Studies", ids: new Set(["jss1-social-studies", "jss2-social-studies", "jss3-social-studies"]), topics: social, expected: 81 },
-  { title: "Civic Education", ids: new Set(["jss1-civic-education", "jss2-civic-education", "jss3-civic-education"]), topics: civic, expected: 81 },
-  { title: "Government", ids: new Set(["ss1-government", "ss2-government", "ss3-government"]), topics: government, expected: 81 },
+  { title: "Social Studies", ids: new Set(["jss1-social-studies", "jss2-social-studies", "jss3-social-studies"]), topics: social, extensions: extensions["Social Studies"], expected: 81 },
+  { title: "Civic Education", ids: new Set(["jss1-civic-education", "jss2-civic-education", "jss3-civic-education"]), topics: civic, extensions: extensions["Civic Education"], expected: 81 },
+  { title: "Government", ids: new Set(["ss1-government", "ss2-government", "ss3-government"]), topics: government, extensions: extensions.Government, expected: 81 },
 ];
 
 const missing = [];
@@ -113,7 +170,7 @@ const failures = [];
 const counts = {};
 
 function words(text) {
-  return String(text ?? "").replaceAll("\n", " ").split(" ").filter(Boolean).length;
+  return (String(text ?? "").match(/[\p{L}\p{N}]+(?:['’][\p{L}\p{N}]+)*/gu) ?? []).length;
 }
 
 for (const group of groups) {
@@ -125,13 +182,21 @@ for (const group of groups) {
     courses += 1;
     for (const module of course.modules ?? []) {
       for (const lesson of module.lessons ?? []) {
-        const addition = group.topics[lesson.title];
+        const addition = group.topics[lesson.title] ?? (
+          group.title === "Social Studies" && lesson.title === "Socialization"
+            ? group.topics.Socialisation
+            : undefined
+        );
         if (!addition) {
           missing.push(`${course.id}/${lesson.id}:${lesson.title}`);
           continue;
         }
-        if (!String(lesson.content ?? "").includes("\n\n" + addition)) {
+        if (!String(lesson.content ?? "").includes(addition)) {
           lesson.content = `${String(lesson.content ?? "").trim()}\n\n${addition}`;
+        }
+        const extension = group.extensions?.[lesson.title];
+        if (extension && !String(lesson.content ?? "").includes(extension)) {
+          lesson.content = `${String(lesson.content ?? "").trim()}\n\n${extension}`;
         }
         lesson.contentVersion = "textbook-depth-social-civic-gov-1";
         lesson.summary = lesson.content.replace(/^#\s+.+\n+/, "").replace(/\s+/g, " ").trim().slice(0, 320);
