@@ -41,6 +41,10 @@ const courseOutputSchema: Schema = {
     modules: {
       type: Type.ARRAY,
       items: {
+
+
+
+        
         type: Type.OBJECT,
         properties: {
           moduleNumber: { type: Type.NUMBER },
