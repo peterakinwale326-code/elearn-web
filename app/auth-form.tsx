@@ -200,7 +200,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
   }
 
   return (
-    <main className={styles.page}>
+    <main className={`${styles.page} ${mode === "login" ? styles.loginPage : ""}`}>
       <header className={styles.header}>
         <Link href="/" className={styles.brand} aria-label="Fieldnote home">
           <span className={styles.brandMark} aria-hidden="true"><i /><i /><i /><i /></span>

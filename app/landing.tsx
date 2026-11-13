@@ -8,6 +8,8 @@ import {
   BookOpen,
   BriefcaseBusiness,
   Calculator,
+  ChevronLeft,
+  ChevronRight,
   Code2,
   Compass,
   GraduationCap,
@@ -63,10 +65,36 @@ export default function LandingPage() {
   const [courses, setCourses] = useState<CourseSummary[]>([]);
   const [loadState, setLoadState] = useState<LoadState>("loading");
   const [reload, setReload] = useState(0);
+  const [activeSlide, setActiveSlide] = useState(0);
+  const [note, setNote] = useState("");
+  const [noteLoaded, setNoteLoaded] = useState(false);
+  const [noteSaveError, setNoteSaveError] = useState(false);
+
+  useEffect(() => {
+    const frame = window.requestAnimationFrame(() => {
+      try {
+        setNote(window.localStorage.getItem("fieldnote-landing-note") ?? "");
+      } catch {
+        setNoteSaveError(true);
+      }
+      setNoteLoaded(true);
+    });
+
+    return () => window.cancelAnimationFrame(frame);
+  }, []);
+
+  function updateNote(value: string) {
+    setNote(value);
+    try {
+      window.localStorage.setItem("fieldnote-landing-note", value);
+      setNoteSaveError(false);
+    } catch {
+      setNoteSaveError(true);
+    }
+  }
 
   useEffect(() => {
     const controller = new AbortController();
-    setLoadState("loading");
 
     fetch("/api/courses", { cache: "no-store", signal: controller.signal })
       .then(async (response) => {
@@ -75,6 +103,7 @@ export default function LandingPage() {
       })
       .then((data) => {
         setCourses(data);
+        setActiveSlide(0);
         setLoadState("ready");
       })
       .catch((error: unknown) => {
@@ -86,12 +115,21 @@ export default function LandingPage() {
   }, [reload]);
 
   const featuredCourses = courses.slice(0, 6);
+  const activeCourse = featuredCourses[activeSlide];
   const totalLessons = courses.reduce(
     (total, course) => total + course.lessonCount,
     0,
   );
   const allSubjects = Array.from(new Set(courses.map((course) => course.subject)));
   const subjects = allSubjects.slice(0, 6);
+
+  function moveSlide(direction: number) {
+    setActiveSlide((current) =>
+      featuredCourses.length
+        ? (current + direction + featuredCourses.length) % featuredCourses.length
+        : 0,
+    );
+  }
 
   return (
     <div className={styles.site}>
@@ -154,6 +192,22 @@ export default function LandingPage() {
                   <span>Subjects</span>
                 </div>
               </div>
+
+              <label className={styles.noteField}>
+                <span>QUICK STUDY NOTE</span>
+                <textarea
+                  value={note}
+                  maxLength={500}
+                  disabled={!noteLoaded}
+                  onChange={(event) => updateNote(event.target.value)}
+                  placeholder="Save a thought or a topic to revisit…"
+                  aria-describedby="study-note-status"
+                />
+                <small id="study-note-status" role="status">
+                  {!noteLoaded ? "Loading your note…" : noteSaveError ? "Unable to save on this device" : "Saved on this device"}
+                  <span>{note.length}/500</span>
+                </small>
+              </label>
             </div>
 
             <div className={styles.heroVisual}>
@@ -165,19 +219,55 @@ export default function LandingPage() {
                   </div>
                   <Link href="/courses" aria-label="Open all courses"><ArrowRight size={18} /></Link>
                 </div>
-                {featuredCourses.length > 0 ? (
-                  <div className={styles.previewCourses}>
-                    {featuredCourses.slice(0, 3).map((course, index) => (
-                      <Link href={`/courses/${course.id}`} className={styles.previewCourse} key={course.id}>
-                        <span className={styles.previewIndex}>0{index + 1}</span>
+                {activeCourse ? (
+                  <>
+                    <div className={styles.previewCourses}>
+                      <Link
+                        href={`/courses/${activeCourse.id}`}
+                        className={styles.previewCourse}
+                        key={activeCourse.id}
+                        aria-roledescription="slide"
+                        aria-label={`${activeSlide + 1} of ${featuredCourses.length}`}
+                      >
+                        <span className={styles.previewIndex}>0{activeSlide + 1}</span>
                         <span className={styles.previewCourseTitle}>
-                          <strong>{course.title}</strong>
-                          <small>{course.subject} · {course.level}</small>
+                          <strong>{activeCourse.title}</strong>
+                          <small>{activeCourse.subject} · {activeCourse.level}</small>
                         </span>
                         <ArrowRight size={15} />
                       </Link>
-                    ))}
-                  </div>
+                    </div>
+                    {featuredCourses.length > 1 && (
+                      <div className={styles.sliderControls} aria-label="Featured courses">
+                        <button
+                          type="button"
+                          onClick={() => moveSlide(-1)}
+                          aria-label="Previous featured course"
+                        >
+                          <ChevronLeft size={16} />
+                        </button>
+                        <div>
+                          {featuredCourses.map((course, index) => (
+                            <button
+                              type="button"
+                              key={course.id}
+                              className={index === activeSlide ? styles.activeDot : ""}
+                              onClick={() => setActiveSlide(index)}
+                              aria-label={`Show ${course.title}`}
+                              aria-current={index === activeSlide ? "true" : undefined}
+                            />
+                          ))}
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => moveSlide(1)}
+                          aria-label="Next featured course"
+                        >
+                          <ChevronRight size={16} />
+                        </button>
+                      </div>
+                    )}
+                  </>
                 ) : (
                   <p className={styles.previewEmpty}>
                     {loadState === "loading" ? "Loading courses…" : loadState === "error" ? "Course list unavailable." : "No courses published."}
@@ -209,9 +299,16 @@ export default function LandingPage() {
           {loadState === "error" && (
             <div className={styles.stateCard}>
               <div className={styles.stateIcon}><RefreshCw size={24} /></div>
-              <h3>We couldn't load the courses</h3>
+              <h3>We couldn&apos;t load the courses</h3>
               <p>There was a problem connecting to the course library. Please try again.</p>
-              <button type="button" onClick={() => setReload((value) => value + 1)} className={styles.retryButton}>
+              <button
+                type="button"
+                onClick={() => {
+                  setLoadState("loading");
+                  setReload((value) => value + 1);
+                }}
+                className={styles.retryButton}
+              >
                 <RefreshCw size={15} /> Try again
               </button>
             </div>

@@ -116,6 +116,112 @@
   .footer { padding: 13px 15px 18px; }
 }
 
+@media (max-width: 520px) {
+  .loginPage {
+    min-height: 100svh;
+    background:
+      radial-gradient(circle at 88% 2%, rgba(181, 220, 189, 0.3), transparent 30%),
+      linear-gradient(155deg, #15583b, #24734d 48%, #edf4ee 48.2%);
+  }
+
+  .loginPage .header {
+    min-height: 66px;
+    border-bottom: 0;
+    background: transparent;
+  }
+
+  .loginPage .brand,
+  .loginPage .backLink {
+    color: #fff;
+  }
+
+  .loginPage .authLayout {
+    width: min(440px, calc(100% - 28px));
+    margin: 22px auto 28px;
+    overflow: hidden;
+    border: 0;
+    border-radius: 26px;
+    background: #fff;
+    box-shadow: 0 18px 48px rgba(11, 48, 30, 0.2);
+  }
+
+  .loginPage .formPanel {
+    padding: 30px 24px 28px;
+  }
+
+  .loginPage .eyebrow {
+    color: #397c55;
+    letter-spacing: 1.3px;
+  }
+
+  .loginPage .formPanel h1 {
+    font-family: var(--font-geist-sans), "Trebuchet MS", sans-serif;
+    font-size: 28px;
+    font-weight: 720;
+    letter-spacing: -0.8px;
+  }
+
+  .loginPage .intro {
+    margin: 9px 0 23px;
+    font-size: 13px;
+  }
+
+  .loginPage .form {
+    gap: 16px;
+  }
+
+  .loginPage .inputWrap {
+    min-height: 54px;
+    gap: 12px;
+    padding: 0 15px;
+    border-color: #dce7de;
+    border-radius: 15px;
+    background: #f8faf8;
+  }
+
+  .loginPage .inputWrap:focus-within {
+    border-color: #4a9665;
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(74, 150, 101, 0.12);
+  }
+
+  .loginPage .inputWrap input {
+    font-size: 15px;
+  }
+
+  .loginPage .submitButton {
+    min-height: 54px;
+    margin-top: 4px;
+    border-radius: 16px;
+    font-size: 14px;
+    font-weight: 700;
+    box-shadow: 0 7px 15px rgba(33, 100, 72, 0.18);
+  }
+
+  .loginPage .sidePanel {
+    display: none;
+  }
+
+  .loginPage .switchMode {
+    margin-top: 21px;
+    text-align: center;
+  }
+
+  .loginPage .privacyNote {
+    margin-top: 21px;
+    text-align: center;
+  }
+
+  .loginPage .footer {
+    border-top: 0;
+    color: #d7e8da;
+  }
+
+  .loginPage .footer span:first-child {
+    color: #fff;
+  }
+}
+
 @media (max-width: 380px) {
   .brand { font-size: 18px; }
   .formPanel { padding-right: 16px; padding-left: 16px; }

@@ -10,7 +10,7 @@
   --line: #e1e9e3;
 
   min-height: 100vh;
-  background: var(--cream);
+  background: #edf4ee;
   color: var(--ink);
 }
 
@@ -106,8 +106,9 @@
 .hero {
   overflow: hidden;
   background:
-    radial-gradient(circle at 85% 20%, rgba(190, 218, 201, 0.7), transparent 30%),
-    linear-gradient(135deg, #edf5ef 0%, #f8faf7 62%, #edf4ef 100%);
+    radial-gradient(circle at 85% 20%, rgba(133, 177, 133, 0.28), transparent 30%),
+    linear-gradient(135deg, #104a34 0%, #176b4a 62%, #205d3e 100%);
+  color: #fff;
 }
 
 .heroContent {
@@ -135,14 +136,14 @@
 }
 
 .hero h1 em {
-  color: var(--green);
+  color: #c9e6bf;
   font-style: italic;
 }
 
 .heroCopy > p {
   max-width: 590px;
   margin: 25px 0 0;
-  color: #5d6c64;
+  color: #d3e3d6;
   font-size: 17px;
   line-height: 1.7;
 }
@@ -183,7 +184,7 @@
   display: inline-flex;
   align-items: center;
   gap: 9px;
-  color: #3d5f4c;
+  color: #e2eee4;
   font-size: 12px;
   font-weight: 700;
   text-decoration: none;
@@ -203,16 +204,68 @@
 }
 
 .heroStats strong {
-  color: #1b4935;
+  color: #fff;
   font-family: Georgia, "Times New Roman", serif;
   font-size: 20px;
   font-weight: 600;
 }
 
 .heroStats span {
-  color: #718078;
+  color: #c4d9c8;
   font-size: 10px;
   font-weight: 600;
+}
+
+.noteField {
+  display: grid;
+  max-width: 470px;
+  gap: 8px;
+  margin-top: 29px;
+  padding: 14px 15px 11px;
+  border: 1px solid rgba(224, 240, 222, 0.25);
+  border-radius: 12px;
+  background: rgba(5, 47, 31, 0.28);
+}
+
+.noteField > span {
+  color: #c7dec9;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.noteField textarea {
+  width: 100%;
+  min-height: 54px;
+  resize: vertical;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: #fff;
+  font: inherit;
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.noteField textarea::placeholder {
+  color: #b7cdbb;
+}
+
+.noteField:focus-within {
+  border-color: rgba(224, 240, 222, 0.6);
+}
+
+.noteField textarea:focus-visible {
+  outline: 2px solid #c9e6bf;
+  outline-offset: 3px;
+}
+
+.noteField small {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  color: #b7cdbb;
+  font-size: 9px;
 }
 
 .heroVisual {
@@ -328,6 +381,67 @@
   padding: 26px 24px;
   color: var(--muted);
   font-size: 13px;
+}
+
+.sliderControls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px 17px;
+}
+
+.sliderControls > button {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  border: 1px solid #e0e9e1;
+  border-radius: 50%;
+  background: #fff;
+  color: #426d50;
+  transition: background 160ms ease, transform 160ms ease;
+}
+
+.sliderControls > button:hover {
+  background: #edf6ef;
+  transform: translateY(-1px);
+}
+
+.sliderControls > div {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.sliderControls > div button {
+  width: 7px;
+  height: 7px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: #cbd9ce;
+  transition: width 180ms ease, background 180ms ease;
+}
+
+.sliderControls > div button.activeDot {
+  width: 19px;
+  border-radius: 8px;
+  background: var(--green);
+}
+
+.previewCourse {
+  animation: preview-slide-in 240ms ease both;
+}
+
+@keyframes preview-slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 /* SECTIONS */
@@ -812,6 +926,10 @@
     font-size: 15px;
   }
 
+  .noteField {
+    margin-top: 25px;
+  }
+
   .heroStats {
     gap: 22px;
     margin-top: 30px;
@@ -914,5 +1032,9 @@
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+
+  .previewCourse {
+    animation: none;
   }
 }
