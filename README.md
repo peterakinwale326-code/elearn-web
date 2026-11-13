@@ -47,6 +47,10 @@ Generate a session secret with `node -e "console.log(require('node:crypto').rand
 
 Run `npm run db:audit-curriculum` for a read-only check of stored lesson text for known filler patterns, empty lessons, and short content. `npm run curriculum:sync` dry-runs curriculum-to-database matching; add `-- --apply` only after reviewing the match report. The sync skips lessons with fewer than 100 words, fewer than two paragraphs, less than 240 characters, or known generic filler and leaves those database rows unchanged.
 
+Run `npm run assessments:audit` to validate the active `data/curriculum.json` question structures, check for known generic filler, and ensure question stems are unique within each test or exam.
+
+The native Flutter client is maintained as a separate project and connects to the API documented below.
+
 Before enabling registration, run `npm run db:migrate-auth`. This idempotent migration adds `password_hash` and `email_verified_at` to `users` and creates or updates `email_2fa_challenges`. Existing accounts are treated as email-verified; new signups remain unverified until they submit the emailed code. The Node service hashes new passwords with bcrypt and uses the existing unique email index.
 
 Students can use `/profile` to view their enrolled courses, update their name and email, change their password, and upload a profile picture. The API adds `users.profile_image_url` automatically on startup when it is missing. Course and account navigation link to `/assistant`, a separate study space that does not receive lesson or assessment content; it is intended for explanations and practice rather than answers to active tests or exams.

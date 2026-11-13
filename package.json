@@ -14,7 +14,8 @@
     "curriculum:sync": "node --env-file=.env.local scripts/sync-curriculum-content.mjs",
     "media:download": "node scripts/download-course-images.mjs",
     "lesson-art:generate": "node scripts/generate-lesson-diagrams.mjs",
-    "generate-data": "node scripts/generate-data.mjs"
+    "generate-data": "node scripts/generate-data.mjs",
+    "assessments:audit": "node scripts/audit-assessments.mjs"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
