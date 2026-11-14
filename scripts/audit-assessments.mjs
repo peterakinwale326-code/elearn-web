@@ -33,7 +33,6 @@ const normalize = (value) =>
     .trim();
 
 const issues = [];
-const allStems = new Map();
 const testExamStems = new Map();
 let assessmentCount = 0;
 let questionCount = 0;
@@ -96,10 +95,6 @@ for (const course of courses) {
       if (seen.has(key)) issues.push(`${location}: duplicate stem within assessment`);
       seen.add(key);
 
-      const occurrences = allStems.get(key) ?? new Set();
-      occurrences.add(`${course.title} / ${assessment.title}`);
-      allStems.set(key, occurrences);
-
       if (assessment.isTestOrExam) {
         const testExamOccurrences = testExamStems.get(key) ?? new Set();
         testExamOccurrences.add(`${course.title} / ${assessment.title}`);
@@ -117,6 +112,9 @@ console.log(
   `Audited ${questionCount} questions across ${assessmentCount} assessments in ${courses.length} courses.`,
 );
 console.log(`Repeated stems across module tests and final exams: ${crossAssessmentDuplicates}.`);
+if (crossAssessmentDuplicates > 0) {
+  console.warn("Review repeated stems across separate tests and exams before claiming global question uniqueness.");
+}
 
 if (issues.length) {
   console.error(`Assessment audit failed with ${issues.length} issue(s):`);
@@ -124,5 +122,5 @@ if (issues.length) {
   if (issues.length > 30) console.error(`- ...and ${issues.length - 30} more`);
   process.exitCode = 1;
 } else {
-  console.log("All assessment structures are valid, filler-free, and unique within each assessment.");
+  console.log("Question formats, answer keys, filler patterns, and within-assessment uniqueness passed.");
 }

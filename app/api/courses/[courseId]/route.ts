@@ -41,7 +41,7 @@ type SourceCourse = {
   finalExam?: SourceAssessment;
 };
 
-type CoursePayload = Record<string, any>;
+type CoursePayload = Record<string, unknown>;
 
 let sourceCoursesPromise: Promise<SourceCourse[]> | undefined;
 
@@ -141,7 +141,8 @@ async function loadSourceCourses() {
 async function applySourceLessons(payload: CoursePayload) {
   const course = (payload.course ?? payload.data ?? payload) as CoursePayload;
   const title = String(course.title ?? course.name ?? "");
-  course.subject = getCourseSubject(title, course.subject);
+  const existingSubject = typeof course.subject === "string" ? course.subject : undefined;
+  course.subject = getCourseSubject(title, existingSubject);
   const level = normalizeTitle(course.level ?? course.grade);
   const sourceCourses = await loadSourceCourses();
   const sourceCourse = sourceCourses.find((candidate) => {
@@ -153,25 +154,27 @@ async function applySourceLessons(payload: CoursePayload) {
   if (!sourceCourse) return payload;
 
   const modules = Array.isArray(course.modules) ? course.modules as CoursePayload[] : [];
-  for (const module of modules) {
-    const moduleTitle = normalizeTitle(module.title ?? module.name);
+  for (const moduleData of modules) {
+    const moduleTitle = normalizeTitle(moduleData.title ?? moduleData.name);
     const sourceModule = sourceCourse.modules?.find(
       (candidate) => normalizeTitle(candidate.title) === moduleTitle,
     );
     if (!sourceModule) continue;
 
     if (sourceModule.test) {
-      const currentAssessment = (module.assessment ?? module.test) as CoursePayload | undefined;
+      const currentAssessment = (moduleData.assessment ?? moduleData.test) as CoursePayload | undefined;
       const assessment = mergeSourceAssessment(
         currentAssessment,
         sourceModule.test,
         "module_test",
       );
-      module.test = assessment;
-      if (module.assessment) module.assessment = assessment;
+      moduleData.test = assessment;
+      if (moduleData.assessment) moduleData.assessment = assessment;
     }
 
-    const lessons = Array.isArray(module.lessons) ? module.lessons as CoursePayload[] : [];
+    const lessons = Array.isArray(moduleData.lessons)
+      ? moduleData.lessons as CoursePayload[]
+      : [];
     for (const lesson of lessons) {
       const lessonTitle = normalizeTitle(lesson.title ?? lesson.name);
       const sourceLesson = sourceModule.lessons?.find(
