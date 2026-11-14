@@ -34,6 +34,7 @@ const normalize = (value) =>
 
 const issues = [];
 const allStems = new Map();
+const testExamStems = new Map();
 let assessmentCount = 0;
 let questionCount = 0;
 
@@ -41,13 +42,21 @@ for (const course of courses) {
   const assessments = [
     ...(course.modules ?? []).flatMap((module) =>
       module.test?.questions
-        ? [{ title: module.test.title ?? module.title, questions: module.test.questions }]
+        ? [{ title: module.test.title ?? module.title, questions: module.test.questions, isTestOrExam: true }]
         : [],
+    ),
+    ...(course.modules ?? []).flatMap((module) =>
+      (module.lessons ?? []).flatMap((lesson) =>
+        lesson.quiz?.length
+          ? [{ title: `${lesson.title} quiz`, questions: lesson.quiz, isTestOrExam: false }]
+          : [],
+      ),
     ),
     ...(course.finalExam?.questions
       ? [{
           title: course.finalExam.title ?? `${course.title} final exam`,
           questions: course.finalExam.questions,
+          isTestOrExam: true,
         }]
       : []),
   ];
@@ -90,18 +99,24 @@ for (const course of courses) {
       const occurrences = allStems.get(key) ?? new Set();
       occurrences.add(`${course.title} / ${assessment.title}`);
       allStems.set(key, occurrences);
+
+      if (assessment.isTestOrExam) {
+        const testExamOccurrences = testExamStems.get(key) ?? new Set();
+        testExamOccurrences.add(`${course.title} / ${assessment.title}`);
+        testExamStems.set(key, testExamOccurrences);
+      }
     }
   }
 }
 
-const crossAssessmentDuplicates = [...allStems.values()].filter(
+const crossAssessmentDuplicates = [...testExamStems.values()].filter(
   (assessments) => assessments.size > 1,
 ).length;
 
 console.log(
   `Audited ${questionCount} questions across ${assessmentCount} assessments in ${courses.length} courses.`,
 );
-console.log(`Repeated stems across different assessments: ${crossAssessmentDuplicates}.`);
+console.log(`Repeated stems across module tests and final exams: ${crossAssessmentDuplicates}.`);
 
 if (issues.length) {
   console.error(`Assessment audit failed with ${issues.length} issue(s):`);

@@ -10,17 +10,35 @@ type SourceLesson = {
   learningObjective?: string;
   summary?: string;
   recap?: string;
+  quiz?: SourceQuestion[];
+};
+
+type SourceQuestion = {
+  id?: string;
+  question: string;
+  options: string[];
+  answer: number;
+  explanation?: string;
+};
+
+type SourceAssessment = {
+  id?: string;
+  title?: string;
+  instructions?: string;
+  questions: SourceQuestion[];
 };
 
 type SourceModule = {
   title?: string;
   lessons?: SourceLesson[];
+  test?: SourceAssessment;
 };
 
 type SourceCourse = {
   title?: string;
   level?: string;
   modules?: SourceModule[];
+  finalExam?: SourceAssessment;
 };
 
 type CoursePayload = Record<string, any>;
@@ -40,6 +58,73 @@ function sourceContent(content: SourceLesson["content"]) {
   return Array.isArray(content)
     ? content.map((paragraph) => String(paragraph).trim()).filter(Boolean).join("\n\n")
     : String(content ?? "").trim();
+}
+
+function renderLessonQuiz(questions: SourceQuestion[]) {
+  if (!questions.length) return "";
+  return [
+    "## Lesson Quiz",
+    "",
+    ...questions.flatMap((question, index) => [
+      `### ${index + 1}. ${question.question}`,
+      ...question.options.map((option, optionIndex) =>
+        `${String.fromCharCode(65 + optionIndex)}. ${option}`,
+      ),
+      `Answer: ${String.fromCharCode(65 + question.answer)}`,
+      ...(question.explanation ? [`Explanation: ${question.explanation}`] : []),
+      "",
+    ]),
+  ].join("\n");
+}
+
+function mergeSourceAssessment(
+  current: CoursePayload | undefined,
+  source: SourceAssessment,
+  type: "module_test" | "final_exam",
+) {
+  if (!Array.isArray(source.questions)) {
+    throw new Error(`The source ${type} does not contain a question list.`);
+  }
+
+  const currentQuestions = Array.isArray(current?.questions)
+    ? current.questions as CoursePayload[]
+    : [];
+  const questions = source.questions.map((question, index) => {
+    if (
+      typeof question.question !== "string" ||
+      !Array.isArray(question.options) ||
+      question.options.length !== 4 ||
+      !Number.isInteger(question.answer) ||
+      question.answer < 0 ||
+      question.answer >= question.options.length
+    ) {
+      throw new Error(`The source ${type} contains an invalid question at position ${index + 1}.`);
+    }
+
+    const currentQuestion = currentQuestions[index] ?? {};
+    return {
+      ...currentQuestion,
+      id: currentQuestion.id ?? question.id ?? `${type}-${index + 1}`,
+      question: question.question,
+      questionText: question.question,
+      prompt: question.question,
+      answer: String.fromCharCode(65 + question.answer),
+      explanation: question.explanation ?? currentQuestion.explanation ?? null,
+      options: question.options.map((text, optionIndex) => ({
+        key: String.fromCharCode(65 + optionIndex),
+        text,
+        isCorrect: optionIndex === question.answer,
+      })),
+    };
+  });
+
+  return {
+    ...(current ?? {}),
+    ...source,
+    id: current?.id ?? source.id,
+    type: current?.type ?? type,
+    questions,
+  };
 }
 
 async function loadSourceCourses() {
@@ -75,6 +160,17 @@ async function applySourceLessons(payload: CoursePayload) {
     );
     if (!sourceModule) continue;
 
+    if (sourceModule.test) {
+      const currentAssessment = (module.assessment ?? module.test) as CoursePayload | undefined;
+      const assessment = mergeSourceAssessment(
+        currentAssessment,
+        sourceModule.test,
+        "module_test",
+      );
+      module.test = assessment;
+      if (module.assessment) module.assessment = assessment;
+    }
+
     const lessons = Array.isArray(module.lessons) ? module.lessons as CoursePayload[] : [];
     for (const lesson of lessons) {
       const lessonTitle = normalizeTitle(lesson.title ?? lesson.name);
@@ -83,12 +179,32 @@ async function applySourceLessons(payload: CoursePayload) {
       );
       if (!sourceLesson) continue;
 
-      const content = sourceContent(sourceLesson.content);
-      lesson.content = content;
+      const content = sourceContent(sourceLesson.content)
+        .replace(/\n{0,2}#{1,3}\s*Lesson Quiz[\s\S]*$/i, "")
+        .trim();
+      const lessonQuiz = sourceLesson.quiz ? renderLessonQuiz(sourceLesson.quiz) : "";
+      lesson.content = [content, lessonQuiz].filter(Boolean).join("\n\n");
       lesson.objective = sourceLesson.objective || sourceLesson.learningObjective ||
         `Explain ${sourceLesson.title}, identify its key ideas, and apply them to an accurate example.`;
       lesson.summary = sourceLesson.summary || sourceLesson.recap || content.split(/\n+/)[0] || "";
     }
+  }
+
+  if (sourceCourse.finalExam) {
+    const currentExam = (
+      course.finalExam ??
+      course.exam ??
+      (Array.isArray(course.assessments)
+        ? course.assessments.find((assessment: CoursePayload) => assessment.type === "final_exam")
+        : undefined)
+    ) as CoursePayload | undefined;
+    const finalExam = mergeSourceAssessment(
+      currentExam,
+      sourceCourse.finalExam,
+      "final_exam",
+    );
+    course.finalExam = finalExam;
+    if (course.exam) course.exam = finalExam;
   }
 
   return payload;

@@ -48,6 +48,12 @@
   background: #fff;
 }
 
+.loginPage .authLayout {
+  overflow: hidden;
+  border-radius: 18px;
+  box-shadow: 0 16px 42px rgba(27, 62, 42, .1);
+}
+
 .formPanel { display: flex; flex-direction: column; justify-content: center; padding: clamp(24px, 5vw, 56px); }
 .eyebrow { margin: 0 0 12px; color: #397257; font-size: 10px; font-weight: 750; letter-spacing: 1.1px; }
 .formPanel h1 { margin: 0; font-family: Georgia, "Times New Roman", serif; font-size: 34px; font-weight: 500; line-height: 1.15; }
@@ -196,6 +202,10 @@
     font-size: 14px;
     font-weight: 700;
     box-shadow: 0 7px 15px rgba(33, 100, 72, 0.18);
+  }
+
+  .loginPage .submitButton:active {
+    transform: scale(0.985);
   }
 
   .loginPage .sidePanel {

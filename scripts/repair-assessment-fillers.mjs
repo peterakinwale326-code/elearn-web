@@ -56,9 +56,20 @@ function getTopic(question) {
   const text = String(question ?? "");
   if (/why do data types matter in programming\?/i.test(text)) return "Data types";
   const patterns = [
+    /^in .+, which statement best explains why (.+) matters in real learning\?$/i,
+    /^in .+, which example best shows the idea of (.+)\?$/i,
+    /^in .+, what is the best way to respond when a learner is unsure about (.+)\?$/i,
+    /^which statement best explains (.+?) in .+\?$/i,
+    /^what is the strongest way to improve an answer about (.+)\?$/i,
     /which statement best describes (.+)\?$/i,
     /which example provides the strongest evidence that a learner understands (.+)\?$/i,
     /for the lesson on (.+?):/i,
+    /when applying (.+) on a farm, what should be considered first\?/i,
+    /why should safety be included in work involving (.+)\?/i,
+    /which statement gives the most useful interpretation of (.+)\?/i,
+    /in a real computer task involving (.+), what should be traced\?/i,
+    /which part of a computer system is most directly involved when applying (.+)\?/i,
+    /which statement best explains why (.+) matters in real learning\?/i,
   ];
   for (const pattern of patterns) {
     const match = text.match(pattern);
@@ -1108,6 +1119,27 @@ function sourceQuestion(lessons, topic, usedQuestions) {
   };
 }
 
+function sourceAssessmentQuestion(questions, usedQuestions) {
+  const question = questions?.find(
+    (item) =>
+      item &&
+      typeof item.question === "string" &&
+      Array.isArray(item.options) &&
+      item.options.length === 4 &&
+      Number.isInteger(item.answer) &&
+      item.answer >= 0 &&
+      item.answer < item.options.length &&
+      !isGeneric(item.question) &&
+      !usedQuestions.has(normalize(item.question)),
+  );
+  if (!question) return null;
+  return {
+    question: question.question,
+    options: question.options,
+    answer: question.answer,
+  };
+}
+
 function generatedQuestionForTopic(course, topic, variant, isFinal) {
   return (
     programmingQuestion(course.title, topic, variant) ??
@@ -1115,6 +1147,62 @@ function generatedQuestionForTopic(course, topic, variant, isFinal) {
     authoredAssessmentQuestion(course, topic, variant) ??
     biologyQuestion(course, topic, isFinal)
   );
+}
+
+function lessonQuizAlternativeQuestion(course, lessonTitle) {
+  const lesson = normalize(lessonTitle);
+  const language = course.title;
+  const alternatives = {
+    "HTML:links": {
+      question: "Which attribute value opens an HTML link in a new browser tab?",
+      options: ['target="_blank"', 'href="_blank"', 'rel="tab"', 'src="_blank"'],
+      answer: 0,
+    },
+    "HTML:lists": {
+      question: "Which HTML element represents one item inside an ordered or unordered list?",
+      options: ["<li>", "<ol>", "<ul>", "<dl>"],
+      answer: 0,
+    },
+    "HTML:forms": {
+      question: "Which HTML attribute prevents a form from being submitted with an empty required field?",
+      options: ["required", "multiple", "download", "autofocus"],
+      answer: 0,
+    },
+    "HTML:forms and validation": {
+      question: "Which HTML attribute checks a text field against a pattern such as a course-code format?",
+      options: ["pattern", "target", "colspan", "poster"],
+      answer: 0,
+    },
+    "HTML:accessible forms": {
+      question: "Which attribute links a form control to separate hint or error text for assistive technology?",
+      options: ["aria-describedby", "aria-hidden", "download", "accept"],
+      answer: 0,
+    },
+    "JavaScript:scope": {
+      question: "After a block containing `let score = 8` ends, where can `score` still be accessed?",
+      options: [
+        "Only inside the block where it was declared",
+        "From every function in the application",
+        "Only from a database query",
+        "Only after it is redeclared as a class",
+      ],
+      answer: 0,
+    },
+  };
+  const known = alternatives[`${language}:${lesson}`];
+  if (known) return known;
+
+  if (
+    ["Python", "Java", "PHP", "C++", "COBOL", "C#", "Ruby", "Dart"].includes(language) &&
+    /string/.test(lesson)
+  ) {
+    return {
+      question: `Which ${language} literal stores the text "ready" as a string?`,
+      options: ['"ready"', "ready", "false", "24"],
+      answer: 0,
+    };
+  }
+  return null;
 }
 
 let updated = 0;
@@ -1125,11 +1213,34 @@ for (const course of curriculum.courses ?? []) {
   const assessments = [
     ...(course.modules ?? []).flatMap((module) =>
       module.test?.questions
-        ? [{ title: module.test.title ?? module.title, questions: module.test.questions, lessons: module.lessons ?? [] }]
+        ? [{
+            title: module.test.title ?? module.title,
+            questions: module.test.questions,
+            lessons: module.lessons ?? [],
+            moduleTitle: module.title,
+          }]
         : [],
     ),
+    ...(course.modules ?? []).flatMap((module) =>
+      (module.lessons ?? []).flatMap((lesson) =>
+        lesson.quiz?.length
+          ? [{
+              title: `${lesson.title} quiz`,
+              questions: lesson.quiz,
+              lessons: [lesson],
+              moduleTitle: module.title,
+              questionSources: module.test?.questions ?? [],
+            }]
+          : [],
+      ),
+    ),
     ...(course.finalExam?.questions
-      ? [{ title: course.finalExam.title ?? `${course.title} final exam`, questions: course.finalExam.questions, lessons: courseLessons }]
+      ? [{
+          title: course.finalExam.title ?? `${course.title} final exam`,
+          questions: course.finalExam.questions,
+          lessons: courseLessons,
+          moduleTitle: null,
+        }]
       : []),
   ];
 
@@ -1198,6 +1309,7 @@ for (const course of curriculum.courses ?? []) {
       }
       replacement ??=
         sourceQuestion(assessment.lessons, topic, usedQuestions) ??
+        sourceAssessmentQuestion(assessment.questionSources, usedQuestions) ??
         sourceQuestion(courseLessons, topic, usedQuestions) ??
         socializationQuestion(topic, usedQuestions);
 
@@ -1231,6 +1343,21 @@ for (const course of curriculum.courses ?? []) {
       const currentQuestion = normalize(item.question);
       if (!seenQuestions.has(currentQuestion)) {
         seenQuestions.add(currentQuestion);
+        continue;
+      }
+
+      const lessonQuizAlternative = assessment.questions === assessment.lessons?.[0]?.quiz
+        ? lessonQuizAlternativeQuestion(course, assessment.lessons[0].title)
+        : null;
+      if (
+        lessonQuizAlternative &&
+        !seenQuestions.has(normalize(lessonQuizAlternative.question))
+      ) {
+        item.question = lessonQuizAlternative.question;
+        item.options = lessonQuizAlternative.options;
+        item.answer = lessonQuizAlternative.answer;
+        seenQuestions.add(normalize(item.question));
+        adjusted += 1;
         continue;
       }
 
@@ -1299,21 +1426,18 @@ for (const course of curriculum.courses ?? []) {
       }
     }
   }
+
 }
 
 if (unresolved.length > 0) {
   console.error(
-    `Resolved ${updated} generic assessment question(s); ${unresolved.length} need authored questions or additional source material.`,
+    `Resolved ${updated} generic question(s); ${unresolved.length} need authored questions or additional source material.`,
   );
-  if (applyChanges && updated + adjusted > 0) {
-    await writeFile(curriculumPath, `${JSON.stringify(curriculum, null, 2)}\n`, "utf8");
-    console.error(`Saved ${updated} replacements and ${adjusted} option refinements; unresolved items remain.`);
-  }
   for (const question of unresolved.slice(0, 20)) console.error(`- ${question}`);
   process.exitCode = 1;
 } else if (applyChanges && updated + adjusted > 0) {
   await writeFile(curriculumPath, `${JSON.stringify(curriculum, null, 2)}\n`, "utf8");
-  console.log(`Updated ${updated} generic assessment question(s) and refined ${adjusted} generated option set(s).`);
+  console.log(`Updated ${updated} generic question(s) and refined ${adjusted} option set(s).`);
 } else {
-  console.log(`Ready to update ${updated} generic assessment question(s) and refine ${adjusted} generated option set(s). Re-run with --apply to write.`);
+  console.log(`Ready to update ${updated} generic question(s) and refine ${adjusted} option set(s). Re-run with --apply to write.`);
 }
