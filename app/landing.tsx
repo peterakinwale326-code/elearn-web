@@ -19,6 +19,7 @@ import {
   Music2,
   Palette,
   RefreshCw,
+  Sparkles,
   type LucideIcon,
 } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -159,6 +160,10 @@ export default function LandingPage() {
         <section className={styles.hero}>
           <div className={styles.heroContent}>
             <div className={styles.heroCopy}>
+              <div className={styles.heroEyebrow}>
+                <Sparkles size={14} aria-hidden="true" />
+                <span>LEARNING, AT YOUR PACE</span>
+              </div>
               <h1>
                 Secondary school
                 <br />
@@ -211,6 +216,7 @@ export default function LandingPage() {
             </div>
 
             <div className={styles.heroVisual}>
+              <div className={styles.heroHalo} aria-hidden="true" />
               <div className={styles.libraryPreview}>
                 <div className={styles.previewHeader}>
                   <div>
@@ -273,6 +279,13 @@ export default function LandingPage() {
                     {loadState === "loading" ? "Loading courses…" : loadState === "error" ? "Course list unavailable." : "No courses published."}
                   </p>
                 )}
+              </div>
+              <div className={styles.heroAnnotation}>
+                <span className={styles.annotationIcon}><BookOpen size={16} /></span>
+                <span>
+                  <small>YOUR NEXT STEP</small>
+                  <strong>One lesson at a time</strong>
+                </span>
               </div>
             </div>
           </div>
