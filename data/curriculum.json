@@ -14,7 +14,7 @@
             {
               "id": "jss1-eng-m1-l1",
               "title": "Letters and Sounds",
-              "content": "## Letters and Sounds\n\nIn English Studies, letters and sounds is a central idea because it links a definition to the way students observe, reason, and solve problems. A strong lesson does not treat the topic as a single label; it explains what the concept means, which features matter, and how it appears in practice. This is especially important in a subject where evidence, vocabulary, and careful thinking must work together.\n\nThe first step in understanding letters and sounds is to identify its main features and its relevance to the broader subject. Learners should be able to describe the idea in clear language, recognise it in an example, and explain why it matters in a real or classroom context. When the concept is connected to a concrete situation, it becomes easier to remember and to apply in different tasks.\n\nA good explanation also distinguishes the central idea from nearby ideas that may look similar. This helps students avoid confusion and compare similar examples with accuracy. In English Studies, the best answers usually show a logical sequence: define the term, give a relevant example, connect it to evidence, and explain the result. This practice builds reliable understanding rather than shallow recall.\n\nStudents should also keep the method of inquiry in view. To study letters and sounds well, they need to explain the purpose of the concept, identify the conditions under which it applies, and describe what changes if those conditions change. A learner who can do this is more likely to answer written questions well, contribute to discussion, and solve practical tasks with confidence.\n\nIn summary, letters and sounds deserves careful study because it strengthens explanation, application, and judgment. A learner who understands the idea can connect it to evidence, explain it in ordinary language, and use it in new situations. That is the foundation of rich textbook learning in English Studies.",
+              "content": "## Letters and Sounds\n\nThe alphabet has 26 letters, but English speech uses more sounds than letters. A letter is a written symbol; a speech sound is what the mouth produces and the ear hears. A **phoneme** is a sound that can distinguish one word from another. A **grapheme** is a letter or group of letters used to represent a sound. The spelling system is not a one-letter, one-sound code: the same letter can represent different sounds, and several letters can represent one sound.\n\nWork through “ship”. First, count its written letters: s, h, i, p gives four. Next, say the word slowly: /ʃ/ /ɪ/ /p/. There are three speech sounds because “sh” works together as one consonant sound. In “box”, there are three letters but four sounds: /b/ /ɒ/ /k/ /s/. The letter x represents the two sounds /k/ and /s/ at the end.\n\n**Worked example 1.** Count the sounds in “thin”. Say it without adding a vowel between the consonants. “Th” represents /θ/, “i” represents /ɪ/, and “n” represents /n/. The word has four letters and three sounds: /θ/ /ɪ/ /n/. The first sound is not /t/ followed by /h/.\n\n**Worked example 2.** Compare “make” and “made”. Each word has four letters. In “make”, the final e is silent and helps the a represent /eɪ/: /m/ /eɪ/ /k/. In “made”, the same spelling pattern gives /m/ /eɪ/ /d/. Count what you hear, not each printed letter.\n\nWhen checking a sound count, pronounce the word at a natural pace, then slow it down without inserting extra sounds. English accents differ; the sound model in class is a guide, not a reason to ridicule a speaker. A learner may write the letters above a word and put one slash-marked sound under each sound heard. This makes silent letters and digraphs easier to notice.",
               "quiz": [
                 {
                   "id": "jss1-eng-m1-l1-final-q1",
@@ -45,23 +45,25 @@
                 "secondaryUrl": "https://nerdc.org.ng/CurriculumStructure.aspx",
                 "role": "primary learning source"
               },
-              "objective": "Explain letters and sounds clearly, connect it to a real example, and justify the reasoning in english studies.",
-              "summary": "## Letters and Sounds In English Studies, letters and sounds is a central idea because it links a definition to the way students observe, reason, and solve problems. A strong lesson does not treat the topic as a single label; it explains what the concept means, which features matter, and how it appears in practice. Thi",
-              "activity": "Use a relevant classroom or real-life example to explain letters and sounds and show why the idea matters.",
+              "objective": "Distinguish written letters from speech sounds and count the sounds in familiar words.",
+              "summary": "English spelling uses 26 letters to represent a larger set of speech sounds, and a letter does not always represent one sound.",
+              "activity": "Sort a short list of familiar words by letter count and sound count, then explain one mismatch.",
               "commonMistakes": [
-                "Do not give a definition without the evidence or an example that shows how the idea is used."
+                "Counting letters as if each always represented one sound.",
+                "Treating the two letters in a digraph as two separate sounds."
               ],
               "keyTerms": [
-                "Letters and Sounds",
-                "example",
-                "evidence",
-                "reasoning"
+                "letter",
+                "speech sound",
+                "phoneme",
+                "grapheme",
+                "digraph"
               ]
             },
             {
               "id": "jss1-eng-m1-l2",
               "title": "The Vowels /i:/ and /ɪ/",
-              "content": "## The Vowels /i:/ and /ɪ/\n\nIn English Studies, the vowels /i:/ and /ɪ/ is a central idea because it links a definition to the way students observe, reason, and solve problems. A strong lesson does not treat the topic as a single label; it explains what the concept means, which features matter, and how it appears in practice. This is especially important in a subject where evidence, vocabulary, and careful thinking must work together.\n\nThe first step in understanding the vowels /i:/ and /ɪ/ is to identify its main features and its relevance to the broader subject. Learners should be able to describe the idea in clear language, recognise it in an example, and explain why it matters in a real or classroom context. When the concept is connected to a concrete situation, it becomes easier to remember and to apply in different tasks.\n\nA good explanation also distinguishes the central idea from nearby ideas that may look similar. This helps students avoid confusion and compare similar examples with accuracy. In English Studies, the best answers usually show a logical sequence: define the term, give a relevant example, connect it to evidence, and explain the result. This practice builds reliable understanding rather than shallow recall.\n\nStudents should also keep the method of inquiry in view. To study the vowels /i:/ and /ɪ/ well, they need to explain the purpose of the concept, identify the conditions under which it applies, and describe what changes if those conditions change. A learner who can do this is more likely to answer written questions well, contribute to discussion, and solve practical tasks with confidence.\n\nIn summary, the vowels /i:/ and /ɪ/ deserves careful study because it strengthens explanation, application, and judgment. A learner who understands the idea can connect it to evidence, explain it in ordinary language, and use it in new situations. That is the foundation of rich textbook learning in English Studies.",
+              "content": "## The Vowels /i:/ and /ɪ/\n\nBoth /i:/ and /ɪ/ are made with the front of the tongue raised, but they are not the same sound. In the transcription used in this course, the colon marks a long vowel. /i:/ is heard in “see”, “seat” and “green”; /ɪ/ is heard in “sit”, “ship” and “milk”. The short vowel is not simply a shorter version of /i:/: its tongue position and quality are also different.\n\nA **minimal pair** is a pair of words that differ in one sound and have different meanings. “Sheep” /ʃi:p/ and “ship” /ʃɪp/ form a useful pair. Keep the consonants /ʃ/ and /p/ steady and change only the middle vowel. If the vowel changes, the listener may hear a different word. The same contrast appears in “leave/live” and “feel/fill”.\n\n**Worked example 1.** Identify the vowel in “team”. Say the word, then compare it with “Tim”. “Team” has /i:/, while “Tim” has /ɪ/. The beginning /t/ and ending /m/ stay the same; the vowel supplies the contrast. Write “team /i:/” and “Tim /ɪ/” to connect the sound to the spelling.\n\n**Worked example 2.** A learner reads “ship” with /i:/. To correct it, say “ship” beside “sheep”. For “sheep”, hold /i:/ briefly and keep the tongue high and forward. For “ship”, use the relaxed /ɪ/ and finish the word promptly. Check that the listener hears “ship”, not “sheep”.\n\nThe letters do not decide the vowel by themselves: “busy” has /ɪ/ in many standard models although its spelling contains u. Learn a sound with example words and practise it in a phrase, not as an isolated symbol only. Avoid exaggerating vowel length so much that the word becomes unnatural. The goal is a clear contrast, not an imitation of a particular speaker. Put five /i:/ words and five /ɪ/ words into separate columns. A partner can read them in random order while you identify the vowel without seeing the spelling.",
               "quiz": [
                 {
                   "id": "jss1-eng-m1-l2-final-q1",
@@ -92,23 +94,24 @@
                 "secondaryUrl": "https://nerdc.org.ng/CurriculumStructure.aspx",
                 "role": "primary learning source"
               },
-              "objective": "Explain the vowels /i:/ and /ɪ/ clearly, connect it to a real example, and justify the reasoning in english studies.",
-              "summary": "## The Vowels /i:/ and /ɪ/ In English Studies, the vowels /i:/ and /ɪ/ is a central idea because it links a definition to the way students observe, reason, and solve problems. A strong lesson does not treat the topic as a single label; it explains what the concept means, which features matter, and how it appears in pra",
-              "activity": "Use a relevant classroom or real-life example to explain the vowels /i:/ and /ɪ/ and show why the idea matters.",
+              "objective": "Hear, classify and pronounce the long vowel /i:/ and short vowel /ɪ/ in familiar words.",
+              "summary": "The contrast between /i:/ and /ɪ/ changes word meaning, as in “sheep” and “ship”.",
+              "activity": "Practise minimal pairs with a partner and record which vowel is heard in each word.",
               "commonMistakes": [
-                "Do not give a definition without the evidence or an example that shows how the idea is used."
+                "Using spelling alone to decide a vowel sound.",
+                "Making /i:/ longer without keeping its vowel quality distinct."
               ],
               "keyTerms": [
-                "The Vowels /i:/ and /ɪ/",
-                "example",
-                "evidence",
-                "reasoning"
+                "vowel",
+                "long vowel",
+                "short vowel",
+                "minimal pair"
               ]
             },
             {
               "id": "jss1-eng-m1-l3",
               "title": "The Vowels /e/ and /æ/",
-              "content": "## The Vowels /e/ and /æ/\n\nIn English Studies, the vowels /e/ and /æ/ is a central idea because it links a definition to the way students observe, reason, and solve problems. A strong lesson does not treat the topic as a single label; it explains what the concept means, which features matter, and how it appears in practice. This is especially important in a subject where evidence, vocabulary, and careful thinking must work together.\n\nThe first step in understanding the vowels /e/ and /æ/ is to identify its main features and its relevance to the broader subject. Learners should be able to describe the idea in clear language, recognise it in an example, and explain why it matters in a real or classroom context. When the concept is connected to a concrete situation, it becomes easier to remember and to apply in different tasks.\n\nA good explanation also distinguishes the central idea from nearby ideas that may look similar. This helps students avoid confusion and compare similar examples with accuracy. In English Studies, the best answers usually show a logical sequence: define the term, give a relevant example, connect it to evidence, and explain the result. This practice builds reliable understanding rather than shallow recall.\n\nStudents should also keep the method of inquiry in view. To study the vowels /e/ and /æ/ well, they need to explain the purpose of the concept, identify the conditions under which it applies, and describe what changes if those conditions change. A learner who can do this is more likely to answer written questions well, contribute to discussion, and solve practical tasks with confidence.\n\nIn summary, the vowels /e/ and /æ/ deserves careful study because it strengthens explanation, application, and judgment. A learner who understands the idea can connect it to evidence, explain it in ordinary language, and use it in new situations. That is the foundation of rich textbook learning in English Studies.",
+              "content": "## The Vowels /e/ and /æ/\n\nThe vowel /e/ is heard in “pen”, “bed” and “left”. The vowel /æ/ is heard in “pan”, “bad” and “cat”. Compare “pan” with “pen” carefully: the final /n/ is unchanged, so the first sound in each word is the vowel contrast. /æ/ is made with a more open mouth and a lower tongue position than /e/. The difference matters because it can change a word's meaning.\n\nPronunciation practice should begin with the mouth position, then move to words and sentences. For /e/, keep the jaw moderately open as in “get”. For /æ/, lower the jaw more as in “gap”. Do not add a glide at the end of either vowel. Accent variation affects exact vowel quality, so the useful classroom target is a consistent, intelligible contrast.\n\n**Worked example 1.** Classify “bag”. Say it slowly as /b/ /æ/ /g/. The middle sound is /æ/, as in “bad”. It is not /e/, the sound in “beg”. Because the first and last consonants remain /b/ and /g/, the vowel alone identifies the word.\n\n**Worked example 2.** Correct “I wrote the shopping list with a pan” when the intended word is “pen”. The context is writing, so the object must be a pen, not a pan. Replace /æ/ with /e/ and say “I wrote the shopping list with a pen.” Then listen once more to check that the first and final consonants remain /p/ and /n/.\n\nSpelling can mislead: “many” has the vowel /e/ in many standard pronunciations, while “cat” has /æ/. A letter's name is not necessarily its sound in a word. When learning a new word, record it under the sound you hear and use it in a short sentence. If a partner cannot distinguish a pair such as “men/man”, repeat the words at normal speed rather than shouting or stretching the vowel unnaturally.",
               "quiz": [
                 {
                   "id": "jss1-eng-m1-l3-final-q1",
@@ -139,23 +142,23 @@
                 "secondaryUrl": "https://nerdc.org.ng/CurriculumStructure.aspx",
                 "role": "primary learning source"
               },
-              "objective": "Explain the vowels /e/ and /æ/ clearly, connect it to a real example, and justify the reasoning in english studies.",
-              "summary": "## The Vowels /e/ and /æ/ In English Studies, the vowels /e/ and /æ/ is a central idea because it links a definition to the way students observe, reason, and solve problems. A strong lesson does not treat the topic as a single label; it explains what the concept means, which features matter, and how it appears in pract",
-              "activity": "Use a relevant classroom or real-life example to explain the vowels /e/ and /æ/ and show why the idea matters.",
+              "objective": "Distinguish /e/ from /æ/ by listening to and pronouncing minimal pairs.",
+              "summary": "The vowels /e/ and /æ/ differ in tongue openness and distinguish words such as “pen” and “pan”.",
+              "activity": "Read a mixed list of /e/ and /æ/ words aloud, then group them by sound.",
               "commonMistakes": [
-                "Do not give a definition without the evidence or an example that shows how the idea is used."
+                "Confusing the vowel in “pen” with the vowel in “pan”.",
+                "Assuming the letter a always has the /æ/ sound."
               ],
               "keyTerms": [
-                "The Vowels /e/ and /æ/",
-                "example",
-                "evidence",
-                "reasoning"
+                "front vowel",
+                "minimal pair",
+                "vowel quality"
               ]
             },
             {
               "id": "jss1-eng-m1-l4",
               "title": "The Vowels /ɑ:/ and /ʌ/",
-              "content": "## The Vowels /ɑ:/ and /ʌ/\n\nIn English Studies, the vowels /ɑ:/ and /ʌ/ is a central idea because it links a definition to the way students observe, reason, and solve problems. A strong lesson does not treat the topic as a single label; it explains what the concept means, which features matter, and how it appears in practice. This is especially important in a subject where evidence, vocabulary, and careful thinking must work together.\n\nThe first step in understanding the vowels /ɑ:/ and /ʌ/ is to identify its main features and its relevance to the broader subject. Learners should be able to describe the idea in clear language, recognise it in an example, and explain why it matters in a real or classroom context. When the concept is connected to a concrete situation, it becomes easier to remember and to apply in different tasks.\n\nA good explanation also distinguishes the central idea from nearby ideas that may look similar. This helps students avoid confusion and compare similar examples with accuracy. In English Studies, the best answers usually show a logical sequence: define the term, give a relevant example, connect it to evidence, and explain the result. This practice builds reliable understanding rather than shallow recall.\n\nStudents should also keep the method of inquiry in view. To study the vowels /ɑ:/ and /ʌ/ well, they need to explain the purpose of the concept, identify the conditions under which it applies, and describe what changes if those conditions change. A learner who can do this is more likely to answer written questions well, contribute to discussion, and solve practical tasks with confidence.\n\nIn summary, the vowels /ɑ:/ and /ʌ/ deserves careful study because it strengthens explanation, application, and judgment. A learner who understands the idea can connect it to evidence, explain it in ordinary language, and use it in new situations. That is the foundation of rich textbook learning in English Studies.",
+              "content": "## The Vowels /ɑ:/ and /ʌ/\n\nIn the pronunciation model used here, /ɑ:/ is a long, open vowel, as in “farm”, “calm” and “start”. The jaw is open and the tongue is low and towards the back. /ʌ/ is a shorter central vowel, as in “cup”, “bus” and “sun”. It is produced with a less open mouth and a more central tongue position. The colon in /ɑ:/ marks length; it is part of the transcription, not a sound to pronounce.\n\nThe contrast can separate words. “Cart” has /ɑ:/, while “cut” has /ʌ/. The initial /k/ and final /t/ are shared, so the vowel changes the word. Do not rely on the spelling: “come” contains /ʌ/ in the model, while “calm” contains /ɑ:/. Vowel patterns are learned from pronunciation and examples, not by reading one letter in isolation.\n\n**Worked example 1.** Classify “bus”. The spelling contains u, but the sound is /b/ /ʌ/ /s/. It belongs with “cup” and “sun”, not with “farm”. Say the middle vowel briefly and centrally; do not lengthen it into /ɑ:/.\n\n**Worked example 2.** A learner hears “start” as “stut”. Compare “start” with “stuck”. In “start”, keep the vowel open and longer /ɑ:/, then finish with /t/. In “stuck”, use /ʌ/ before /k/. The final consonants also differ, so use “cart/cut” as a cleaner vowel pair: keep /k/ and /t/ unchanged while changing only the vowel.\n\nSome Nigerian and other English accents use vowel qualities that differ from the British-based symbols in a textbook. The point of this exercise is to understand the taught contrast and speak clearly to classmates, not to label a home accent as wrong. When practising, place each word in a sentence: “The farm is far” and “The cup is up.” Listen for the vowel before checking the written symbol. Notice that “farm” and “far” share the target vowel, while “cup” and “up” share /ʌ/. These sentence pairs let a listener check the contrast in connected speech, where neighbouring consonants can make a sound harder to hear.",
               "quiz": [
                 {
                   "id": "jss1-eng-m1-l4-final-q1",
@@ -186,23 +189,23 @@
                 "secondaryUrl": "https://nerdc.org.ng/CurriculumStructure.aspx",
                 "role": "primary learning source"
               },
-              "objective": "Explain the vowels /ɑ:/ and /ʌ/ clearly, connect it to a real example, and justify the reasoning in english studies.",
-              "summary": "## The Vowels /ɑ:/ and /ʌ/ In English Studies, the vowels /ɑ:/ and /ʌ/ is a central idea because it links a definition to the way students observe, reason, and solve problems. A strong lesson does not treat the topic as a single label; it explains what the concept means, which features matter, and how it appears in pra",
-              "activity": "Use a relevant classroom or real-life example to explain the vowels /ɑ:/ and /ʌ/ and show why the idea matters.",
+              "objective": "Identify and pronounce /ɑ:/ and /ʌ/ in words such as “farm” and “cup”.",
+              "summary": "The long open vowel /ɑ:/ and the shorter central vowel /ʌ/ contrast in words such as “cart” and “cut”.",
+              "activity": "Sort words with /ɑ:/ and /ʌ/ and practise them in short, clear sentences.",
               "commonMistakes": [
-                "Do not give a definition without the evidence or an example that shows how the idea is used."
+                "Replacing /ʌ/ with /ɑ:/ because a word is spelt with u.",
+                "Assuming every accent uses an identical vowel quality."
               ],
               "keyTerms": [
-                "The Vowels /ɑ:/ and /ʌ/",
-                "example",
-                "evidence",
-                "reasoning"
+                "open vowel",
+                "central vowel",
+                "vowel length"
               ]
             },
             {
               "id": "jss1-eng-m1-l5",
               "title": "The Vowels /ɒ/ and /ɔ:/",
-              "content": "## The Vowels /ɒ/ and /ɔ:/\n\nIn English Studies, the vowels /ɒ/ and /ɔ:/ is a central idea because it links a definition to the way students observe, reason, and solve problems. A strong lesson does not treat the topic as a single label; it explains what the concept means, which features matter, and how it appears in practice. This is especially important in a subject where evidence, vocabulary, and careful thinking must work together.\n\nThe first step in understanding the vowels /ɒ/ and /ɔ:/ is to identify its main features and its relevance to the broader subject. Learners should be able to describe the idea in clear language, recognise it in an example, and explain why it matters in a real or classroom context. When the concept is connected to a concrete situation, it becomes easier to remember and to apply in different tasks.\n\nA good explanation also distinguishes the central idea from nearby ideas that may look similar. This helps students avoid confusion and compare similar examples with accuracy. In English Studies, the best answers usually show a logical sequence: define the term, give a relevant example, connect it to evidence, and explain the result. This practice builds reliable understanding rather than shallow recall.\n\nStudents should also keep the method of inquiry in view. To study the vowels /ɒ/ and /ɔ:/ well, they need to explain the purpose of the concept, identify the conditions under which it applies, and describe what changes if those conditions change. A learner who can do this is more likely to answer written questions well, contribute to discussion, and solve practical tasks with confidence.\n\nIn summary, the vowels /ɒ/ and /ɔ:/ deserves careful study because it strengthens explanation, application, and judgment. A learner who understands the idea can connect it to evidence, explain it in ordinary language, and use it in new situations. That is the foundation of rich textbook learning in English Studies.",
+              "content": "## The Vowels /ɒ/ and /ɔ:/\n\nIn many British English teaching models, /ɒ/ is a short rounded vowel heard in “hot”, “pot” and “clock”. /ɔ:/ is longer and more closed, as in “thought”, “short” and “caught”. The colon marks vowel length. A pair such as “cot/caught” shows the distinction for speakers whose accent keeps both vowels separate. Some English accents merge them, so the words may sound alike to those speakers.\n\nFocus first on a familiar word in the chosen model. For /ɒ/, round the lips lightly and keep the sound short, as in “box”. For /ɔ:/, maintain a closer rounded position and hold it slightly longer, as in “four”. Then check the consonants around the vowel. “Stock” and “stalk” share /st/ at the beginning and /k/ at the end; the vowel distinguishes the taught pair.\n\n**Worked example 1.** Classify “shop” in the course model. It has /ʃ/ /ɒ/ /p/, so the vowel is /ɒ/. Group it with “stop” and “clock”. It is not the /ɔ:/ sound in “short”.\n\n**Worked example 2.** A student uses the same vowel in “cot” and “caught”. First ask whether the class pronunciation model distinguishes them. If it does, practise /kɒt/ with the short vowel and /kɔ:t/ with the longer one. Keep /k/ and /t/ constant. If the student's familiar accent merges the two, demonstrate the target model without claiming that the accent itself is defective.\n\nSpelling is a weak guide here: “water” and “want” do not show a simple letter-to-sound rule, and pronunciation can vary by region. Learn each item with an audio or teacher model. In a listening exercise, write the word you actually hear before deciding its spelling. If two classmates use different accents, use the vocabulary and model specified for the lesson and discuss the sound difference respectfully.",
               "quiz": [
                 {
                   "id": "jss1-eng-m1-l5-final-q1",
@@ -233,23 +236,23 @@
                 "secondaryUrl": "https://nerdc.org.ng/CurriculumStructure.aspx",
                 "role": "primary learning source"
               },
-              "objective": "Explain the vowels /ɒ/ and /ɔ:/ clearly, connect it to a real example, and justify the reasoning in english studies.",
-              "summary": "## The Vowels /ɒ/ and /ɔ:/ In English Studies, the vowels /ɒ/ and /ɔ:/ is a central idea because it links a definition to the way students observe, reason, and solve problems. A strong lesson does not treat the topic as a single label; it explains what the concept means, which features matter, and how it appears in pra",
-              "activity": "Use a relevant classroom or real-life example to explain the vowels /ɒ/ and /ɔ:/ and show why the idea matters.",
+              "objective": "Recognise and contrast /ɒ/ and /ɔ:/ in the course pronunciation model.",
+              "summary": "The contrast between short /ɒ/ and long /ɔ:/ appears in pairs such as “cot” and “caught” for speakers who distinguish them.",
+              "activity": "Listen to a word list and mark whether the target model uses /ɒ/ or /ɔ:/.",
               "commonMistakes": [
-                "Do not give a definition without the evidence or an example that shows how the idea is used."
+                "Treating /ɒ/ and /ɔ:/ as identical in every pronunciation model.",
+                "Using spelling as the only evidence for a vowel sound."
               ],
               "keyTerms": [
-                "The Vowels /ɒ/ and /ɔ:/",
-                "example",
-                "evidence",
-                "reasoning"
+                "short vowel",
+                "long vowel",
+                "accent variation"
               ]
             },
             {
               "id": "jss1-eng-m1-l6",
               "title": "The Vowels /ʊ/ and /u:/",
-              "content": "## The Vowels /ʊ/ and /u:/\n\nIn English Studies, the vowels /ʊ/ and /u:/ is a central idea because it links a definition to the way students observe, reason, and solve problems. A strong lesson does not treat the topic as a single label; it explains what the concept means, which features matter, and how it appears in practice. This is especially important in a subject where evidence, vocabulary, and careful thinking must work together.\n\nThe first step in understanding the vowels /ʊ/ and /u:/ is to identify its main features and its relevance to the broader subject. Learners should be able to describe the idea in clear language, recognise it in an example, and explain why it matters in a real or classroom context. When the concept is connected to a concrete situation, it becomes easier to remember and to apply in different tasks.\n\nA good explanation also distinguishes the central idea from nearby ideas that may look similar. This helps students avoid confusion and compare similar examples with accuracy. In English Studies, the best answers usually show a logical sequence: define the term, give a relevant example, connect it to evidence, and explain the result. This practice builds reliable understanding rather than shallow recall.\n\nStudents should also keep the method of inquiry in view. To study the vowels /ʊ/ and /u:/ well, they need to explain the purpose of the concept, identify the conditions under which it applies, and describe what changes if those conditions change. A learner who can do this is more likely to answer written questions well, contribute to discussion, and solve practical tasks with confidence.\n\nIn summary, the vowels /ʊ/ and /u:/ deserves careful study because it strengthens explanation, application, and judgment. A learner who understands the idea can connect it to evidence, explain it in ordinary language, and use it in new situations. That is the foundation of rich textbook learning in English Studies.",
+              "content": "## The Vowels /ʊ/ and /u:/\n\nBoth vowels use rounded lips, but /ʊ/ is short and relatively relaxed, while /u:/ is longer and more close. Hear /ʊ/ in “book”, “foot” and “pull”; hear /u:/ in “food”, “boot” and “pool”. The contrast is not only about holding a sound longer. The tongue position and vowel quality differ too.\n\nA minimal pair helps isolate the contrast. “Full” /fʊl/ and “fool” /fu:l/ share /f/ and /l/. Change only the middle vowel and the word changes. The same pattern occurs in “pull/pool”. Practise each pair at a natural pace, then place each word in a short sentence so that the sound is linked to meaning.\n\n**Worked example 1.** Classify “wood”. Say the middle vowel and compare it with “food”. “Wood” has /ʊ/; “food” has /u:/. The written double o appears in both, so spelling alone cannot tell you which vowel to use. Record “wood” with “book” and “food” with “boot”.\n\n**Worked example 2.** Correct “I ate a fool of rice” when the intended word is “full”. The sentence describes being satisfied after eating, so the adjective is “full” /fʊl/. Replace /u:/ with /ʊ/ and read the complete sentence: “I am full after the meal.” Context and pronunciation both support the correction.\n\nAvoid turning /ʊ/ into /ʌ/; “put” and “cut” have different vowels in the model. Also avoid stretching /u:/ so much that it sounds unnatural. Many words with u or oo spellings have different sounds, so learn a word with its pronunciation, not from its letters alone. A classmate can check the contrast by choosing which word was spoken without looking at the written pair. Put four words under each sound, then ask a partner to read them in mixed order. If a word is misheard, repeat it inside a short phrase such as “full bowl” or “pool water”; the surrounding words help reveal whether the vowel contrast remains clear.",
               "quiz": [
                 {
                   "id": "jss1-eng-m1-l6-final-q1",
@@ -280,23 +283,23 @@
                 "secondaryUrl": "https://nerdc.org.ng/CurriculumStructure.aspx",
                 "role": "primary learning source"
               },
-              "objective": "Explain the vowels /ʊ/ and /u:/ clearly, connect it to a real example, and justify the reasoning in english studies.",
-              "summary": "## The Vowels /ʊ/ and /u:/ In English Studies, the vowels /ʊ/ and /u:/ is a central idea because it links a definition to the way students observe, reason, and solve problems. A strong lesson does not treat the topic as a single label; it explains what the concept means, which features matter, and how it appears in pra",
-              "activity": "Use a relevant classroom or real-life example to explain the vowels /ʊ/ and /u:/ and show why the idea matters.",
+              "objective": "Hear and produce the short /ʊ/ and long /u:/ vowels in minimal pairs.",
+              "summary": "The /ʊ/ and /u:/ contrast distinguishes words such as “full” and “fool”.",
+              "activity": "Practise “pull/pool” and “foot/food”, keeping the final consonants clear.",
               "commonMistakes": [
-                "Do not give a definition without the evidence or an example that shows how the idea is used."
+                "Using /u:/ in “full” because both vowels are spelt with u.",
+                "Making /ʊ/ sound like /ʌ/."
               ],
               "keyTerms": [
-                "The Vowels /ʊ/ and /u:/",
-                "example",
-                "evidence",
-                "reasoning"
+                "rounded vowel",
+                "minimal pair",
+                "vowel quality"
               ]
             },
             {
               "id": "jss1-eng-m1-l7",
               "title": "The Vowels /ɜ:/ and /ə/",
-              "content": "## The Vowels /ɜ:/ and /ə/\n\nIn English Studies, the vowels /ɜ:/ and /ə/ is a central idea because it links a definition to the way students observe, reason, and solve problems. A strong lesson does not treat the topic as a single label; it explains what the concept means, which features matter, and how it appears in practice. This is especially important in a subject where evidence, vocabulary, and careful thinking must work together.\n\nThe first step in understanding the vowels /ɜ:/ and /ə/ is to identify its main features and its relevance to the broader subject. Learners should be able to describe the idea in clear language, recognise it in an example, and explain why it matters in a real or classroom context. When the concept is connected to a concrete situation, it becomes easier to remember and to apply in different tasks.\n\nA good explanation also distinguishes the central idea from nearby ideas that may look similar. This helps students avoid confusion and compare similar examples with accuracy. In English Studies, the best answers usually show a logical sequence: define the term, give a relevant example, connect it to evidence, and explain the result. This practice builds reliable understanding rather than shallow recall.\n\nStudents should also keep the method of inquiry in view. To study the vowels /ɜ:/ and /ə/ well, they need to explain the purpose of the concept, identify the conditions under which it applies, and describe what changes if those conditions change. A learner who can do this is more likely to answer written questions well, contribute to discussion, and solve practical tasks with confidence.\n\nIn summary, the vowels /ɜ:/ and /ə/ deserves careful study because it strengthens explanation, application, and judgment. A learner who understands the idea can connect it to evidence, explain it in ordinary language, and use it in new situations. That is the foundation of rich textbook learning in English Studies.",
+              "content": "## The Vowels /ɜ:/ and /ə/\n\nThe vowel /ɜ:/ appears in the stressed syllable of words such as “bird”, “girl” and “learn” in a non-rhotic British-based model. The schwa /ə/ is a weak, short vowel commonly heard in an unstressed syllable, as in the first syllable of “about” /əˈbaʊt/ and the final syllable of “teacher” /ˈti:tʃə/. Stress means the syllable is made more prominent; an unstressed syllable is spoken with less force.\n\nThe symbol /ə/ is called schwa. It is not the letter e and does not have one fixed spelling. Letters a, e, o and u may represent schwa in different words. Compare the first vowel in “bird” with the first vowel in “about”: “bird” carries stress and has /ɜ:/; “about” begins with an unstressed /ə/.\n\n**Worked example 1.** Mark the vowels in “teacher”. Divide the word into two syllables: teach-er. The first syllable carries the main stress and contains /i:/. The final unstressed syllable is often /ə/ in the model. The spelling e-r does not mean that the ending is pronounced as a strong /e/.\n\n**Worked example 2.** Identify the first sound in “ago”. The word is pronounced /əˈɡəʊ/ in the model. Its first syllable is unstressed, so it has schwa /ə/; the second syllable is stressed and contains /əʊ/. Clap once on the stronger second syllable, then say the whole word without stressing the beginning.\n\nA common reading problem is giving every syllable equal force. That can make a word sound unfamiliar even when each consonant is correct. Use a dictionary's pronunciation key or a teacher's model to check stress, and mark the stressed syllable before practising. Some accents pronounce r after a vowel where this model does not; the course symbol describes the target pronunciation, not every English accent. Practise by tapping once on the stressed syllable in “teacher” and “about”. The tap should fall on “teach” and “bout”, not on the weak endings or openings.",
               "quiz": [
                 {
                   "id": "jss1-eng-m1-l7-final-q1",
@@ -327,23 +330,24 @@
                 "secondaryUrl": "https://nerdc.org.ng/CurriculumStructure.aspx",
                 "role": "primary learning source"
               },
-              "objective": "Explain the vowels /ɜ:/ and /ə/ clearly, connect it to a real example, and justify the reasoning in english studies.",
-              "summary": "## The Vowels /ɜ:/ and /ə/ In English Studies, the vowels /ɜ:/ and /ə/ is a central idea because it links a definition to the way students observe, reason, and solve problems. A strong lesson does not treat the topic as a single label; it explains what the concept means, which features matter, and how it appears in pra",
-              "activity": "Use a relevant classroom or real-life example to explain the vowels /ɜ:/ and /ə/ and show why the idea matters.",
+              "objective": "Distinguish the stressed vowel /ɜ:/ from the unstressed schwa /ə/ in familiar words.",
+              "summary": "The /ɜ:/ vowel can form a stressed syllable, while schwa /ə/ is common in unstressed syllables.",
+              "activity": "Underline the stressed syllable and mark /ɜ:/ or /ə/ in a set of familiar words.",
               "commonMistakes": [
-                "Do not give a definition without the evidence or an example that shows how the idea is used."
+                "Giving schwa a strong stress in an unstressed syllable.",
+                "Confusing the symbol /ə/ with the vowel letter e."
               ],
               "keyTerms": [
-                "The Vowels /ɜ:/ and /ə/",
-                "example",
-                "evidence",
-                "reasoning"
+                "stress",
+                "syllable",
+                "schwa",
+                "unstressed"
               ]
             },
             {
               "id": "jss1-eng-m1-l8",
               "title": "Diphthongs",
-              "content": "## Diphthongs\n\nIn English Studies, diphthongs is a central idea because it links a definition to the way students observe, reason, and solve problems. A strong lesson does not treat the topic as a single label; it explains what the concept means, which features matter, and how it appears in practice. This is especially important in a subject where evidence, vocabulary, and careful thinking must work together.\n\nThe first step in understanding diphthongs is to identify its main features and its relevance to the broader subject. Learners should be able to describe the idea in clear language, recognise it in an example, and explain why it matters in a real or classroom context. When the concept is connected to a concrete situation, it becomes easier to remember and to apply in different tasks.\n\nA good explanation also distinguishes the central idea from nearby ideas that may look similar. This helps students avoid confusion and compare similar examples with accuracy. In English Studies, the best answers usually show a logical sequence: define the term, give a relevant example, connect it to evidence, and explain the result. This practice builds reliable understanding rather than shallow recall.\n\nStudents should also keep the method of inquiry in view. To study diphthongs well, they need to explain the purpose of the concept, identify the conditions under which it applies, and describe what changes if those conditions change. A learner who can do this is more likely to answer written questions well, contribute to discussion, and solve practical tasks with confidence.\n\nIn summary, diphthongs deserves careful study because it strengthens explanation, application, and judgment. A learner who understands the idea can connect it to evidence, explain it in ordinary language, and use it in new situations. That is the foundation of rich textbook learning in English Studies.",
+              "content": "## Diphthongs\n\nA **diphthong** is a vowel sound that glides from one mouth position towards another within the same syllable. It is one syllable, even though the tongue and lips move during the vowel. In a traditional British English model, common diphthongs include /eɪ/ in “day”, /aɪ/ in “time”, /ɔɪ/ in “boy”, /əʊ/ in “go”, and /aʊ/ in “now”. The model also teaches /ɪə/ in “near”, /eə/ in “care” and /ʊə/ in “poor”, though these vary considerably across modern accents.\n\nA **monophthong** stays relatively steady through the vowel. Compare the steady /ɪ/ in “sit” with the movement in /aɪ/ in “site”. To practise a diphthong, begin at the first vowel position and move smoothly towards the second without inserting a consonant or breaking the word into two syllables.\n\n**Worked example 1.** Identify the vowel in “choice”. The word begins with /tʃ/, has the diphthong /ɔɪ/, and ends with /s/. The vowel is /ɔɪ/, as in “boy”; it is one glide in one syllable, not separate /ɔ/ and /ɪ/ syllables.\n\n**Worked example 2.** Practise “rain”. Start with the /e/ position and glide towards /ɪ/ to make /eɪ/. Add /r/ before it and /n/ after it: /r/ + /eɪ/ + /n/. The result has one syllable. Check by clapping: “rain” gets one clap, not two.\n\nSpelling does not always reveal the diphthong: “day”, “rain” and “break” share /eɪ/ despite different spellings. Learn a sound through several words and listen for the movement. Do not exaggerate the glide; it should be audible but still part of one smooth vowel. Your teacher may use a particular accent as the model, especially for /ɪə/, /eə/ and /ʊə/. Record that model consistently when completing a pronunciation exercise. The eight symbols are not a promise that every English speaker uses eight separate sounds. For example, some accents pronounce “near” with a sequence closer to a diphthong, while others use a vowel followed by /r/. Follow the model required for this exercise and note accent differences accurately.",
               "quiz": [
                 {
                   "id": "jss1-eng-m1-l8-final-q1",
@@ -374,23 +378,24 @@
                 "secondaryUrl": "https://nerdc.org.ng/CurriculumStructure.aspx",
                 "role": "primary learning source"
               },
-              "objective": "Explain diphthongs clearly, connect it to a real example, and justify the reasoning in english studies.",
-              "summary": "## Diphthongs In English Studies, diphthongs is a central idea because it links a definition to the way students observe, reason, and solve problems. A strong lesson does not treat the topic as a single label; it explains what the concept means, which features matter, and how it appears in practice. This is especially ",
-              "activity": "Use a relevant classroom or real-life example to explain diphthongs and show why the idea matters.",
+              "objective": "Identify a diphthong as a vowel glide and recognise common English diphthongs in words.",
+              "summary": "A diphthong moves from one vowel position towards another within one syllable.",
+              "activity": "Match each diphthong symbol to a word and trace the vowel glide while speaking.",
               "commonMistakes": [
-                "Do not give a definition without the evidence or an example that shows how the idea is used."
+                "Counting a diphthong as two syllables.",
+                "Holding the first vowel without completing the glide."
               ],
               "keyTerms": [
-                "Diphthongs",
-                "example",
-                "evidence",
-                "reasoning"
+                "diphthong",
+                "glide",
+                "syllable",
+                "monophthong"
               ]
             },
             {
               "id": "jss1-eng-m1-l9",
               "title": "Consonant Contrasts: /p/ /b/, /t/ /d/, /θ/ /ð/",
-              "content": "## Consonant Contrasts: /p/ /b/, /t/ /d/, /θ/ /ð/\n\nIn English Studies, consonant contrasts: /p/ /b/, /t/ /d/, /θ/ /ð/ is a central idea because it links a definition to the way students observe, reason, and solve problems. A strong lesson does not treat the topic as a single label; it explains what the concept means, which features matter, and how it appears in practice. This is especially important in a subject where evidence, vocabulary, and careful thinking must work together.\n\nThe first step in understanding consonant contrasts: /p/ /b/, /t/ /d/, /θ/ /ð/ is to identify its main features and its relevance to the broader subject. Learners should be able to describe the idea in clear language, recognise it in an example, and explain why it matters in a real or classroom context. When the concept is connected to a concrete situation, it becomes easier to remember and to apply in different tasks.\n\nA good explanation also distinguishes the central idea from nearby ideas that may look similar. This helps students avoid confusion and compare similar examples with accuracy. In English Studies, the best answers usually show a logical sequence: define the term, give a relevant example, connect it to evidence, and explain the result. This practice builds reliable understanding rather than shallow recall.\n\nStudents should also keep the method of inquiry in view. To study consonant contrasts: /p/ /b/, /t/ /d/, /θ/ /ð/ well, they need to explain the purpose of the concept, identify the conditions under which it applies, and describe what changes if those conditions change. A learner who can do this is more likely to answer written questions well, contribute to discussion, and solve practical tasks with confidence.\n\nIn summary, consonant contrasts: /p/ /b/, /t/ /d/, /θ/ /ð/ deserves careful study because it strengthens explanation, application, and judgment. A learner who understands the idea can connect it to evidence, explain it in ordinary language, and use it in new situations. That is the foundation of rich textbook learning in English Studies.",
+              "content": "## Consonant Contrasts: /p/ /b/, /t/ /d/, /θ/ /ð/\n\nConsonants are made when airflow is stopped or narrowed somewhere in the mouth. The pairs /p/ and /b/, and /t/ and /d/, use nearly the same mouth position but differ in voicing. /p/ and /t/ are voiceless; /b/ and /d/ are voiced. Touch your throat lightly while saying /ssss/ and /zzzz/: vibration is easier to feel during the voiced sound. These sounds can distinguish words such as “pat/bat” and “ten/den”.\n\nThe symbols /θ/ and /ð/ represent sounds made with the tongue near or lightly between the teeth. /θ/ is voiceless, as in “thin”; /ð/ is voiced, as in “then”. They are not the names of the written letters t and d. Some speakers use a different sound in these words; practise the course model clearly without mocking a home accent.\n\n**Worked example 1.** Identify the first sound in “bat”. Place the lips together, then release the air with voice: /b/. Compare “pat”: use the same lip closure but do not vibrate the vocal folds as strongly, producing /p/. The changed first consonant gives two different words.\n\n**Worked example 2.** Practise “thin/then”. Place the tongue tip lightly near the upper teeth, let air pass for /θ/ in “thin”, and add voicing for /ð/ in “then”. Keep the vowel and final /n/ the same. A hand on the throat helps check the voicing difference.\n\nDo not add a short vowel after a final consonant: say “cap”, not “capa”. For a listening check, close your eyes while a partner says one word from a pair, then name the word and explain which sound you heard. The explanation should mention a feature such as voicing or tongue placement, not merely say that the words sound different. A mirror can help with /θ/ and /ð/: compare the visible tongue position with the lips used for /p/ and /b/. Keep the activity brief and speak at an ordinary volume so the listener judges the consonant rather than a shouted sound.",
               "quiz": [
                 {
                   "id": "jss1-eng-m1-l9-final-q1",
@@ -421,17 +426,19 @@
                 "secondaryUrl": "https://nerdc.org.ng/CurriculumStructure.aspx",
                 "role": "primary learning source"
               },
-              "objective": "Explain consonant contrasts: /p/ /b/, /t/ /d/, /θ/ /ð/ clearly, connect it to a real example, and justify the reasoning in english studies.",
-              "summary": "## Consonant Contrasts: /p/ /b/, /t/ /d/, /θ/ /ð/ In English Studies, consonant contrasts: /p/ /b/, /t/ /d/, /θ/ /ð/ is a central idea because it links a definition to the way students observe, reason, and solve problems. A strong lesson does not treat the topic as a single label; it explains what the concept means, wh",
-              "activity": "Use a relevant classroom or real-life example to explain consonant contrasts: /p/ /b/, /t/ /d/, /θ/ /ð/ and show why the idea matters.",
+              "objective": "Describe voicing and distinguish the consonant pairs /p/-/b/, /t/-/d/ and /θ/-/ð/.",
+              "summary": "The pairs /p b/ and /t d/ differ mainly in voicing, while /θ/ and /ð/ are made with the tongue near the teeth.",
+              "activity": "Use a hand on the throat to compare voiced and voiceless sounds in the lesson's word pairs.",
               "commonMistakes": [
-                "Do not give a definition without the evidence or an example that shows how the idea is used."
+                "Adding a vowel after a final consonant during practice.",
+                "Treating /θ/ and /ð/ as the letters t and d."
               ],
               "keyTerms": [
-                "Consonant Contrasts: /p/ /b/, /t/ /d/, /θ/ /ð/",
-                "example",
-                "evidence",
-                "reasoning"
+                "consonant",
+                "voicing",
+                "voiceless",
+                "voiced",
+                "place of articulation"
               ]
             }
           ],
@@ -614,7 +621,7 @@
             {
               "id": "jss1-eng-m2-l1",
               "title": "Nouns",
-              "content": "## Nouns\n\nIn English Studies, nouns is a central idea because it links a definition to the way students observe, reason, and solve problems. A strong lesson does not treat the topic as a single label; it explains what the concept means, which features matter, and how it appears in practice. This is especially important in a subject where evidence, vocabulary, and careful thinking must work together.\n\nThe first step in understanding nouns is to identify its main features and its relevance to the broader subject. Learners should be able to describe the idea in clear language, recognise it in an example, and explain why it matters in a real or classroom context. When the concept is connected to a concrete situation, it becomes easier to remember and to apply in different tasks.\n\nA good explanation also distinguishes the central idea from nearby ideas that may look similar. This helps students avoid confusion and compare similar examples with accuracy. In English Studies, the best answers usually show a logical sequence: define the term, give a relevant example, connect it to evidence, and explain the result. This practice builds reliable understanding rather than shallow recall.\n\nStudents should also keep the method of inquiry in view. To study nouns well, they need to explain the purpose of the concept, identify the conditions under which it applies, and describe what changes if those conditions change. A learner who can do this is more likely to answer written questions well, contribute to discussion, and solve practical tasks with confidence.\n\nIn summary, nouns deserves careful study because it strengthens explanation, application, and judgment. A learner who understands the idea can connect it to evidence, explain it in ordinary language, and use it in new situations. That is the foundation of rich textbook learning in English Studies.",
+              "content": "## Nouns\n\nA noun names a person, place, thing, group, substance or idea. In “Amina carried a basket to Kano market”, “Amina” is a proper noun, “basket” is a common noun, and “market” is common unless it is part of a formal name. Proper nouns identify particular people or places and begin with capital letters. A collective noun names a group as one unit, such as “team”, “flock” or “committee”. An abstract noun names an idea or quality, such as “honesty” or “courage”.\n\nCountable nouns can be counted as separate items: one mango, three mangoes. Uncountable nouns name a substance or idea not normally counted directly: water, rice, advice and information. We can count containers or pieces instead: two cups of water, a bag of rice, two pieces of advice. “Advice” does not take a plural s in standard English.\n\n**Worked example 1.** Classify the nouns in “The pupils carried books to the library.” “Pupils” is a countable common noun; “books” is also countable and common; “library” is a common noun naming a place. None identifies one particular library by name, so none needs a proper-noun capital.\n\n**Worked example 2.** Correct “The committee gave us many advices.” “Committee” is a collective noun. “Advice” is uncountable, so replace “many advices” with “some advice” or “two pieces of advice”. The revised sentence is “The committee gave us two pieces of advice.”\n\nA word can change category with its meaning. “Chicken” is uncountable when it means meat (“We ate chicken”) but countable when it means birds (“The farmer kept six chickens”). Find the noun's job in its sentence before labelling it. The first word in a sentence takes a capital whether or not it is a proper noun, so use meaning, not capitalisation alone, to classify it. In “The class carried two bags of rice to the kitchen”, “class” is collective, “bags” is countable, and “rice” is uncountable. One sentence can therefore contain several noun types at once.",
               "quiz": [
                 {
                   "id": "jss1-eng-m2-l1-final-q1",
@@ -645,23 +652,25 @@
                 "secondaryUrl": "https://nerdc.org.ng/CurriculumStructure.aspx",
                 "role": "primary learning source"
               },
-              "objective": "Explain nouns clearly, connect it to a real example, and justify the reasoning in english studies.",
-              "summary": "## Nouns In English Studies, nouns is a central idea because it links a definition to the way students observe, reason, and solve problems. A strong lesson does not treat the topic as a single label; it explains what the concept means, which features matter, and how it appears in practice. This is especially important ",
-              "activity": "Use a relevant classroom or real-life example to explain nouns and show why the idea matters.",
+              "objective": "Classify common, proper, collective, countable, uncountable and abstract nouns in sentences.",
+              "summary": "Nouns name people, places, things, groups and ideas, and their type affects capitalisation and quantity words.",
+              "activity": "Mark nouns in a short market-day paragraph and label their types using sentence meaning.",
               "commonMistakes": [
-                "Do not give a definition without the evidence or an example that shows how the idea is used."
+                "Capitalising a common noun just because it begins a sentence.",
+                "Pluralising uncountable nouns such as advice and information."
               ],
               "keyTerms": [
-                "Nouns",
-                "example",
-                "evidence",
-                "reasoning"
+                "noun",
+                "common noun",
+                "proper noun",
+                "collective noun",
+                "abstract noun"
               ]
             },
             {
               "id": "jss1-eng-m2-l2",
               "title": "Pronouns",
-              "content": "## Pronouns\n\nIn English Studies, pronouns is a central idea because it links a definition to the way students observe, reason, and solve problems. A strong lesson does not treat the topic as a single label; it explains what the concept means, which features matter, and how it appears in practice. This is especially important in a subject where evidence, vocabulary, and careful thinking must work together.\n\nThe first step in understanding pronouns is to identify its main features and its relevance to the broader subject. Learners should be able to describe the idea in clear language, recognise it in an example, and explain why it matters in a real or classroom context. When the concept is connected to a concrete situation, it becomes easier to remember and to apply in different tasks.\n\nA good explanation also distinguishes the central idea from nearby ideas that may look similar. This helps students avoid confusion and compare similar examples with accuracy. In English Studies, the best answers usually show a logical sequence: define the term, give a relevant example, connect it to evidence, and explain the result. This practice builds reliable understanding rather than shallow recall.\n\nStudents should also keep the method of inquiry in view. To study pronouns well, they need to explain the purpose of the concept, identify the conditions under which it applies, and describe what changes if those conditions change. A learner who can do this is more likely to answer written questions well, contribute to discussion, and solve practical tasks with confidence.\n\nIn summary, pronouns deserves careful study because it strengthens explanation, application, and judgment. A learner who understands the idea can connect it to evidence, explain it in ordinary language, and use it in new situations. That is the foundation of rich textbook learning in English Studies.",
+              "content": "## Pronouns\n\nA **pronoun** can take the place of a noun or noun phrase. In “Musa lost Musa's ruler, so Musa borrowed another”, repeating the name is awkward. “Musa lost his ruler, so he borrowed another” uses pronouns. The noun a pronoun refers to is its **antecedent**. A clear antecedent matters: if a sentence says “Amina told Bisi that she had won”, the reader may not know which person “she” means.\n\nSubject pronouns include I, you, he, she, it, we and they. Object pronouns include me, you, him, her, it, us and them. Possessive forms such as mine, yours, hers and ours show ownership; “my” and “your” come before a noun. Demonstratives—this, that, these and those—point to things. Interrogative pronouns such as who, what and which introduce questions.\n\n**Worked example 1.** Choose the correct form: “The teacher called Amina and ___ to the office.” The pronoun is an object of “called”, so use the object form “her”, not the subject form “she”. The sentence reads “The teacher called Amina and her to the office.” “She” would be correct as a subject, as in “She went to the office.”\n\n**Worked example 2.** Repair “Bola put the cup beside the plate, and it broke.” The pronoun “it” could mean cup or plate. Repeat the noun that matters: “Bola put the cup beside the plate, and the cup broke.” Repeating a noun is better than leaving the reference uncertain.\n\nDo not confuse “its” with “it's”: “its” shows possession, while “it's” means “it is” or “it has”. For example, “The dog wagged its tail” has no apostrophe. When editing, draw an arrow from each pronoun to its antecedent. If the arrow could point to two nouns, revise the sentence. This small check prevents confusion in both stories and factual writing. Pronouns should also match the number of the noun they replace: “the pupils brought their books”, not “the pupils brought his books”. Read the full sentence after replacing a noun to check both agreement and clarity.",
               "quiz": [
                 {
                   "id": "jss1-eng-m2-l2-final-q1",
@@ -692,23 +701,25 @@
                 "secondaryUrl": "https://nerdc.org.ng/CurriculumStructure.aspx",
                 "role": "primary learning source"
               },
-              "objective": "Explain pronouns clearly, connect it to a real example, and justify the reasoning in english studies.",
-              "summary": "## Pronouns In English Studies, pronouns is a central idea because it links a definition to the way students observe, reason, and solve problems. A strong lesson does not treat the topic as a single label; it explains what the concept means, which features matter, and how it appears in practice. This is especially impo",
-              "activity": "Use a relevant classroom or real-life example to explain pronouns and show why the idea matters.",
+              "objective": "Choose personal, possessive, demonstrative and interrogative pronouns that agree with their referents.",
+              "summary": "Pronouns replace nouns, but readers must be able to identify the noun each pronoun refers to.",
+              "activity": "Replace repeated nouns in a paragraph with clear pronouns, then check every reference.",
               "commonMistakes": [
-                "Do not give a definition without the evidence or an example that shows how the idea is used."
+                "Using a pronoun with an unclear referent.",
+                "Using a subject pronoun where an object pronoun is required."
               ],
               "keyTerms": [
-                "Pronouns",
-                "example",
-                "evidence",
-                "reasoning"
+                "pronoun",
+                "antecedent",
+                "personal pronoun",
+                "possessive pronoun",
+                "demonstrative pronoun"
               ]
             },
             {
               "id": "jss1-eng-m2-l3",
               "title": "Verbs",
-              "content": "## Verbs\n\nIn English Studies, verbs is a central idea because it links a definition to the way students observe, reason, and solve problems. A strong lesson does not treat the topic as a single label; it explains what the concept means, which features matter, and how it appears in practice. This is especially important in a subject where evidence, vocabulary, and careful thinking must work together.\n\nThe first step in understanding verbs is to identify its main features and its relevance to the broader subject. Learners should be able to describe the idea in clear language, recognise it in an example, and explain why it matters in a real or classroom context. When the concept is connected to a concrete situation, it becomes easier to remember and to apply in different tasks.\n\nA good explanation also distinguishes the central idea from nearby ideas that may look similar. This helps students avoid confusion and compare similar examples with accuracy. In English Studies, the best answers usually show a logical sequence: define the term, give a relevant example, connect it to evidence, and explain the result. This practice builds reliable understanding rather than shallow recall.\n\nStudents should also keep the method of inquiry in view. To study verbs well, they need to explain the purpose of the concept, identify the conditions under which it applies, and describe what changes if those conditions change. A learner who can do this is more likely to answer written questions well, contribute to discussion, and solve practical tasks with confidence.\n\nIn summary, verbs deserves careful study because it strengthens explanation, application, and judgment. A learner who understands the idea can connect it to evidence, explain it in ordinary language, and use it in new situations. That is the foundation of rich textbook learning in English Studies.",
+              "content": "## Verbs\n\nA verb tells what a person or thing does, is, has, or experiences. Action verbs name actions (“carry”, “write”, “observe”), while being verbs connect a subject to a description or identity (“am”, “is”, “are”, “was”, “were”). In “The room is quiet”, “is” is a verb even though nobody performs an action. A helping verb works with a main verb: “has finished”, “will arrive” and “is reading”.\n\nThe verb or verb group belongs to the predicate, the part of the sentence that says something about the subject. In “The pupils are arranging their books”, “are arranging” is the verb group: “are” helps and “arranging” carries the main action. A sentence may have more than one verb: “Amina opened the gate and called her brother.”\n\n**Worked example 1.** Identify the verbs in “The farmers planted maize after the rain stopped.” “Planted” tells what the farmers did; “stopped” tells what the rain did. Both are action verbs in the past form. The sentence contains two clauses and therefore two verbs.\n\n**Worked example 2.** Complete “The class ___ ready and ___ waiting.” The first blank needs a being verb linking “class” to “ready”: “is”. The second blank needs a helping verb before “waiting”: “is”. The complete sentence is “The class is ready and is waiting.” The repeated “is” is grammatically possible; “The class is ready and waiting” is a shorter version with the helping verb shared.\n\nNot every word ending in -ing is a verb. In “Swimming is enjoyable”, “swimming” names an activity and functions as a noun; in “They are swimming”, it is part of a verb group. Ask what job the word performs in its sentence. When a sentence needs a question or negative, use a helping verb where required: “Does Musa read?” and “Musa does not read,” not “Does Musa reads” or “Musa does not reads.”",
               "quiz": [
                 {
                   "id": "jss1-eng-m2-l3-final-q1",
@@ -739,23 +750,25 @@
                 "secondaryUrl": "https://nerdc.org.ng/CurriculumStructure.aspx",
                 "role": "primary learning source"
               },
-              "objective": "Explain verbs clearly, connect it to a real example, and justify the reasoning in english studies.",
-              "summary": "## Verbs In English Studies, verbs is a central idea because it links a definition to the way students observe, reason, and solve problems. A strong lesson does not treat the topic as a single label; it explains what the concept means, which features matter, and how it appears in practice. This is especially important ",
-              "activity": "Use a relevant classroom or real-life example to explain verbs and show why the idea matters.",
+              "objective": "Identify action, being and helping verbs and use the correct verb form in a sentence.",
+              "summary": "Verbs express actions, states or relationships and form the centre of a sentence predicate.",
+              "activity": "Underline the verbs in a short report and identify each verb's role.",
               "commonMistakes": [
-                "Do not give a definition without the evidence or an example that shows how the idea is used."
+                "Treating every verb as an action word.",
+                "Leaving out the helping verb in a question or negative statement."
               ],
               "keyTerms": [
-                "Verbs",
-                "example",
-                "evidence",
-                "reasoning"
+                "verb",
+                "action verb",
+                "being verb",
+                "helping verb",
+                "predicate"
               ]
             },
             {
               "id": "jss1-eng-m2-l4",
               "title": "Simple Tenses",
-              "content": "## Simple Tenses\n\nIn English Studies, simple tenses is a central idea because it links a definition to the way students observe, reason, and solve problems. A strong lesson does not treat the topic as a single label; it explains what the concept means, which features matter, and how it appears in practice. This is especially important in a subject where evidence, vocabulary, and careful thinking must work together.\n\nThe first step in understanding simple tenses is to identify its main features and its relevance to the broader subject. Learners should be able to describe the idea in clear language, recognise it in an example, and explain why it matters in a real or classroom context. When the concept is connected to a concrete situation, it becomes easier to remember and to apply in different tasks.\n\nA good explanation also distinguishes the central idea from nearby ideas that may look similar. This helps students avoid confusion and compare similar examples with accuracy. In English Studies, the best answers usually show a logical sequence: define the term, give a relevant example, connect it to evidence, and explain the result. This practice builds reliable understanding rather than shallow recall.\n\nStudents should also keep the method of inquiry in view. To study simple tenses well, they need to explain the purpose of the concept, identify the conditions under which it applies, and describe what changes if those conditions change. A learner who can do this is more likely to answer written questions well, contribute to discussion, and solve practical tasks with confidence.\n\nIn summary, simple tenses deserves careful study because it strengthens explanation, application, and judgment. A learner who understands the idea can connect it to evidence, explain it in ordinary language, and use it in new situations. That is the foundation of rich textbook learning in English Studies.",
+              "content": "## Simple Tenses\n\nTense helps locate an event in time. The simple present describes routines, general facts and repeated events: “The school bus arrives at seven.” With he, she or it, most present-tense verbs take -s: “The bus arrives”; “The buses arrive.” The simple past describes a completed event: “The bus arrived yesterday.” Regular verbs often add -ed, but common irregular verbs change form, such as go/went and eat/ate.\n\nThe simple future is commonly formed with will plus the base verb: “The bus will arrive tomorrow.” The verb after will does not take -s or the past ending. Time expressions such as every morning, last week and next term can help the reader, but the verb form still needs to agree with the time and sentence structure.\n\n**Worked example 1.** Change “Amina walks to school every day” into the past. The time changes from a repeated routine to a completed event, so “walks” becomes “walked” and “every day” becomes “yesterday”: “Amina walked to school yesterday.” The subject stays the same; both the verb and time phrase change.\n\n**Worked example 2.** Complete “They ___ the match next Saturday.” “Next Saturday” points to future time. Use “will” followed by the base verb “play”: “They will play the match next Saturday.” Do not write “will played” or “will plays”; will already carries the future meaning.\n\nSome verbs have irregular past forms: “see/saw”, “buy/bought”, “take/took”. Learn these in meaningful pairs and use them in sentences. Also distinguish a general fact from an event happening now: “Water boils at 100 °C at standard pressure” is a general statement, while “The water boiled yesterday” reports a completed event. When checking tense, circle the time expression, underline the verb, and ask whether they agree. Compare “We eat lunch at noon” for a routine, “We ate lunch at noon” for a finished event, and “We will eat lunch at noon” for a future plan. The time phrase is the same; the verb form changes the time meaning.",
               "quiz": [
                 {
                   "id": "jss1-eng-m2-l4-final-q1",
@@ -786,23 +799,25 @@
                 "secondaryUrl": "https://nerdc.org.ng/CurriculumStructure.aspx",
                 "role": "primary learning source"
               },
-              "objective": "Explain simple tenses clearly, connect it to a real example, and justify the reasoning in english studies.",
-              "summary": "## Simple Tenses In English Studies, simple tenses is a central idea because it links a definition to the way students observe, reason, and solve problems. A strong lesson does not treat the topic as a single label; it explains what the concept means, which features matter, and how it appears in practice. This is espec",
-              "activity": "Use a relevant classroom or real-life example to explain simple tenses and show why the idea matters.",
+              "objective": "Form simple present, simple past and simple future sentences with suitable time expressions.",
+              "summary": "Simple tenses locate an event in present, past or future time and use specific verb forms.",
+              "activity": "Convert a three-sentence daily routine into past and future versions without changing its meaning.",
               "commonMistakes": [
-                "Do not give a definition without the evidence or an example that shows how the idea is used."
+                "Adding -s to the main verb after does.",
+                "Using a past form after will."
               ],
               "keyTerms": [
-                "Simple Tenses",
-                "example",
-                "evidence",
-                "reasoning"
+                "tense",
+                "simple present",
+                "simple past",
+                "simple future",
+                "time expression"
               ]
             },
             {
               "id": "jss1-eng-m2-l5",
               "title": "Adjectives and Comparison",
-              "content": "## Adjectives and Comparison\n\nIn English Studies, adjectives and comparison is a central idea because it links a definition to the way students observe, reason, and solve problems. A strong lesson does not treat the topic as a single label; it explains what the concept means, which features matter, and how it appears in practice. This is especially important in a subject where evidence, vocabulary, and careful thinking must work together.\n\nThe first step in understanding adjectives and comparison is to identify its main features and its relevance to the broader subject. Learners should be able to describe the idea in clear language, recognise it in an example, and explain why it matters in a real or classroom context. When the concept is connected to a concrete situation, it becomes easier to remember and to apply in different tasks.\n\nA good explanation also distinguishes the central idea from nearby ideas that may look similar. This helps students avoid confusion and compare similar examples with accuracy. In English Studies, the best answers usually show a logical sequence: define the term, give a relevant example, connect it to evidence, and explain the result. This practice builds reliable understanding rather than shallow recall.\n\nStudents should also keep the method of inquiry in view. To study adjectives and comparison well, they need to explain the purpose of the concept, identify the conditions under which it applies, and describe what changes if those conditions change. A learner who can do this is more likely to answer written questions well, contribute to discussion, and solve practical tasks with confidence.\n\nIn summary, adjectives and comparison deserves careful study because it strengthens explanation, application, and judgment. A learner who understands the idea can connect it to evidence, explain it in ordinary language, and use it in new situations. That is the foundation of rich textbook learning in English Studies.",
+              "content": "## Adjectives and Comparison\n\nAn adjective describes or limits a noun: “a heavy bag”, “three ripe oranges”, “the blue uniform”. It can appear before the noun or after a linking verb: “The bag is heavy.” The positive form describes one thing without comparison. The comparative form compares two; the superlative form identifies the highest or lowest degree among three or more.\n\nShort adjectives often add -er and -est: tall, taller, tallest. If an adjective ends in consonant plus y, change y to i: happy, happier, happiest. Some short adjectives double the final consonant: big, bigger, biggest. Longer adjectives usually use more and most: more careful, most careful. Common irregular forms include good, better, best and bad, worse, worst.\n\n**Worked example 1.** Compare two bags: one weighs 2 kg and the other 3 kg. “The 3 kg bag is heavier than the 2 kg bag.” “Heavy” ends in consonant plus y, so change y to i and add -er. The word “than” introduces the second item.\n\n**Worked example 2.** Compare four routes by distance and identify the longest. If Route A is 2 km, B is 3 km, C is 5 km and D is 4 km, write “Route C is the longest.” The superlative “longest” is used because four routes are compared. For two routes, use “longer”, not “longest”.\n\nAvoid double comparison: write “more careful”, not “more carefuler”, and “bigger”, not “more bigger”. Use “than” with a comparative and “the” before many superlatives. The sentence should make the comparison group clear; “Amina is the tallest” invites the question “of whom?” Add “in her team” if that is what you mean. Check irregular forms separately: “good, better, best” does not follow the usual -er and -est pattern. “This answer is better than mine” compares two answers; “It is the best answer in the group” compares several. The noun being compared must be the same kind in each part, or the sentence can make a misleading comparison.",
               "quiz": [
                 {
                   "id": "jss1-eng-m2-l5-final-q1",
@@ -833,23 +848,25 @@
                 "secondaryUrl": "https://nerdc.org.ng/CurriculumStructure.aspx",
                 "role": "primary learning source"
               },
-              "objective": "Explain adjectives and comparison clearly, connect it to a real example, and justify the reasoning in english studies.",
-              "summary": "## Adjectives and Comparison In English Studies, adjectives and comparison is a central idea because it links a definition to the way students observe, reason, and solve problems. A strong lesson does not treat the topic as a single label; it explains what the concept means, which features matter, and how it appears in",
-              "activity": "Use a relevant classroom or real-life example to explain adjectives and comparison and show why the idea matters.",
+              "objective": "Identify adjectives and form comparative and superlative forms for regular and common irregular adjectives.",
+              "summary": "Adjectives describe nouns, and comparison forms show differences between two or more people or things.",
+              "activity": "Describe three classroom objects using accurate positive, comparative and superlative forms.",
               "commonMistakes": [
-                "Do not give a definition without the evidence or an example that shows how the idea is used."
+                "Using more with an adjective that already has -er.",
+                "Using a superlative when comparing only two items."
               ],
               "keyTerms": [
-                "Adjectives and Comparison",
-                "example",
-                "evidence",
-                "reasoning"
+                "adjective",
+                "positive",
+                "comparative",
+                "superlative",
+                "irregular adjective"
               ]
             },
             {
               "id": "jss1-eng-m2-l6",
               "title": "Adverbs",
-              "content": "## Adverbs\n\nIn English Studies, adverbs is a central idea because it links a definition to the way students observe, reason, and solve problems. A strong lesson does not treat the topic as a single label; it explains what the concept means, which features matter, and how it appears in practice. This is especially important in a subject where evidence, vocabulary, and careful thinking must work together.\n\nThe first step in understanding adverbs is to identify its main features and its relevance to the broader subject. Learners should be able to describe the idea in clear language, recognise it in an example, and explain why it matters in a real or classroom context. When the concept is connected to a concrete situation, it becomes easier to remember and to apply in different tasks.\n\nA good explanation also distinguishes the central idea from nearby ideas that may look similar. This helps students avoid confusion and compare similar examples with accuracy. In English Studies, the best answers usually show a logical sequence: define the term, give a relevant example, connect it to evidence, and explain the result. This practice builds reliable understanding rather than shallow recall.\n\nStudents should also keep the method of inquiry in view. To study adverbs well, they need to explain the purpose of the concept, identify the conditions under which it applies, and describe what changes if those conditions change. A learner who can do this is more likely to answer written questions well, contribute to discussion, and solve practical tasks with confidence.\n\nIn summary, adverbs deserves careful study because it strengthens explanation, application, and judgment. A learner who understands the idea can connect it to evidence, explain it in ordinary language, and use it in new situations. That is the foundation of rich textbook learning in English Studies.",
+              "content": "## Adverbs\n\nAn adverb gives information about a verb, adjective or another adverb. It may tell how, when, where, how often or to what degree. In “The goalkeeper moved quickly”, “quickly” tells how the goalkeeper moved. In “We arrived yesterday”, the adverb tells when. “Outside” tells where, “often” tells how frequently, and “very” can increase the degree of an adjective in “very tired”.\n\nMany adverbs of manner end in -ly, but not all do: “fast”, “well”, “hard” and “late” can be adverbs. Some -ly words are adjectives, such as “friendly” in “a friendly neighbour”. Check the job a word performs in its sentence instead of relying on its ending.\n\n**Worked example 1.** Choose between “careful” and “carefully” in “The pupil copied the diagram ___.” “Copied” is an action verb, and the blank explains how the pupil copied. Use the adverb “carefully”: “The pupil copied the diagram carefully.” “Careful” would describe a noun, as in “a careful pupil”.\n\n**Worked example 2.** In “The very tired runner walked slowly home yesterday”, identify the adverbs and their jobs. “Very” modifies the adjective “tired”; “slowly” modifies “walked”; “home” tells where the runner walked; “yesterday” tells when. “Tired” is an adjective describing the runner, not an adverb.\n\nAdverb position can change emphasis. “She only borrowed a pen” may mean she borrowed nothing else; “She borrowed a pen only yesterday” focuses on time. Place the adverb near the word it modifies when possible. A useful editing step is to underline the verb, then ask whether any word tells how, when, where, how often or to what degree. Avoid adding -ly automatically: “The boy ran fast” is correct, not “ran fastly.” Compare “The pupil worked hard” with “The hard exercise took an hour”: “hard” is an adverb in the first sentence and an adjective in the second. The word's position and job, not its spelling, decide its part of speech. “Well” is also an adverb in “She sang well”, while “good” is an adjective in “She is a good singer”.",
               "quiz": [
                 {
                   "id": "jss1-eng-m2-l6-final-q1",
@@ -880,23 +897,25 @@
                 "secondaryUrl": "https://nerdc.org.ng/CurriculumStructure.aspx",
                 "role": "primary learning source"
               },
-              "objective": "Explain adverbs clearly, connect it to a real example, and justify the reasoning in english studies.",
-              "summary": "## Adverbs In English Studies, adverbs is a central idea because it links a definition to the way students observe, reason, and solve problems. A strong lesson does not treat the topic as a single label; it explains what the concept means, which features matter, and how it appears in practice. This is especially import",
-              "activity": "Use a relevant classroom or real-life example to explain adverbs and show why the idea matters.",
+              "objective": "Identify adverbs of manner, time, place, frequency and degree and explain which word each modifies.",
+              "summary": "Adverbs add information about a verb, adjective or another adverb, but not every adverb ends in -ly.",
+              "activity": "Annotate a short account by labelling each adverb's type and the word it modifies.",
               "commonMistakes": [
-                "Do not give a definition without the evidence or an example that shows how the idea is used."
+                "Using an adjective after an action verb when an adverb is needed.",
+                "Assuming every -ly word is an adverb."
               ],
               "keyTerms": [
-                "Adverbs",
-                "example",
-                "evidence",
-                "reasoning"
+                "adverb",
+                "manner",
+                "frequency",
+                "degree",
+                "modifier"
               ]
             },
             {
               "id": "jss1-eng-m2-l7",
               "title": "Prepositions and Conjunctions",
-              "content": "## Prepositions and Conjunctions\n\nIn English Studies, prepositions and conjunctions is a central idea because it links a definition to the way students observe, reason, and solve problems. A strong lesson does not treat the topic as a single label; it explains what the concept means, which features matter, and how it appears in practice. This is especially important in a subject where evidence, vocabulary, and careful thinking must work together.\n\nThe first step in understanding prepositions and conjunctions is to identify its main features and its relevance to the broader subject. Learners should be able to describe the idea in clear language, recognise it in an example, and explain why it matters in a real or classroom context. When the concept is connected to a concrete situation, it becomes easier to remember and to apply in different tasks.\n\nA good explanation also distinguishes the central idea from nearby ideas that may look similar. This helps students avoid confusion and compare similar examples with accuracy. In English Studies, the best answers usually show a logical sequence: define the term, give a relevant example, connect it to evidence, and explain the result. This practice builds reliable understanding rather than shallow recall.\n\nStudents should also keep the method of inquiry in view. To study prepositions and conjunctions well, they need to explain the purpose of the concept, identify the conditions under which it applies, and describe what changes if those conditions change. A learner who can do this is more likely to answer written questions well, contribute to discussion, and solve practical tasks with confidence.\n\nIn summary, prepositions and conjunctions deserves careful study because it strengthens explanation, application, and judgment. A learner who understands the idea can connect it to evidence, explain it in ordinary language, and use it in new situations. That is the foundation of rich textbook learning in English Studies.",
+              "content": "## Prepositions and Conjunctions\n\nA preposition shows a relationship, often of place, time or direction. In “The chalk is under the desk”, “under” relates the chalk to the desk. In “We arrived before noon”, “before” relates the arrival to a time. A prepositional phrase usually includes a preposition and its object: “under the desk”, “through the gate”, “after lunch”. The exact preposition matters because it changes the relationship.\n\nA conjunction connects words, phrases or clauses. “And” adds information, “but” shows contrast, and “or” presents a choice. “Because” gives a reason and joins a dependent clause to a main clause: “The match stopped because rain began.” A clause has a subject and a verb. When two complete clauses are joined, use a conjunction or suitable punctuation, not a comma alone.\n\n**Worked example 1.** Choose the preposition: “The pupil placed the ruler ___ the book and the desk.” If the ruler rests on top of the book, use “on”: “The pupil placed the ruler on the book.” “Under” would describe a different position. Draw the objects if you are unsure; the relationship, not memorised translation, determines the word.\n\n**Worked example 2.** Join “The road was wet. The driver slowed down.” The second sentence gives a sensible result of the first. Use “so”: “The road was wet, so the driver slowed down.” The comma comes before the conjunction joining two complete clauses.\n\nSome prepositions depend on common usage: “interested in”, “afraid of”, “arrive at a small place” and “arrive in a city”. Learn such phrases in context. A conjunction should express the intended relationship; “but” would signal contrast, not result, in the wet-road example. Read a joined sentence aloud and check that each clause remains complete and the link word expresses the right idea. Try replacing the conjunction with “because”, “although” or “so” and see how the relationship changes. “The pupils stayed inside because it rained” gives a reason; “Although it rained, the pupils continued the lesson” signals contrast. The best choice preserves the writer's meaning.",
               "quiz": [
                 {
                   "id": "jss1-eng-m2-l7-final-q1",
@@ -927,23 +946,25 @@
                 "secondaryUrl": "https://nerdc.org.ng/CurriculumStructure.aspx",
                 "role": "primary learning source"
               },
-              "objective": "Explain prepositions and conjunctions clearly, connect it to a real example, and justify the reasoning in english studies.",
-              "summary": "## Prepositions and Conjunctions In English Studies, prepositions and conjunctions is a central idea because it links a definition to the way students observe, reason, and solve problems. A strong lesson does not treat the topic as a single label; it explains what the concept means, which features matter, and how it ap",
-              "activity": "Use a relevant classroom or real-life example to explain prepositions and conjunctions and show why the idea matters.",
+              "objective": "Use prepositions to show relationships and conjunctions to connect words or clauses.",
+              "summary": "Prepositions locate or relate nouns and pronouns, while conjunctions link words, phrases or clauses.",
+              "activity": "Complete a route description with prepositions, then join related sentences with conjunctions.",
               "commonMistakes": [
-                "Do not give a definition without the evidence or an example that shows how the idea is used."
+                "Choosing a preposition by translating word-for-word from another language.",
+                "Joining two complete sentences with a comma alone."
               ],
               "keyTerms": [
-                "Prepositions and Conjunctions",
-                "example",
-                "evidence",
-                "reasoning"
+                "preposition",
+                "prepositional phrase",
+                "conjunction",
+                "clause",
+                "coordinating conjunction"
               ]
             },
             {
               "id": "jss1-eng-m2-l8",
               "title": "Subject-Verb Agreement",
-              "content": "## Subject-Verb Agreement\n\nIn English Studies, subject-verb agreement is a central idea because it links a definition to the way students observe, reason, and solve problems. A strong lesson does not treat the topic as a single label; it explains what the concept means, which features matter, and how it appears in practice. This is especially important in a subject where evidence, vocabulary, and careful thinking must work together.\n\nThe first step in understanding subject-verb agreement is to identify its main features and its relevance to the broader subject. Learners should be able to describe the idea in clear language, recognise it in an example, and explain why it matters in a real or classroom context. When the concept is connected to a concrete situation, it becomes easier to remember and to apply in different tasks.\n\nA good explanation also distinguishes the central idea from nearby ideas that may look similar. This helps students avoid confusion and compare similar examples with accuracy. In English Studies, the best answers usually show a logical sequence: define the term, give a relevant example, connect it to evidence, and explain the result. This practice builds reliable understanding rather than shallow recall.\n\nStudents should also keep the method of inquiry in view. To study subject-verb agreement well, they need to explain the purpose of the concept, identify the conditions under which it applies, and describe what changes if those conditions change. A learner who can do this is more likely to answer written questions well, contribute to discussion, and solve practical tasks with confidence.\n\nIn summary, subject-verb agreement deserves careful study because it strengthens explanation, application, and judgment. A learner who understands the idea can connect it to evidence, explain it in ordinary language, and use it in new situations. That is the foundation of rich textbook learning in English Studies.",
+              "content": "## Subject-Verb Agreement\n\nSubject-verb agreement means that a verb form matches its subject. In the simple present, a singular third-person subject usually takes -s: “The pupil reads.” A plural subject uses the base form: “The pupils read.” The verb “be” has its own forms: “I am”, “she is”, “they are”. In the past tense, most verbs do not change between singular and plural: “She walked; they walked.”\n\nFind the subject before choosing the verb. In “The basket of oranges is heavy”, the subject is “basket”; “of oranges” is a phrase describing it. The nearby plural noun “oranges” does not control the verb. A subject joined by “and” is usually plural: “Amina and Musa are ready.” Words such as “each” and “everyone” are singular: “Everyone has a book.”\n\n**Worked example 1.** Choose the verb: “The box of exercise books ___ on the table.” Identify the main subject noun: “box”. It is singular. Therefore use “is”: “The box of exercise books is on the table.” Do not let “books” attract the plural verb “are”.\n\n**Worked example 2.** Correct “Does the teacher explains the rule?” The subject is singular, but the auxiliary “does” already carries the present-tense agreement. Use the base form “explain”: “Does the teacher explain the rule?” The same rule gives “The teacher does not explain it,” not “does not explains”.\n\nQuestions can place the subject after the verb: “Where are the pupils?” The subject remains “pupils”, so “are” is correct. To edit, remove a phrase between the subject and verb, then read the shorter sentence: “The box is on the table.” Finally check the verb ending and the subject's number. This method is safer than matching the verb to the nearest noun. A useful final check is to replace the subject with a pronoun: “The basket is heavy” becomes “It is heavy”; “The baskets are heavy” becomes “They are heavy”. If the pronoun and verb do not agree, revise the sentence.",
               "quiz": [
                 {
                   "id": "jss1-eng-m2-l8-final-q1",
@@ -974,23 +995,25 @@
                 "secondaryUrl": "https://nerdc.org.ng/CurriculumStructure.aspx",
                 "role": "primary learning source"
               },
-              "objective": "Explain subject-verb agreement clearly, connect it to a real example, and justify the reasoning in english studies.",
-              "summary": "## Subject-Verb Agreement In English Studies, subject-verb agreement is a central idea because it links a definition to the way students observe, reason, and solve problems. A strong lesson does not treat the topic as a single label; it explains what the concept means, which features matter, and how it appears in pract",
-              "activity": "Use a relevant classroom or real-life example to explain subject-verb agreement and show why the idea matters.",
+              "objective": "Match a verb to its subject in the simple present and identify the true subject in a longer sentence.",
+              "summary": "Subject-verb agreement depends on the grammatical subject, not on the closest noun.",
+              "activity": "Edit a short notice by underlining each subject and correcting its verb.",
               "commonMistakes": [
-                "Do not give a definition without the evidence or an example that shows how the idea is used."
+                "Letting a nearby plural noun control a singular subject's verb.",
+                "Adding -s after does."
               ],
               "keyTerms": [
-                "Subject-Verb Agreement",
-                "example",
-                "evidence",
-                "reasoning"
+                "subject",
+                "verb agreement",
+                "singular",
+                "plural",
+                "auxiliary"
               ]
             },
             {
               "id": "jss1-eng-m2-l9",
               "title": "Punctuation and Capital Letters",
-              "content": "## Punctuation and Capital Letters\n\nIn English Studies, punctuation and capital letters is a central idea because it links a definition to the way students observe, reason, and solve problems. A strong lesson does not treat the topic as a single label; it explains what the concept means, which features matter, and how it appears in practice. This is especially important in a subject where evidence, vocabulary, and careful thinking must work together.\n\nThe first step in understanding punctuation and capital letters is to identify its main features and its relevance to the broader subject. Learners should be able to describe the idea in clear language, recognise it in an example, and explain why it matters in a real or classroom context. When the concept is connected to a concrete situation, it becomes easier to remember and to apply in different tasks.\n\nA good explanation also distinguishes the central idea from nearby ideas that may look similar. This helps students avoid confusion and compare similar examples with accuracy. In English Studies, the best answers usually show a logical sequence: define the term, give a relevant example, connect it to evidence, and explain the result. This practice builds reliable understanding rather than shallow recall.\n\nStudents should also keep the method of inquiry in view. To study punctuation and capital letters well, they need to explain the purpose of the concept, identify the conditions under which it applies, and describe what changes if those conditions change. A learner who can do this is more likely to answer written questions well, contribute to discussion, and solve practical tasks with confidence.\n\nIn summary, punctuation and capital letters deserves careful study because it strengthens explanation, application, and judgment. A learner who understands the idea can connect it to evidence, explain it in ordinary language, and use it in new situations. That is the foundation of rich textbook learning in English Studies.",
+              "content": "## Punctuation and Capital Letters\n\nPunctuation helps readers see how words are grouped and where one sentence ends. Begin a sentence with a capital and normally end a statement with a full stop. Use a question mark after a direct question and an exclamation mark only when strong feeling or a forceful call is intended. Commas separate items in a list and can mark an opening phrase: “After the bell, the pupils entered the room.”\n\nCapitalise proper nouns, including names of people, towns, rivers and specific organisations: “Aisha”, “Enugu”, “River Niger”. Days and months also take capitals: “Monday”, “August”. Ordinary nouns remain lower-case unless they begin a sentence. An apostrophe can show possession (“the pupil's book”) or a contraction (“do not” becomes “don't”). It does not form ordinary plurals.\n\n**Worked example 1.** Punctuate “on monday amina visited her aunt in ibadan”. Begin the sentence with a capital, capitalise the day, the person's name and the city, and end with a full stop: “On Monday, Amina visited her aunt in Ibadan.” The comma after the opening time phrase is helpful but not always necessary in a short sentence.\n\n**Worked example 2.** Correct “The girls books are on the desks.” If several girls own the books, form the plural noun first, then put the apostrophe after s: “The girls' books are on the desks.” If one girl owns them, write “The girl's books”. The apostrophe position changes the number of owners.\n\nDo not place a comma between a subject and its verb: “The pupils in the library are reading,” not “The pupils in the library, are reading.” When checking punctuation, read the sentence aloud, identify its complete thought, then verify names and ownership. A comma cannot by itself join two complete sentences; use a full stop or a conjunction, as in “The bell rang, and the pupils left.”",
               "quiz": [
                 {
                   "id": "jss1-eng-m2-l9-final-q1",
@@ -1021,17 +1044,19 @@
                 "secondaryUrl": "https://nerdc.org.ng/CurriculumStructure.aspx",
                 "role": "primary learning source"
               },
-              "objective": "Explain punctuation and capital letters clearly, connect it to a real example, and justify the reasoning in english studies.",
-              "summary": "## Punctuation and Capital Letters In English Studies, punctuation and capital letters is a central idea because it links a definition to the way students observe, reason, and solve problems. A strong lesson does not treat the topic as a single label; it explains what the concept means, which features matter, and how i",
-              "activity": "Use a relevant classroom or real-life example to explain punctuation and capital letters and show why the idea matters.",
+              "objective": "Use full stops, commas, question marks, apostrophes and capital letters to clarify sentence meaning.",
+              "summary": "Punctuation and capitalisation mark sentence boundaries, questions, pauses and names.",
+              "activity": "Punctuate an unedited announcement and explain how each mark guides the reader.",
               "commonMistakes": [
-                "Do not give a definition without the evidence or an example that shows how the idea is used."
+                "Using an apostrophe to make an ordinary plural.",
+                "Joining two complete sentences with a comma alone."
               ],
               "keyTerms": [
-                "Punctuation and Capital Letters",
-                "example",
-                "evidence",
-                "reasoning"
+                "capital letter",
+                "full stop",
+                "comma",
+                "question mark",
+                "apostrophe"
               ]
             }
           ],
@@ -1214,7 +1239,7 @@
             {
               "id": "jss1-eng-m3-l1",
               "title": "Reading for Meaning",
-              "content": "## Reading for Meaning\n\nIn English Studies, reading for meaning is a central idea because it links a definition to the way students observe, reason, and solve problems. A strong lesson does not treat the topic as a single label; it explains what the concept means, which features matter, and how it appears in practice. This is especially important in a subject where evidence, vocabulary, and careful thinking must work together.\n\nThe first step in understanding reading for meaning is to identify its main features and its relevance to the broader subject. Learners should be able to describe the idea in clear language, recognise it in an example, and explain why it matters in a real or classroom context. When the concept is connected to a concrete situation, it becomes easier to remember and to apply in different tasks.\n\nA good explanation also distinguishes the central idea from nearby ideas that may look similar. This helps students avoid confusion and compare similar examples with accuracy. In English Studies, the best answers usually show a logical sequence: define the term, give a relevant example, connect it to evidence, and explain the result. This practice builds reliable understanding rather than shallow recall.\n\nStudents should also keep the method of inquiry in view. To study reading for meaning well, they need to explain the purpose of the concept, identify the conditions under which it applies, and describe what changes if those conditions change. A learner who can do this is more likely to answer written questions well, contribute to discussion, and solve practical tasks with confidence.\n\nIn summary, reading for meaning deserves careful study because it strengthens explanation, application, and judgment. A learner who understands the idea can connect it to evidence, explain it in ordinary language, and use it in new situations. That is the foundation of rich textbook learning in English Studies.",
+              "content": "## Reading for Meaning\n\nReading for meaning is more than saying words aloud. A reader uses the title, sentences and details to understand what a passage says and why. **Skimming** means reading quickly to identify the main subject or overall point. **Scanning** means looking for a particular item, such as a name, date or measurement. **Close reading** means returning to a sentence or paragraph to examine its exact meaning and evidence.\n\nAn inference is a reasonable conclusion drawn from clues rather than stated directly. It must fit the passage. If a passage says that dark clouds gathered, wind strengthened and pupils hurried indoors, a reader may infer that rain was likely. The passage does not prove that rain fell unless it says so.\n\n**Worked example 1.** A notice says: “The school library will close at 2 p.m. on Friday for stocktaking. Pupils should return borrowed books by Thursday.” The question asks when the library closes. Scan for the time expression; “2 p.m.” answers it. The reason is “for stocktaking”, but that is not the time.\n\n**Worked example 2.** A story says: “Tunde looked at the dark sky, covered his books and ran towards the house.” Asked what he may be worried about, locate the clues: dark sky, covered books, and running home. A reasonable inference is that he expects rain and wants to protect his books. State that it is an inference, not a fact directly quoted in the story.\n\nFor a comprehension answer, underline the key words in the question, find the relevant sentence, and answer in a complete phrase or sentence. Use evidence from the passage rather than outside knowledge. If asked for the main idea, state what most of the passage is about, not one small detail. Re-read your answer beside the text to check that it answers the question and does not contradict the passage.",
               "quiz": [
                 {
                   "id": "jss1-eng-m3-l1-final-q1",
@@ -1245,23 +1270,25 @@
                 "secondaryUrl": "https://nerdc.org.ng/CurriculumStructure.aspx",
                 "role": "primary learning source"
               },
-              "objective": "Explain reading for meaning clearly, connect it to a real example, and justify the reasoning in english studies.",
-              "summary": "## Reading for Meaning In English Studies, reading for meaning is a central idea because it links a definition to the way students observe, reason, and solve problems. A strong lesson does not treat the topic as a single label; it explains what the concept means, which features matter, and how it appears in practice. T",
-              "activity": "Use a relevant classroom or real-life example to explain reading for meaning and show why the idea matters.",
+              "objective": "Use skimming, scanning and close reading to locate facts, infer meaning and support answers with evidence.",
+              "summary": "Different reading purposes call for different strategies, but an answer should remain supported by the passage.",
+              "activity": "Read a short passage twice: skim for its subject, then scan for a stated date and supporting detail.",
               "commonMistakes": [
-                "Do not give a definition without the evidence or an example that shows how the idea is used."
+                "Using skimming when an exact detail is required.",
+                "Giving an inference that the passage does not support."
               ],
               "keyTerms": [
-                "Reading for Meaning",
-                "example",
-                "evidence",
-                "reasoning"
+                "skimming",
+                "scanning",
+                "close reading",
+                "inference",
+                "evidence"
               ]
             },
             {
               "id": "jss1-eng-m3-l2",
               "title": "Vocabulary from Context",
-              "content": "## Vocabulary from Context\n\nIn English Studies, vocabulary from context is a central idea because it links a definition to the way students observe, reason, and solve problems. A strong lesson does not treat the topic as a single label; it explains what the concept means, which features matter, and how it appears in practice. This is especially important in a subject where evidence, vocabulary, and careful thinking must work together.\n\nThe first step in understanding vocabulary from context is to identify its main features and its relevance to the broader subject. Learners should be able to describe the idea in clear language, recognise it in an example, and explain why it matters in a real or classroom context. When the concept is connected to a concrete situation, it becomes easier to remember and to apply in different tasks.\n\nA good explanation also distinguishes the central idea from nearby ideas that may look similar. This helps students avoid confusion and compare similar examples with accuracy. In English Studies, the best answers usually show a logical sequence: define the term, give a relevant example, connect it to evidence, and explain the result. This practice builds reliable understanding rather than shallow recall.\n\nStudents should also keep the method of inquiry in view. To study vocabulary from context well, they need to explain the purpose of the concept, identify the conditions under which it applies, and describe what changes if those conditions change. A learner who can do this is more likely to answer written questions well, contribute to discussion, and solve practical tasks with confidence.\n\nIn summary, vocabulary from context deserves careful study because it strengthens explanation, application, and judgment. A learner who understands the idea can connect it to evidence, explain it in ordinary language, and use it in new situations. That is the foundation of rich textbook learning in English Studies.",
+              "content": "## Vocabulary from Context\n\nReaders often meet unfamiliar words. Nearby words may offer a definition, an example, a contrast or a clue from the situation. In “The path was slippery; the wet clay made it difficult to walk on”, the explanation after the semicolon helps explain “slippery”. A contrast clue may use “but” or “unlike”: “Unlike the noisy market, the library was tranquil.” The second phrase suggests that “tranquil” means calm or quiet.\n\nWord parts can also help. A prefix comes before a base word and may change its meaning: “un-” often means not, as in “unfair”. A suffix comes after a base and may change the word's form: “-less” often means without, as in “careless”. A word's parts are clues, not a guarantee, because meanings can shift over time.\n\n**Worked example 1.** Infer “parched” in “After the long walk under the sun, the players were parched and asked for water.” The request for water and heat are context clues. A reasonable meaning is very thirsty. Replace the word mentally: “the players were very thirsty and asked for water.” The sentence still makes sense.\n\n**Worked example 2.** Infer “reluctant” in “Musa was reluctant to speak, but after his teacher encouraged him, he stood and answered.” The contrast between reluctance and eventually answering suggests that Musa hesitated or was unwilling at first. The context supports “hesitant”, not “angry”. Check the guess against the whole sentence.\n\nWhen a word remains uncertain, mark it and keep reading for more clues. Then check a reliable dictionary for pronunciation, part of speech and a fuller meaning. Do not choose a meaning merely because it fits one word nearby; it must fit the grammar and the situation. Write the clue beside the inferred meaning, for example “parched = very thirsty; clue: heat and asking for water.” If a dictionary definition does not fit the sentence, check whether you chose the wrong sense of a word. Many words have more than one meaning; context selects the relevant one.",
               "quiz": [
                 {
                   "id": "jss1-eng-m3-l2-final-q1",
@@ -1292,23 +1319,25 @@
                 "secondaryUrl": "https://nerdc.org.ng/CurriculumStructure.aspx",
                 "role": "primary learning source"
               },
-              "objective": "Explain vocabulary from context clearly, connect it to a real example, and justify the reasoning in english studies.",
-              "summary": "## Vocabulary from Context In English Studies, vocabulary from context is a central idea because it links a definition to the way students observe, reason, and solve problems. A strong lesson does not treat the topic as a single label; it explains what the concept means, which features matter, and how it appears in pra",
-              "activity": "Use a relevant classroom or real-life example to explain vocabulary from context and show why the idea matters.",
+              "objective": "Use definition, example, contrast and word-part clues to infer an unfamiliar word's meaning.",
+              "summary": "Context clues narrow the meaning of an unfamiliar word, but a dictionary or further reading may still be needed.",
+              "activity": "Infer two unfamiliar words from a short paragraph and identify the clue supporting each guess.",
               "commonMistakes": [
-                "Do not give a definition without the evidence or an example that shows how the idea is used."
+                "Guessing from one nearby word without checking the whole sentence.",
+                "Treating a context-based guess as a confirmed dictionary definition."
               ],
               "keyTerms": [
-                "Vocabulary from Context",
-                "example",
-                "evidence",
-                "reasoning"
+                "context clue",
+                "definition clue",
+                "contrast clue",
+                "prefix",
+                "suffix"
               ]
             },
             {
               "id": "jss1-eng-m3-l3",
               "title": "Writing a Paragraph",
-              "content": "## Writing a Paragraph\n\nIn English Studies, writing a paragraph is a central idea because it links a definition to the way students observe, reason, and solve problems. A strong lesson does not treat the topic as a single label; it explains what the concept means, which features matter, and how it appears in practice. This is especially important in a subject where evidence, vocabulary, and careful thinking must work together.\n\nThe first step in understanding writing a paragraph is to identify its main features and its relevance to the broader subject. Learners should be able to describe the idea in clear language, recognise it in an example, and explain why it matters in a real or classroom context. When the concept is connected to a concrete situation, it becomes easier to remember and to apply in different tasks.\n\nA good explanation also distinguishes the central idea from nearby ideas that may look similar. This helps students avoid confusion and compare similar examples with accuracy. In English Studies, the best answers usually show a logical sequence: define the term, give a relevant example, connect it to evidence, and explain the result. This practice builds reliable understanding rather than shallow recall.\n\nStudents should also keep the method of inquiry in view. To study writing a paragraph well, they need to explain the purpose of the concept, identify the conditions under which it applies, and describe what changes if those conditions change. A learner who can do this is more likely to answer written questions well, contribute to discussion, and solve practical tasks with confidence.\n\nIn summary, writing a paragraph deserves careful study because it strengthens explanation, application, and judgment. A learner who understands the idea can connect it to evidence, explain it in ordinary language, and use it in new situations. That is the foundation of rich textbook learning in English Studies.",
+              "content": "## Writing a Paragraph\n\nA paragraph is a group of related sentences that develops one main idea. A clear paragraph often begins with a topic sentence, adds supporting details, and ends with a sentence that rounds off the point. **Unity** means every sentence supports the same main idea. **Coherence** means the ideas are arranged so that a reader can follow them. A paragraph may use a time order, a reason-and-result order, or a detail-by-detail order.\n\nSuppose the topic is keeping a classroom tidy. A topic sentence might be “A tidy classroom makes lessons easier to follow.” Supporting details could explain how clear desks help pupils find books and how swept floors make movement safer. A sentence about a football match would not support this paragraph and should be removed or placed in another one.\n\n**Worked example 1.** Build a paragraph about preparing for school. First state the main idea: “Packing my school bag the night before saves time in the morning.” Add a detail about checking the timetable, then one about placing books and a water bottle in the bag. End by explaining that preparation helps the pupil leave on time. Each sentence supports the same point.\n\n**Worked example 2.** Revise the sentence order: “I sharpen my pencils. I check the next day's timetable. My bag is ready before bedtime.” Put the cause first: “I check the next day's timetable and sharpen the pencils I need. Then I pack my books. My bag is ready before bedtime.” The time words show the sequence more clearly.\n\nBefore handing in a paragraph, underline the topic sentence and draw a line from each other sentence to the idea it supports. Remove unrelated material. Check that pronouns have clear referents and that each sentence ends with correct punctuation. Read the paragraph aloud: if the order feels confusing, add a useful link such as “first”, “next” or “as a result”, but do not add one where the relationship is already clear.",
               "quiz": [
                 {
                   "id": "jss1-eng-m3-l3-final-q1",
@@ -1339,23 +1368,25 @@
                 "secondaryUrl": "https://nerdc.org.ng/CurriculumStructure.aspx",
                 "role": "primary learning source"
               },
-              "objective": "Explain writing a paragraph clearly, connect it to a real example, and justify the reasoning in english studies.",
-              "summary": "## Writing a Paragraph In English Studies, writing a paragraph is a central idea because it links a definition to the way students observe, reason, and solve problems. A strong lesson does not treat the topic as a single label; it explains what the concept means, which features matter, and how it appears in practice. T",
-              "activity": "Use a relevant classroom or real-life example to explain writing a paragraph and show why the idea matters.",
+              "objective": "Write a focused paragraph with a topic sentence, supporting details and a concluding sentence.",
+              "summary": "A unified paragraph develops one main idea in a clear order and supports it with relevant details.",
+              "activity": "Draft and revise one paragraph about a useful school routine, checking unity and sentence order.",
               "commonMistakes": [
-                "Do not give a definition without the evidence or an example that shows how the idea is used."
+                "Changing the subject halfway through a paragraph.",
+                "Writing examples that do not support the topic sentence."
               ],
               "keyTerms": [
-                "Writing a Paragraph",
-                "example",
-                "evidence",
-                "reasoning"
+                "paragraph",
+                "topic sentence",
+                "supporting detail",
+                "unity",
+                "coherence"
               ]
             },
             {
               "id": "jss1-eng-m3-l4",
               "title": "Descriptive Writing",
-              "content": "## Descriptive Writing\n\nIn English Studies, descriptive writing is a central idea because it links a definition to the way students observe, reason, and solve problems. A strong lesson does not treat the topic as a single label; it explains what the concept means, which features matter, and how it appears in practice. This is especially important in a subject where evidence, vocabulary, and careful thinking must work together.\n\nThe first step in understanding descriptive writing is to identify its main features and its relevance to the broader subject. Learners should be able to describe the idea in clear language, recognise it in an example, and explain why it matters in a real or classroom context. When the concept is connected to a concrete situation, it becomes easier to remember and to apply in different tasks.\n\nA good explanation also distinguishes the central idea from nearby ideas that may look similar. This helps students avoid confusion and compare similar examples with accuracy. In English Studies, the best answers usually show a logical sequence: define the term, give a relevant example, connect it to evidence, and explain the result. This practice builds reliable understanding rather than shallow recall.\n\nStudents should also keep the method of inquiry in view. To study descriptive writing well, they need to explain the purpose of the concept, identify the conditions under which it applies, and describe what changes if those conditions change. A learner who can do this is more likely to answer written questions well, contribute to discussion, and solve practical tasks with confidence.\n\nIn summary, descriptive writing deserves careful study because it strengthens explanation, application, and judgment. A learner who understands the idea can connect it to evidence, explain it in ordinary language, and use it in new situations. That is the foundation of rich textbook learning in English Studies.",
+              "content": "## Descriptive Writing\n\nDescriptive writing helps a reader picture a person, place or object. Strong description depends on selected details, not a pile of adjectives. A writer may describe what can be seen, heard, smelled, touched or tasted when appropriate. Precise nouns and verbs make the scene clearer: “The bell rang” gives more information than “There was a sound.” The writer should choose a viewpoint and organise details so that the reader can follow them.\n\nImagine describing the school garden from its gate. Begin with what is nearest, then move towards the beds or trees. A writer might note the narrow path, damp soil after rain, and the sound of pupils talking nearby. Details should be accurate and relevant. A paragraph about a quiet garden would be confusing if it suddenly described a crowded bus park without explaining the change.\n\n**Worked example 1.** Improve “The garden was nice.” Ask what makes it noticeable. A more precise version is: “Rows of okra leaves spread beside the sandy path, and drops of water clung to their edges.” The noun “okra leaves” identifies what is seen; “spread” gives action; the water detail helps the reader picture the scene.\n\n**Worked example 2.** Arrange the details “the classroom door”, “the chalkboard”, and “the teacher's table” from a pupil's seat near the back. Start with the chalkboard at the front, then mention the table, and finish with the door to the side. The viewpoint provides an order, so the description does not read like a random list.\n\nChoose comparisons carefully and avoid exaggeration that makes a factual description unbelievable. “The floor was wet” is useful if it matters; “the floor was an ocean” is figurative and may mislead unless the writer intends a comparison. After drafting, circle the nouns and verbs: replace vague words such as “thing” and “nice” with exact details. Keep only the details that build the picture you want the reader to see.",
               "quiz": [
                 {
                   "id": "jss1-eng-m3-l4-final-q1",
@@ -1386,23 +1417,25 @@
                 "secondaryUrl": "https://nerdc.org.ng/CurriculumStructure.aspx",
                 "role": "primary learning source"
               },
-              "objective": "Explain descriptive writing clearly, connect it to a real example, and justify the reasoning in english studies.",
-              "summary": "## Descriptive Writing In English Studies, descriptive writing is a central idea because it links a definition to the way students observe, reason, and solve problems. A strong lesson does not treat the topic as a single label; it explains what the concept means, which features matter, and how it appears in practice. T",
-              "activity": "Use a relevant classroom or real-life example to explain descriptive writing and show why the idea matters.",
+              "objective": "Plan and write a descriptive paragraph using precise nouns, sensory details and an organised viewpoint.",
+              "summary": "Description helps a reader imagine a person, place or object through selected, accurate details.",
+              "activity": "Observe one familiar school location and write a paragraph using at least three sensory details.",
               "commonMistakes": [
-                "Do not give a definition without the evidence or an example that shows how the idea is used."
+                "Listing adjectives without showing what is observed.",
+                "Mixing details from unrelated viewpoints."
               ],
               "keyTerms": [
-                "Descriptive Writing",
-                "example",
-                "evidence",
-                "reasoning"
+                "description",
+                "sensory detail",
+                "viewpoint",
+                "precise noun",
+                "adjective"
               ]
             },
             {
               "id": "jss1-eng-m3-l5",
               "title": "Narrative Writing",
-              "content": "## Narrative Writing\n\nIn English Studies, narrative writing is a central idea because it links a definition to the way students observe, reason, and solve problems. A strong lesson does not treat the topic as a single label; it explains what the concept means, which features matter, and how it appears in practice. This is especially important in a subject where evidence, vocabulary, and careful thinking must work together.\n\nThe first step in understanding narrative writing is to identify its main features and its relevance to the broader subject. Learners should be able to describe the idea in clear language, recognise it in an example, and explain why it matters in a real or classroom context. When the concept is connected to a concrete situation, it becomes easier to remember and to apply in different tasks.\n\nA good explanation also distinguishes the central idea from nearby ideas that may look similar. This helps students avoid confusion and compare similar examples with accuracy. In English Studies, the best answers usually show a logical sequence: define the term, give a relevant example, connect it to evidence, and explain the result. This practice builds reliable understanding rather than shallow recall.\n\nStudents should also keep the method of inquiry in view. To study narrative writing well, they need to explain the purpose of the concept, identify the conditions under which it applies, and describe what changes if those conditions change. A learner who can do this is more likely to answer written questions well, contribute to discussion, and solve practical tasks with confidence.\n\nIn summary, narrative writing deserves careful study because it strengthens explanation, application, and judgment. A learner who understands the idea can connect it to evidence, explain it in ordinary language, and use it in new situations. That is the foundation of rich textbook learning in English Studies.",
+              "content": "## Narrative Writing\n\nA narrative tells events in a sequence. It usually introduces a setting and characters, presents a problem or change, develops events, and reaches a resolution. The plot is the connected sequence of events, not just a list of things that happened. A story may use a first-person narrator (“I”) or a third-person narrator (“she”, “they”). Choose the narrator before drafting and keep the viewpoint clear.\n\nPlan with a simple chain: where and when the story begins; who is involved; what goes wrong; what the character does; and how the problem ends. A school story might begin when a pupil discovers that a borrowed library book is missing before it is due. The character searches the classroom and retraces the route home. The ending should follow from those actions, not appear by chance.\n\n**Worked example 1.** Turn “The rain began. We reached school” into a connected opening. Add a setting and action: “As we walked along the road to school, rain began to fall. We covered our exercise books and hurried towards the gate.” The time link and actions show how the second event follows the first.\n\n**Worked example 2.** Resolve a story about a lost exercise book. The pupil first checks the desk, then asks a classmate, then remembers leaving it in the library. A believable ending is that the librarian has found it and placed it at the desk. The resolution answers the problem introduced earlier.\n\nUse the simple past for completed events unless there is a clear reason to change tense. Dialogue can reveal character, but punctuate it so the reader knows who speaks. Avoid beginning every sentence with “Then”; vary the connection by showing cause, time or reaction. In revision, underline the problem and circle the sentence that resolves it. If the resolution does not answer the problem, add a relevant event or change the ending.",
               "quiz": [
                 {
                   "id": "jss1-eng-m3-l5-final-q1",
@@ -1433,23 +1466,25 @@
                 "secondaryUrl": "https://nerdc.org.ng/CurriculumStructure.aspx",
                 "role": "primary learning source"
               },
-              "objective": "Explain narrative writing clearly, connect it to a real example, and justify the reasoning in english studies.",
-              "summary": "## Narrative Writing In English Studies, narrative writing is a central idea because it links a definition to the way students observe, reason, and solve problems. A strong lesson does not treat the topic as a single label; it explains what the concept means, which features matter, and how it appears in practice. This ",
-              "activity": "Use a relevant classroom or real-life example to explain narrative writing and show why the idea matters.",
+              "objective": "Plan and write a short narrative with a setting, characters, ordered events, a problem and a resolution.",
+              "summary": "A narrative tells connected events and gives the reader a reason to follow what happens next.",
+              "activity": "Plan a school-based story using a five-point event sequence, then draft its opening and ending.",
               "commonMistakes": [
-                "Do not give a definition without the evidence or an example that shows how the idea is used."
+                "Listing events without showing how one leads to another.",
+                "Changing tense without a reason."
               ],
               "keyTerms": [
-                "Narrative Writing",
-                "example",
-                "evidence",
-                "reasoning"
+                "narrative",
+                "setting",
+                "character",
+                "plot",
+                "resolution"
               ]
             },
             {
               "id": "jss1-eng-m3-l6",
               "title": "Informal Letters",
-              "content": "## Informal Letters\n\nIn English Studies, informal letters is a central idea because it links a definition to the way students observe, reason, and solve problems. A strong lesson does not treat the topic as a single label; it explains what the concept means, which features matter, and how it appears in practice. This is especially important in a subject where evidence, vocabulary, and careful thinking must work together.\n\nThe first step in understanding informal letters is to identify its main features and its relevance to the broader subject. Learners should be able to describe the idea in clear language, recognise it in an example, and explain why it matters in a real or classroom context. When the concept is connected to a concrete situation, it becomes easier to remember and to apply in different tasks.\n\nA good explanation also distinguishes the central idea from nearby ideas that may look similar. This helps students avoid confusion and compare similar examples with accuracy. In English Studies, the best answers usually show a logical sequence: define the term, give a relevant example, connect it to evidence, and explain the result. This practice builds reliable understanding rather than shallow recall.\n\nStudents should also keep the method of inquiry in view. To study informal letters well, they need to explain the purpose of the concept, identify the conditions under which it applies, and describe what changes if those conditions change. A learner who can do this is more likely to answer written questions well, contribute to discussion, and solve practical tasks with confidence.\n\nIn summary, informal letters deserves careful study because it strengthens explanation, application, and judgment. A learner who understands the idea can connect it to evidence, explain it in ordinary language, and use it in new situations. That is the foundation of rich textbook learning in English Studies.",
+              "content": "## Informal Letters\n\nAn informal letter is written to someone the writer knows, such as a relative or friend. The tone can be warm and conversational, but the message still needs a clear order. In the traditional school layout, write the sender's address at the top right or left according to the format taught, then the date. Begin with a suitable salutation such as “Dear Aunty” or “Dear Chika”, write the message in paragraphs, close with a phrase such as “Your friend” or “Yours sincerely”, and sign the writer's name.\n\nThe opening can ask after the reader or state why the writer is writing. The middle paragraphs carry the main news or description. The final paragraph may ask a question or say when the writer hopes to hear back. Keep the details relevant to the recipient. A letter describing a school sports day should explain what happened, not switch without reason to unrelated complaints.\n\n**Worked example 1.** Plan a letter to a cousin about a science exhibition. Address: “14 Market Road, Abeokuta”. Date: “12 March 2026”. Salutation: “Dear Tola,”. Opening: “I am writing to tell you about our science exhibition.” The body can describe one project and what the writer learned; the closing can invite the cousin to visit next time. Each part has a distinct job.\n\n**Worked example 2.** Correct this order: “Yours, Amina / Dear Bisi / 5 May 2026 / 8 School Road, Ilorin / The new library opened today.” Put the address first, then the date, salutation, message, and closing with name. The reader can now identify who wrote, when, to whom, and why.\n\nUse the tone you would use with the person, but avoid careless spelling and unclear pronouns. A friendly letter is not an excuse to omit paragraphs or punctuation. Before sending, check that the address and date are present, the opening matches the recipient, the main news is easy to find, and the closing appears after the message.",
               "quiz": [
                 {
                   "id": "jss1-eng-m3-l6-final-q1",
@@ -1480,23 +1515,25 @@
                 "secondaryUrl": "https://nerdc.org.ng/CurriculumStructure.aspx",
                 "role": "primary learning source"
               },
-              "objective": "Explain informal letters clearly, connect it to a real example, and justify the reasoning in english studies.",
-              "summary": "## Informal Letters In English Studies, informal letters is a central idea because it links a definition to the way students observe, reason, and solve problems. A strong lesson does not treat the topic as a single label; it explains what the concept means, which features matter, and how it appears in practice. This is",
-              "activity": "Use a relevant classroom or real-life example to explain informal letters and show why the idea matters.",
+              "objective": "Write an informal letter with the correct address, date, salutation, organised message and closing.",
+              "summary": "An informal letter uses a familiar tone while keeping a recognisable layout and clear purpose.",
+              "activity": "Write a letter to a cousin describing a school event, then check its layout and paragraph order.",
               "commonMistakes": [
-                "Do not give a definition without the evidence or an example that shows how the idea is used."
+                "Using a formal business salutation for a close friend.",
+                "Leaving out the date or placing the closing before the message."
               ],
               "keyTerms": [
-                "Informal Letters",
-                "example",
-                "evidence",
-                "reasoning"
+                "informal letter",
+                "address",
+                "salutation",
+                "body",
+                "closing"
               ]
             },
             {
               "id": "jss1-eng-m3-l7",
               "title": "Introduction to Literature",
-              "content": "## Introduction to Literature\n\nIn English Studies, introduction to literature is a central idea because it links a definition to the way students observe, reason, and solve problems. A strong lesson does not treat the topic as a single label; it explains what the concept means, which features matter, and how it appears in practice. This is especially important in a subject where evidence, vocabulary, and careful thinking must work together.\n\nThe first step in understanding introduction to literature is to identify its main features and its relevance to the broader subject. Learners should be able to describe the idea in clear language, recognise it in an example, and explain why it matters in a real or classroom context. When the concept is connected to a concrete situation, it becomes easier to remember and to apply in different tasks.\n\nA good explanation also distinguishes the central idea from nearby ideas that may look similar. This helps students avoid confusion and compare similar examples with accuracy. In English Studies, the best answers usually show a logical sequence: define the term, give a relevant example, connect it to evidence, and explain the result. This practice builds reliable understanding rather than shallow recall.\n\nStudents should also keep the method of inquiry in view. To study introduction to literature well, they need to explain the purpose of the concept, identify the conditions under which it applies, and describe what changes if those conditions change. A learner who can do this is more likely to answer written questions well, contribute to discussion, and solve practical tasks with confidence.\n\nIn summary, introduction to literature deserves careful study because it strengthens explanation, application, and judgment. A learner who understands the idea can connect it to evidence, explain it in ordinary language, and use it in new situations. That is the foundation of rich textbook learning in English Studies.",
+              "content": "## Introduction to Literature\n\nLiterature is language shaped to express experiences, ideas and feelings. Three familiar forms are prose, poetry and drama. Prose is usually written in sentences and paragraphs, as in a short story. Poetry uses line breaks, sound, rhythm, imagery or other deliberate choices; not every poem rhymes. Drama is written primarily for performance and often presents characters through speech and stage directions.\n\nGenre describes a broad kind or form of text. Form affects how a reader approaches a work. A prose reader follows narration and paragraphs; a poetry reader may notice line length, repeated sounds and images; an audience watching drama sees movement, setting and speech together. The same subject—such as travel—can be presented in all three forms.\n\n**Worked example 1.** Identify the form of a passage written in paragraphs with a narrator describing a boy crossing a bridge. The continuous narration and paragraphs point to prose. The passage may contain dialogue, but dialogue alone does not make it drama; narration is the main form.\n\n**Worked example 2.** A page shows character names followed by spoken lines and directions such as “[She opens the door.]”. The character labels and stage direction indicate a dramatic script. To explain the evidence, point to the speaking roles and instruction for an action, rather than only saying “it looks like a play”.\n\nWhen discussing a text, separate observation from judgement. “The poem repeats a sound at the end of three lines” is an observation; “the repetition makes the lines memorable” is an interpretation that should be explained. Begin with the form and one visible feature, then describe its effect. Readers can disagree about an effect, but they should support their view with a detail from the text. Do not claim that a poem is weak because it does not rhyme or that a story is true simply because it sounds realistic.",
               "quiz": [
                 {
                   "id": "jss1-eng-m3-l7-final-q1",
@@ -1527,23 +1564,25 @@
                 "secondaryUrl": "https://nerdc.org.ng/CurriculumStructure.aspx",
                 "role": "primary learning source"
               },
-              "objective": "Explain introduction to literature clearly, connect it to a real example, and justify the reasoning in english studies.",
-              "summary": "## Introduction to Literature In English Studies, introduction to literature is a central idea because it links a definition to the way students observe, reason, and solve problems. A strong lesson does not treat the topic as a single label; it explains what the concept means, which features matter, and how it appears ",
-              "activity": "Use a relevant classroom or real-life example to explain introduction to literature and show why the idea matters.",
+              "objective": "Distinguish prose, poetry and drama and identify how each form presents a subject to an audience.",
+              "summary": "Literature uses language imaginatively, and genre affects how readers or audiences meet a text.",
+              "activity": "Compare a short prose passage, poem and dialogue by noting their layout and reading methods.",
               "commonMistakes": [
-                "Do not give a definition without the evidence or an example that shows how the idea is used."
+                "Assuming every poem must rhyme.",
+                "Calling a text drama merely because it contains conversation."
               ],
               "keyTerms": [
-                "Introduction to Literature",
-                "example",
-                "evidence",
-                "reasoning"
+                "literature",
+                "prose",
+                "poetry",
+                "drama",
+                "genre"
               ]
             },
             {
               "id": "jss1-eng-m3-l8",
               "title": "Elements of Prose",
-              "content": "## Elements of Prose\n\nIn English Studies, elements of prose is a central idea because it links a definition to the way students observe, reason, and solve problems. A strong lesson does not treat the topic as a single label; it explains what the concept means, which features matter, and how it appears in practice. This is especially important in a subject where evidence, vocabulary, and careful thinking must work together.\n\nThe first step in understanding elements of prose is to identify its main features and its relevance to the broader subject. Learners should be able to describe the idea in clear language, recognise it in an example, and explain why it matters in a real or classroom context. When the concept is connected to a concrete situation, it becomes easier to remember and to apply in different tasks.\n\nA good explanation also distinguishes the central idea from nearby ideas that may look similar. This helps students avoid confusion and compare similar examples with accuracy. In English Studies, the best answers usually show a logical sequence: define the term, give a relevant example, connect it to evidence, and explain the result. This practice builds reliable understanding rather than shallow recall.\n\nStudents should also keep the method of inquiry in view. To study elements of prose well, they need to explain the purpose of the concept, identify the conditions under which it applies, and describe what changes if those conditions change. A learner who can do this is more likely to answer written questions well, contribute to discussion, and solve practical tasks with confidence.\n\nIn summary, elements of prose deserves careful study because it strengthens explanation, application, and judgment. A learner who understands the idea can connect it to evidence, explain it in ordinary language, and use it in new situations. That is the foundation of rich textbook learning in English Studies.",
+              "content": "## Elements of Prose\n\nA prose story has elements that help readers understand how it works. **Setting** is where and when events happen. A **character** is a person or figure in the story. **Plot** is the connected sequence of events, often shaped by a problem or conflict. The **narrator** is the voice that tells the story; it may be a character using “I” or an outside voice using “he” or “she”. The author is the real person who wrote the work, not necessarily the narrator.\n\nA **theme** is an idea about human experience that a story develops. “Friendship” is a topic; “friendship can require honesty during a difficult moment” is a possible theme statement. A reader should support a theme with actions, choices or outcomes in the story. One event rarely proves a theme by itself.\n\n**Worked example 1.** In a story, Sade misses the last bus after helping a neighbour carry water. The setting is the bus stop and the time near evening if the passage gives those details. Sade is a character. Missing the bus is a problem in the plot; the sequence may follow how she finds a safe way home. These labels come from different pieces of evidence.\n\n**Worked example 2.** The story ends with Sade telling her family the truth about being late, and they help her plan a safer route. “Responsibility” may be a topic. A more complete theme is “Taking responsibility can help a family solve a problem together.” The truthful choice and supportive ending provide evidence for that interpretation.\n\nWhen answering a prose question, quote or paraphrase a relevant detail, then explain how it supports your point. Do not identify the narrator as the author unless the text gives evidence that they are the same person. A story may have more than one possible theme; the strongest answer fits several important events, not one isolated sentence.",
               "quiz": [
                 {
                   "id": "jss1-eng-m3-l8-final-q1",
@@ -1574,23 +1613,25 @@
                 "secondaryUrl": "https://nerdc.org.ng/CurriculumStructure.aspx",
                 "role": "primary learning source"
               },
-              "objective": "Explain elements of prose clearly, connect it to a real example, and justify the reasoning in english studies.",
-              "summary": "## Elements of Prose In English Studies, elements of prose is a central idea because it links a definition to the way students observe, reason, and solve problems. A strong lesson does not treat the topic as a single label; it explains what the concept means, which features matter, and how it appears in practice. This ",
-              "activity": "Use a relevant classroom or real-life example to explain elements of prose and show why the idea matters.",
+              "objective": "Identify setting, character, plot, narrator and theme in a short prose passage.",
+              "summary": "Prose elements work together: characters act in a setting, events form a plot, and details suggest a theme.",
+              "activity": "Annotate a short story extract by locating setting, character, conflict and evidence for a possible theme.",
               "commonMistakes": [
-                "Do not give a definition without the evidence or an example that shows how the idea is used."
+                "Naming a topic as a theme without stating what the story says about it.",
+                "Confusing the author with the narrator."
               ],
               "keyTerms": [
-                "Elements of Prose",
-                "example",
-                "evidence",
-                "reasoning"
+                "setting",
+                "character",
+                "plot",
+                "narrator",
+                "theme"
               ]
             },
             {
               "id": "jss1-eng-m3-l9",
               "title": "Oral Literature: Folktales, Proverbs and Riddles",
-              "content": "## Oral Literature: Folktales, Proverbs and Riddles\n\nIn English Studies, oral literature: folktales, proverbs and riddles is a central idea because it links a definition to the way students observe, reason, and solve problems. A strong lesson does not treat the topic as a single label; it explains what the concept means, which features matter, and how it appears in practice. This is especially important in a subject where evidence, vocabulary, and careful thinking must work together.\n\nThe first step in understanding oral literature: folktales, proverbs and riddles is to identify its main features and its relevance to the broader subject. Learners should be able to describe the idea in clear language, recognise it in an example, and explain why it matters in a real or classroom context. When the concept is connected to a concrete situation, it becomes easier to remember and to apply in different tasks.\n\nA good explanation also distinguishes the central idea from nearby ideas that may look similar. This helps students avoid confusion and compare similar examples with accuracy. In English Studies, the best answers usually show a logical sequence: define the term, give a relevant example, connect it to evidence, and explain the result. This practice builds reliable understanding rather than shallow recall.\n\nStudents should also keep the method of inquiry in view. To study oral literature: folktales, proverbs and riddles well, they need to explain the purpose of the concept, identify the conditions under which it applies, and describe what changes if those conditions change. A learner who can do this is more likely to answer written questions well, contribute to discussion, and solve practical tasks with confidence.\n\nIn summary, oral literature: folktales, proverbs and riddles deserves careful study because it strengthens explanation, application, and judgment. A learner who understands the idea can connect it to evidence, explain it in ordinary language, and use it in new situations. That is the foundation of rich textbook learning in English Studies.",
+              "content": "## Oral Literature: Folktales, Proverbs and Riddles\n\nOral literature is created, remembered or shared through spoken performance. A folktale is a traditional story passed between tellers and listeners; versions can change across families and communities. Characters may include people, animals or imagined beings. A proverb is a short saying that expresses advice or an observation, often indirectly. A riddle describes something in a puzzling way and invites listeners to identify it. Voice, pause, gesture and audience response can all affect a performance.\n\nA folktale may entertain and encourage reflection, but its lesson should be drawn from what happens rather than attached automatically. A proverb also needs context: a speaker chooses it because it fits a situation. Riddles rely on clues, double meanings or comparisons. When recording oral material, ask permission, write the words accurately, and note the language and setting if the speaker agrees. Do not claim that one version represents every Nigerian community.\n\n**Worked example 1.** Consider the original classroom proverb “A single hand cannot tie a bundle.” The literal image is difficult work done with one hand; the intended point is that cooperation can make a task easier. If a group is preparing a school display, the proverb may encourage shared work. It should not be used to claim that no task can ever be done alone.\n\n**Worked example 2.** Solve this original riddle: “I have a face and two hands, but I cannot clap. What am I?” The clues are “face” and “hands”; both words have meanings beyond body parts. A clock has a face and hands, so “clock” fits. Check that the answer explains both clues.\n\nDuring a folktale discussion, identify the teller, listeners, repeated phrases and choices that lead to the ending. Distinguish a proverb's literal picture from its intended advice. If a phrase is unfamiliar, ask a fluent speaker what it means rather than inventing a translation. Oral traditions deserve careful listening because words, performance and local knowledge belong together.",
               "quiz": [
                 {
                   "id": "jss1-eng-m3-l9-final-q1",
@@ -1621,17 +1662,19 @@
                 "secondaryUrl": "https://nerdc.org.ng/CurriculumStructure.aspx",
                 "role": "primary learning source"
               },
-              "objective": "Explain oral literature: folktales, proverbs and riddles clearly, connect it to a real example, and justify the reasoning in english studies.",
-              "summary": "## Oral Literature: Folktales, Proverbs and Riddles In English Studies, oral literature: folktales, proverbs and riddles is a central idea because it links a definition to the way students observe, reason, and solve problems. A strong lesson does not treat the topic as a single label; it explains what the concept means",
-              "activity": "Use a relevant classroom or real-life example to explain oral literature: folktales, proverbs and riddles and show why the idea matters.",
+              "objective": "Explain how folktales, proverbs and riddles communicate ideas through oral performance and figurative language.",
+              "summary": "Oral literature is shared through speech and performance, with forms that entertain, teach or challenge an audience.",
+              "activity": "Collect a family-approved proverb or riddle, record its wording and explain its meaning and setting.",
               "commonMistakes": [
-                "Do not give a definition without the evidence or an example that shows how the idea is used."
+                "Treating every folktale as a literal historical report.",
+                "Repeating a proverb without explaining its meaning in context."
               ],
               "keyTerms": [
-                "Oral Literature: Folktales, Proverbs and Riddles",
-                "example",
-                "evidence",
-                "reasoning"
+                "oral literature",
+                "folktale",
+                "proverb",
+                "riddle",
+                "performance"
               ]
             }
           ],
@@ -1817,334 +1860,334 @@
         "instructions": "Answer the questions using concepts and methods from all three modules. Show calculations or textual evidence where appropriate.",
         "questions": [
           {
-            "question": "About how many sounds does spoken English have?",
+            "id": "jss1-english-studies-final-q1",
+            "question": "How many speech sounds are heard in “ship”, and why?",
             "options": [
-              "26",
-              "44",
-              "12",
-              "100"
+              "/s/ /h/ /ɪ/ /p/ because there are four letters",
+              "/ʃ/ /ɪ/ /p/ because “sh” represents one sound",
+              "/ʃ/ /aɪ/ /p/ because i says its letter name",
+              "/ʃ/ /ɪ/ because final p is silent"
             ],
-            "answer": 1,
-            "id": "jss1-english-studies-final-q1"
+            "answer": 1
           },
           {
-            "question": "Which word contains /i:/?",
+            "id": "jss1-english-studies-final-q2",
+            "question": "A pupil changes /sɪt/ to the word “seat”. Which sound changes?",
             "options": [
-              "fill",
-              "sit",
-              "team",
-              "bit"
+              "The initial /s/ changes to /ʃ/",
+              "The final /t/ changes to /d/",
+              "The vowel changes from /ɪ/ to /i:/",
+              "The word gains a second syllable"
             ],
-            "answer": 2,
-            "id": "jss1-english-studies-final-q2"
+            "answer": 2
           },
           {
-            "question": "Which word has the vowel /æ/?",
+            "id": "jss1-english-studies-final-q3",
+            "question": "Which word contains the vowel /æ/ in the course model?",
             "options": [
-              "bad",
-              "pen",
-              "said",
-              "bed"
+              "man",
+              "men",
+              "main",
+              "moon"
             ],
-            "answer": 0,
-            "id": "jss1-english-studies-final-q3"
+            "answer": 0
           },
           {
-            "question": "Which word has /ɑ:/?",
+            "id": "jss1-english-studies-final-q4",
+            "question": "Which word belongs with “farm” because it has /ɑ:/ in the model?",
             "options": [
-              "love",
-              "farm",
-              "bus",
-              "cup"
+              "cup",
+              "start",
+              "come",
+              "bus"
             ],
-            "answer": 1,
-            "id": "jss1-english-studies-final-q4"
+            "answer": 1
           },
           {
-            "question": "Which word has the vowel sound /ɔ:/ in the lesson's pronunciation model?",
+            "id": "jss1-english-studies-final-q5",
+            "question": "In a model that distinguishes /ɒ/ and /ɔ:/, which word has /ɔ:/?",
             "options": [
+              "clock",
+              "hot",
               "thought",
-              "thin",
-              "three",
-              "thank"
+              "shop"
             ],
-            "answer": 0,
-            "id": "jss1-english-studies-final-q5"
+            "answer": 2
           },
           {
-            "question": "Which word has /u:/?",
+            "id": "jss1-english-studies-final-q6",
+            "question": "Which word has /u:/, the vowel heard in “food”?",
             "options": [
-              "full",
-              "food",
+              "pull",
               "book",
-              "put"
+              "pool",
+              "foot"
             ],
-            "answer": 1,
-            "id": "jss1-english-studies-final-q6"
+            "answer": 2
           },
           {
-            "question": "What is the name of the vowel /ə/?",
+            "id": "jss1-english-studies-final-q7",
+            "question": "In /əˈbaʊt/, which syllable begins with schwa?",
             "options": [
-              "diphthong",
-              "glide",
-              "schwa",
-              "stress"
+              "the first, unstressed syllable",
+              "the second, stressed syllable",
+              "both syllables",
+              "neither syllable"
             ],
-            "answer": 2,
-            "id": "jss1-english-studies-final-q7"
+            "answer": 0
           },
           {
-            "question": "How many diphthongs are in standard British English?",
+            "id": "jss1-english-studies-final-q8",
+            "question": "Which sound is the diphthong in “boy”?",
             "options": [
-              "8",
-              "2",
-              "4",
-              "12"
+              "/eɪ/",
+              "/aɪ/",
+              "/ɔɪ/",
+              "/aʊ/"
             ],
-            "answer": 0,
-            "id": "jss1-english-studies-final-q8"
+            "answer": 2
           },
           {
-            "question": "Which pair differs only in voicing?",
+            "id": "jss1-english-studies-final-q9",
+            "question": "Which pair keeps the mouth position but changes voicing at the first consonant?",
             "options": [
-              "/æ/ and /e/",
-              "/ɒ/ and /ɔ:/",
-              "/ɪ/ and /i:/",
-              "/p/ and /b/"
+              "pat / bat",
+              "thin / then",
+              "sit / seat",
+              "cot / caught"
             ],
-            "answer": 3,
-            "id": "jss1-english-studies-final-q9"
+            "answer": 0
           },
           {
-            "question": "Which is an abstract noun?",
+            "id": "jss1-english-studies-final-q10",
+            "question": "In “A flock of birds crossed the field”, which noun names a group?",
             "options": [
-              "Lagos",
-              "table",
-              "honesty",
-              "team"
+              "birds",
+              "field",
+              "flock",
+              "crossed"
             ],
-            "answer": 2,
-            "id": "jss1-english-studies-final-q10"
+            "answer": 2
           },
           {
-            "question": "Which is a possessive pronoun?",
+            "id": "jss1-english-studies-final-q11",
+            "question": "How can the unclear sentence “Amina told Bisi that she had won” be made clear if Amina won?",
             "options": [
-              "she",
-              "hers",
-              "herself",
-              "them"
+              "Amina told Bisi that Amina had won.",
+              "Amina told Bisi that she had won.",
+              "Amina told her that Bisi had won.",
+              "Amina told Bisi she had."
             ],
-            "answer": 1,
-            "id": "jss1-english-studies-final-q11"
+            "answer": 0
           },
           {
-            "question": "Which word is an auxiliary verb in 'They are playing'?",
+            "id": "jss1-english-studies-final-q12",
+            "question": "Complete the sentence with an object pronoun: “The librarian gave the books to ___.”",
             "options": [
-              "are",
-              "They",
-              "playing",
-              "none"
+              "we",
+              "our",
+              "us",
+              "they"
             ],
-            "answer": 0,
-            "id": "jss1-english-studies-final-q12"
+            "answer": 2
           },
           {
-            "question": "Which sentence is in the simple past?",
+            "id": "jss1-english-studies-final-q13",
+            "question": "In “The team has finished its work”, which word is the helping verb?",
             "options": [
-              "He will play.",
-              "He plays.",
-              "He played.",
-              "He is playing."
+              "team",
+              "has",
+              "finished",
+              "work"
             ],
-            "answer": 2,
-            "id": "jss1-english-studies-final-q13"
+            "answer": 1
           },
           {
-            "question": "The superlative of 'good' is:",
+            "id": "jss1-english-studies-final-q14",
+            "question": "Which sentence uses the simple future correctly?",
             "options": [
-              "better",
-              "gooder",
-              "best",
-              "goodest"
+              "They will attended the match tomorrow.",
+              "They will attend the match tomorrow.",
+              "They attended the match tomorrow.",
+              "They will attends the match tomorrow."
             ],
-            "answer": 2,
-            "id": "jss1-english-studies-final-q14"
+            "answer": 1
           },
           {
-            "question": "Which word is an adverb of manner?",
+            "id": "jss1-english-studies-final-q15",
+            "question": "Which sentence compares two bags correctly?",
             "options": [
-              "quickly",
-              "outside",
-              "yesterday",
-              "tall"
+              "This bag is more heavier than that one.",
+              "This bag is heaviest than that one.",
+              "This bag is heavier than that one.",
+              "This bag is the heavier of all three."
             ],
-            "answer": 0,
-            "id": "jss1-english-studies-final-q15"
+            "answer": 2
           },
           {
-            "question": "Which is a preposition?",
+            "id": "jss1-english-studies-final-q16",
+            "question": "Which word tells how the pupil spoke in “The pupil spoke softly to the visitor”?",
+            "options": [
+              "pupil",
+              "spoke",
+              "softly",
+              "visitor"
+            ],
+            "answer": 2
+          },
+          {
+            "id": "jss1-english-studies-final-q17",
+            "question": "Choose the preposition that shows where the chalk is: “The chalk is ___ the desk.”",
             "options": [
               "because",
-              "and",
-              "slowly",
-              "under"
+              "under",
+              "but",
+              "quickly"
             ],
-            "answer": 3,
-            "id": "jss1-english-studies-final-q16"
+            "answer": 1
           },
           {
-            "question": "Choose the correct sentence.",
+            "id": "jss1-english-studies-final-q18",
+            "question": "Choose the correct verb: “The basket of ripe mangoes ___ on the table.”",
             "options": [
-              "The girls plays.",
-              "The girl play.",
-              "The girls is playing.",
-              "The girls play."
+              "are",
+              "were",
+              "is",
+              "have"
             ],
-            "answer": 3,
-            "id": "jss1-english-studies-final-q17"
+            "answer": 2
           },
           {
-            "question": "Which needs a capital letter?",
+            "id": "jss1-english-studies-final-q19",
+            "question": "Which option correctly punctuates a past event and capitalises its day, name and city?",
             "options": [
-              "book",
-              "morning",
-              "tuesday",
-              "river"
+              "On Tuesday, Amina will travel to Enugu.",
+              "On Tuesday, Amina travelled to Enugu.",
+              "On Tuesday, Amina travel to Enugu.",
+              "On Tuesday Amina travelled to Enugu"
             ],
-            "answer": 2,
-            "id": "jss1-english-studies-final-q18"
+            "answer": 1
           },
           {
-            "question": "Searching a text for a name or date is called:",
+            "id": "jss1-english-studies-final-q20",
+            "question": "A reader looks through a notice to find the time of a meeting. Which strategy is most useful?",
             "options": [
-              "scanning",
-              "editing",
-              "drafting",
-              "skimming"
+              "Skimming for the general subject",
+              "Scanning for the time",
+              "Reading every word aloud",
+              "Inferring a time not stated"
             ],
-            "answer": 0,
-            "id": "jss1-english-studies-final-q19"
+            "answer": 1
           },
           {
-            "question": "The prefix un- means:",
+            "id": "jss1-english-studies-final-q21",
+            "question": "“The path was muddy, so Kola washed his sandals at the tap.” What does “muddy” most likely mean?",
             "options": [
-              "full of",
-              "not",
-              "before",
-              "again"
+              "covered with wet earth",
+              "very steep",
+              "made of wood",
+              "quiet and empty"
             ],
-            "answer": 1,
-            "id": "jss1-english-studies-final-q20"
+            "answer": 0
           },
           {
-            "question": "The sentence that states the main idea is the:",
+            "id": "jss1-english-studies-final-q22",
+            "question": "Which sentence would best begin a paragraph about why pupils should return library books on time?",
             "options": [
-              "last word",
-              "title",
-              "topic sentence",
-              "signature"
+              "Returning library books on time helps every reader use them.",
+              "The library has several windows.",
+              "My cousin enjoys football.",
+              "Books have different colours."
             ],
-            "answer": 2,
-            "id": "jss1-english-studies-final-q21"
+            "answer": 0
           },
           {
-            "question": "Descriptive writing uses:",
+            "id": "jss1-english-studies-final-q23",
+            "question": "Which detail gives the clearest sensory description of a school garden?",
             "options": [
-              "only numbers",
-              "the five senses",
-              "only rules",
-              "only dialogue"
+              "It was a nice place.",
+              "The green leaves dripped after the rain.",
+              "It was somewhere near school.",
+              "Many things were there."
             ],
-            "answer": 1,
-            "id": "jss1-english-studies-final-q22"
+            "answer": 1
           },
           {
-            "question": "The most exciting point of a story is the:",
+            "id": "jss1-english-studies-final-q24",
+            "question": "In a story, a pupil loses a key, searches the classroom and finds it beside the water pot. Which event resolves the problem?",
             "options": [
-              "climax",
-              "title",
-              "margin",
-              "setting"
+              "The pupil loses the key.",
+              "The story opens in the classroom.",
+              "The pupil finds the key beside the water pot.",
+              "The pupil describes the key."
             ],
-            "answer": 0,
-            "id": "jss1-english-studies-final-q23"
+            "answer": 2
           },
           {
-            "question": "Which is a correct informal closing?",
+            "id": "jss1-english-studies-final-q25",
+            "question": "Which opening is suitable for an informal letter to a cousin?",
             "options": [
-              "Dear Sir",
-              "To whom it may concern",
-              "Yours lovingly",
-              "Yours faithfully"
+              "Dear Tola,",
+              "To whom it may concern:",
+              "Dear Sir/Madam,",
+              "Application for Admission"
             ],
-            "answer": 2,
-            "id": "jss1-english-studies-final-q24"
+            "answer": 0
           },
           {
-            "question": "Which genre is meant to be acted on stage?",
+            "id": "jss1-english-studies-final-q26",
+            "question": "A text gives character names followed by their spoken lines and directions for movement. Which form is it?",
             "options": [
-              "poetry",
-              "essay",
-              "prose",
-              "drama"
+              "A prose story",
+              "A dramatic script",
+              "A dictionary entry",
+              "A news report"
             ],
-            "answer": 3,
-            "id": "jss1-english-studies-final-q25"
+            "answer": 1
           },
           {
-            "question": "The time and place of a story is its:",
+            "id": "jss1-english-studies-final-q27",
+            "question": "A character admits a mistake and the family works together to repair the damage. Which is a possible theme?",
             "options": [
-              "plot",
-              "setting",
-              "theme",
-              "title"
+              "The family lives near a market.",
+              "Honesty can help people solve problems together.",
+              "The character is called Sade.",
+              "The story has five paragraphs."
             ],
-            "answer": 1,
-            "id": "jss1-english-studies-final-q26"
+            "answer": 1
           },
           {
-            "question": "Folktales are mainly:",
+            "id": "jss1-english-studies-final-q28",
+            "question": "A story's narrator says “I carried the basket home.” What can be concluded from this sentence?",
             "options": [
-              "scientific papers",
-              "laws",
-              "stories passed on orally",
-              "only newspaper reports"
+              "The narrator is speaking as a character in the story.",
+              "The author must be named I.",
+              "The story is a play.",
+              "The setting is definitely a market."
             ],
-            "answer": 2,
-            "id": "jss1-english-studies-final-q27"
+            "answer": 0
           },
           {
-            "question": "What does the colon in /i:/ show?",
+            "id": "jss1-english-studies-final-q29",
+            "question": "A speaker says, “A single hand cannot tie a bundle,” to encourage classmates to share a task. How is the saying being used?",
             "options": [
-              "The vowel is long",
-              "The vowel is stressed",
-              "The vowel is silent",
-              "The word is a noun"
+              "As a riddle asking for an object",
+              "As a proverb expressing advice",
+              "As a stage direction",
+              "As a literal report about a hand"
             ],
-            "answer": 0,
-            "id": "jss1-english-studies-final-q28"
+            "answer": 1
           },
           {
-            "question": "Which pair differs only by /i:/ and /ɪ/?",
+            "id": "jss1-english-studies-final-q30",
+            "question": "In the riddle “I have a face and two hands, but I cannot clap,” which answer fits both clues?",
             "options": [
-              "pot/port",
-              "leave/live",
-              "full/fool",
-              "cat/cut"
+              "a clock",
+              "a person",
+              "a tree",
+              "a classroom"
             ],
-            "answer": 1,
-            "id": "jss1-english-studies-final-q29"
-          },
-          {
-            "question": "Which pair differs only by /e/ and /æ/?",
-            "options": [
-              "pull/pool",
-              "ship/sheep",
-              "cart/cut",
-              "pen/pan"
-            ],
-            "answer": 3,
-            "id": "jss1-english-studies-final-q30"
+            "answer": 0
           }
         ]
       },
